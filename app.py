@@ -38,29 +38,37 @@ else:
 db = SQLAlchemy()
 db.init_app(app)
 
-
-read_by = db.Table(
-    "ReadBy",
-    db.Column('user_id', Integer, ForeignKey('user.id'), primary_key=True),
-    db.Column('message_id', Integer, ForeignKey('message.id'), primary_key=True)
+liked_by = db.Table(
+    "LikedBy",
+    db.Column('post_id', Integer, ForeignKey('post.id'), primary_key=True),
+    db.Column('user_id', Integer, ForeignKey('user.id'), primary_key=True)
 )
 
 class User(db.Model):
     id: Mapped[str] = mapped_column(primary_key = True)
     password: Mapped[str] = mapped_column(nullable=False)
     # Secondary is the association table
-    read_messages: Mapped[List['Message']] = relationship(secondary=read_by, back_populates = 'read_by')
+    liked_posts: Mapped[List['Post']] = relationship(secondary=liked_by, back_populates = 'likes')
+    posts: Mapped[List['Post']] = relationship(back_populates = 'owner')
 
     def __init__(self, id, password):
         self.id = id
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
+class Post(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    owner_id = Mapped[int] = mapped_column(db.ForeignKey("user.id"))
+    owner: Mapped['User'] = relationship(back_populates = 'posts')
+    body: Mapped[str]
+    comments: Mapped[List['Comment']] = relationship(back_populates = 'post')
+    likes: Mapped[List['User']] = relationship(secondary=liked_by, back_populates = 'liked_posts')
 
-class Message(db.Model):
-    id: Mapped[int] = mapped_column(primary_key = True, autoincrement=True)
+class Comment(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    post_id: Mapped[int] = mapped_column(db.ForeignKey("post.id"))
+    post: Mapped['Post'] = relationship(back_populates='comments')
+    owner: Mapped['User'] = mapped_column(nullable=False)
     message: Mapped[str]
-    read_by: Mapped[List['User']] = relationship(secondary=read_by, back_populates = 'read_messages')
-
 
 class BlockedToken(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
