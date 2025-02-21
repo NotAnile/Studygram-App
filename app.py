@@ -49,7 +49,8 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     # Secondary is the association table
     liked_posts: Mapped[List['Post']] = relationship(secondary=liked_by, back_populates = 'likes')
-    posts: Mapped[List['Post']] = relationship(back_populates = 'owner')
+    posts: Mapped[List['Post']] = relationship(back_populates = 'user')
+    comments: Mapped[List['Comment']] = relationship(back_populates = 'user')
 
     def __init__(self, id, password):
         self.id = id
@@ -58,8 +59,8 @@ class User(db.Model):
 
 class Post(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    owner_id = Mapped[int] = mapped_column(db.ForeignKey("user.id"))
-    owner: Mapped['User'] = relationship(back_populates = 'posts')
+    user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
+    user: Mapped['User'] = relationship(back_populates = 'posts')
     body: Mapped[str]
     comments: Mapped[List['Comment']] = relationship(back_populates = 'post')
     likes: Mapped[List['User']] = relationship(secondary=liked_by, back_populates = 'liked_posts')
@@ -69,7 +70,8 @@ class Comment(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     post_id: Mapped[int] = mapped_column(db.ForeignKey("post.id"))
     post: Mapped['Post'] = relationship(back_populates='comments')
-    owner: Mapped['User'] = mapped_column(nullable=False)
+    user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
+    user: Mapped['User'] = relationship(back_populates = 'comments')
     message: Mapped[str]
 
 
@@ -158,8 +160,9 @@ def save_post():
         if not user_exists(user_id):
             return f'The user {user_id} does not exist', 404
         
+        user = db.session.execute(db.select(User).filter_by(id = user_id)).scalar_one_or_none()
         # Saves the post and its owner's id in the database
-        new_post = Post(owner=user_id, body=message, comments=[], likes=[])
+        new_post = Post(user_id=user_id, body=message, comments=[], likes=[])
         user.posts.append(new_post)
         db.session.add(new_post)
         db.session.commit()
@@ -196,7 +199,7 @@ def save_comment(PostID):
             return 'Message length is over 300 characters', 400
 
         # Saves the post and its owner's id in the database
-        comment = Comment(owner=user_id, post=post, message=message)
+        comment = Comment(user_id=user_id, post=post, message=message)
         db.session.add(comment)
         db.session.commit()
 
@@ -211,11 +214,11 @@ def get_post(PostID):
     users that has liked the message and the amount of likes."""
 
     if post_exists(PostID):
-        message = db.session.execute(db.select(Post).filter_by(id=PostID)).scalar_one_or_none().message
+        message = db.session.execute(db.select(Post).filter_by(id=PostID)).scalar_one_or_none().body
         users = db.session.execute(select(liked_by.c.user_id).where(liked_by.c.post_id == PostID)).scalars()
         
         # Gets the amount of likes  on a post
-        liked_by_list = [user.user_id for user in users]
+        liked_by_list = [username for username in users]
         likes = len(liked_by_list)
         return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'likes': likes}), 200
     else:
@@ -231,22 +234,29 @@ def delete_post(PostID):
         return "User does not exist", 404
     
     post = db.session.execute(db.select(Post).filter_by(id=PostID)).scalar_one_or_none()
-    if post is not None and post.owner == user.id:
-        # Removes the post from the users posts
-        user.posts.remove(post)
+    user = db.session.execute(db.select(User).filter_by(id=get_jwt_identity())).scalar_one_or_none()
+
+    if post is not None and post.user_id == user.id:
         # Removes the comments
         comments_generator = db.session.execute(db.select(Comment).filter_by(post=post)).scalars()
         comments = [comment for comment in comments_generator]
         for comment in comments:
             db.session.delete(comment)
+            
+        # Removes the post from the users posts
+        user.posts.remove(post)
         # Removes the post
         db.session.delete(post)
         # Deletes the likes given to the deleted post
         db.session.execute(delete(liked_by).where(liked_by.c.post_id == PostID))
         db.session.commit()
         return 'Post deleted', 200
+    
+    elif post is None:
+        return 'Invalid post ID', 400 
+    
     else:
-        return 'Invalid post and/or user ID', 400 
+        return 'Permission denied: User does not own the post', 400
         
 
 @app.route('/posts/delete/<CommentID>', methods=['DELETE'])
@@ -258,7 +268,7 @@ def delete_comment(CommentID):
         return "User does not exist", 404
     
     comment = db.session.execute(db.select(Comment).filter_by(id=CommentID)).scalar_one_or_none()
-    if comment is not None and comment.owner == user.id:
+    if comment is not None and comment.user_id == user.id:
         # Removes the comment
         db.session.delete(comment)
         db.session.commit()
@@ -284,14 +294,15 @@ def like_post(PostID):
             # Adds the user and post to the liked_by table
             db.session.execute(db.insert(liked_by).values(user_id=user_id, post_id=PostID))
             db.session.commit()
+            return "Post liked", 200
 
         elif not user_exists(user_id):
             return "No user found", 404 
             
-        return "", 200
+        return "Post already liked", 200
 
     else:
-        return 'Invalid post ID', 400 
+        return 'Invalid post ID', 404
 
 
 @app.route('/posts', methods=['GET'])
@@ -334,7 +345,7 @@ def get_user_posts(UserID):
     # Checks if the user exists
     if user_exists(UserID):
 
-        post_generator = db.session.execute(db.select(Post).filter_by(owner=UserID)).scalars()
+        post_generator = db.session.execute(db.select(Post).filter_by(user_id=UserID)).scalars()
         for post in post_generator:
             # Creating a list of all the posts the user has created
             result.append({'id': post.id, 'body': post.body})
