@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey, Column, Integer, select, insert, delete, engi
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity
 import os
-from datetime import timedelta
+from datetime import timedelta, datetime, date
 
 app = Flask(__name__)
 
@@ -51,6 +51,7 @@ class User(db.Model):
     liked_posts: Mapped[List['Post']] = relationship(secondary=liked_by, back_populates = 'likes')
     posts: Mapped[List['Post']] = relationship(back_populates = 'user')
     comments: Mapped[List['Comment']] = relationship(back_populates = 'user')
+    sessions: Mapped[List['Session']] = relationship(back_populates = 'user')
 
     def __init__(self, id, password):
         self.id = id
@@ -73,6 +74,27 @@ class Comment(db.Model):
     user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
     user: Mapped['User'] = relationship(back_populates = 'comments')
     message: Mapped[str]
+
+
+class Session(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement = True)
+    starttime: Mapped[datetime]
+    endtime: Mapped[datetime]
+    duration: Mapped[timedelta]
+    startdate: Mapped[date]
+    user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
+    user: Mapped['User'] = relationship(back_populates = 'sessions')
+
+    def __init__(self, starttime, user_id):
+        self.user_id = user_id
+        self.starttime = starttime
+        self.startdate = date.today()
+        self.endtime = starttime
+        self.duration = starttime - starttime
+    
+    def setendtime(self, endtime):
+        self.endtime = endtime
+        self.duration = endtime - self.starttime
 
 
 class BlockedToken(db.Model):
@@ -356,33 +378,52 @@ def get_user_posts(UserID):
         return "User does not exist", 404
 
 
-# @app.route('/messages/unread/<UserId>', methods=['GET'])
-# @jwt_required()
-# def get_unread_messages(UserId):
-#     """Returns a jsonified list of all the messages that a given user has NOT read
-#     with the messageID, message and a list of users that HAS read that message."""
-#     result = []
+@app.route('/session/start', methods = ['POST'])
+@jwt_required()
+def startsession():
+    """Creates a session object by getting the current time and date."""
+    user_id = get_jwt_identity()
 
-#     # Checks if the given userid already exists or not
-#     user = db.session.execute(db.select(User).filter_by(id=UserId)).scalar_one_or_none()
-#     if user is not None:
-#         # Gets a set with all the message_id's that the user has not read
-#         # Using a set because the select query can select duplicates of message_id's since the filter
-#         # is set to != UserId. 
-#         unread_messages = set(db.session.execute(select(read_by.c.message_id).where(read_by.c.user_id != UserId)).scalars())
 
-#     else:
-#         return 'User does not exist', 404
+    if user_exists(user_id):
+        session = Session(starttime=datetime.now(), user_id=user_id)
+        sessionid = session.id
+        db.session.add(session)
+        db.session.commit()
+        return jsonify({'message':'Timer has been started', 'id': sessionid})
 
-#     for msg_id in unread_messages:
-#         message = db.session.execute(db.select(Message.message).filter_by(id=msg_id)).scalar_one_or_none()
-#         # Creating a list containing all the user ids that have read that message
-#         users = db.session.execute(select(read_by.c.user_id).where(read_by.c.message_id == msg_id)).scalars()
-#         read_by_list = list(users)
+    else:
+        return 'User does not exist', 404
 
-#         result.append({'id': msg_id, 'message': message, 'readBy': read_by_list})
 
-#     return jsonify(result)
+@app.route('/session/end', methods = ['POST'])
+@jwt_required()
+def endsession():
+    """Takes in the id of the session they want to end as a json and ends that session"""
+
+    user_id = get_jwt_identity()
+    if not user_exists(user_id):
+        return 'User does not exist', 404
+    
+    json_data = request.json
+    if 'id' in json_data:
+        # Getting the session that we want to end
+        sessionid = json_data['id']
+        session = db.session.execute(db.select(Session).filter_by(id=sessionid)).scalar_one_or_none()   # Can't find session, gets none ????????????????
+        
+        if session is not None:
+            # Checks that the owner of the session is the logged in user
+            if session.user.id != user_id:
+                return 'Permission denied: User does not own session', 400
+            
+            # Sets the endtime and duration of the session
+            session.setendtime(endtime=datetime.now())
+            return jsonify({'message':'Session has ended'})
+        else:
+            return 'Session does not exist', 404
+
+    else:
+        return 'Session id missing', 404
 
 
 @app.route('/user/logout', methods = ['POST'])

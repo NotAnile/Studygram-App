@@ -189,3 +189,31 @@ def test_get_all_posts(client):
         json_dict = response2.json[i]
         assert json_dict["id"] == i + 1
         assert json_dict["body"] == message_list[i]
+
+def test_startsession(client):
+    token = create_user_get_token(client, "Elina", "1234")
+
+    response1 = client.post('/session/start', headers={'Authorization':'Bearer ' + token})
+    json_data = response1.json
+    assert json_data['message'] == 'Timer has been started' 
+
+    
+def test_endsession(client):
+    # Starting a session
+    token = create_user_get_token(client, "Elina", "1234")
+    response = client.post('/session/start', headers={'Authorization':'Bearer ' + token})
+    sessionid = response.json['id']
+    
+    # Testing to end a session
+    response1 = client.post('/session/end', json = {'id':sessionid}, headers={'Authorization':'Bearer ' + token})
+    assert response1.json['message'] == 'Session has ended'
+    
+    # Testing to end a session with an invalid session id
+    response2 = client.post('/session/end', json = {'id':5}, headers={'Authorization':'Bearer ' + token})
+    assert b'Session does not exist' in response2.data
+    assert response2.status_code == 404
+
+    # Testing to end a session without sending in the session id
+    response3 = client.post('/session/end', json = {'dfghn':234}, headers={'Authorization':'Bearer ' + token})
+    assert b'Session id missing' in response3.data
+    assert response3.status_code == 404
