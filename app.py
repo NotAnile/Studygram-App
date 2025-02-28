@@ -84,11 +84,13 @@ class Session(db.Model):
     startdate: Mapped[date]
     user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
     user: Mapped['User'] = relationship(back_populates = 'sessions')
+    subject: Mapped[str]
 
-    def __init__(self, starttime, startdate, user_id):
+    def __init__(self, starttime, user_id, subject):
         self.user_id = user_id
         self.starttime = starttime
-        self.startdate = startdate
+        self.startdate = starttime.date()
+        self.subject = subject
         self.endtime = starttime
         self.duration = starttime - starttime
     
@@ -110,10 +112,19 @@ def user_exists(user_id) -> bool:
     user = db.session.execute(db.select(User).filter_by(id=user_id)).scalar_one_or_none()
     return user is not None
 
+
 def post_exists(post_id) -> bool:
     """Checks if the given post id exists in the database"""
     post = db.session.execute(db.select(Post).filter_by(id=post_id)).scalar_one_or_none()
     return post is not None
+
+
+def data_exist(datalist:List[str], jsondict: dict):
+    """Returns true iff all data in the given datalist exists in the given jsondict."""
+    for data in datalist:
+        if not data in jsondict:
+            return False
+    return True
 
 
 @app.route('/user', methods=['POST'])
@@ -384,15 +395,55 @@ def startsession():
     """Creates a session object by getting the current time and date."""
     user_id = get_jwt_identity()
 
-
     if user_exists(user_id):
-        session = Session(starttime=datetime.now(), startdate=date.today(), user_id=user_id)
+        # Getting the subject if the user sent one
+        json_data = request.json
+        if 'subject' in json_data:
+            subject = json_data['subject']
+        else:
+            subject = ''
+
+        session = Session(starttime=datetime.now(), user_id=user_id, subject=subject)
         db.session.add(session)
         db.session.commit()
-        return jsonify({'message':'Timer has been started', 'id': session.id})
+        return jsonify({'message':'Timer has been started', 'id': session.id, 'subject': session.subject})
 
     else:
         return 'User does not exist', 404
+
+@app.route('/session/add', methods = ['POST'])
+@jwt_required()
+def addsession():
+    """Adds a session manually by setting the start and end time """
+    user_id = get_jwt_identity()
+    if not user_exists(user_id):
+        return "User does not exist", 404
+    
+    json_data = request.json
+    if data_exist(['startdate', 'starttime', 'enddate', 'endtime'], json_data):
+        startdate = json_data['startdate']
+        starttime = json_data['starttime']
+        enddate = json_data['enddate']
+        endtime = json_data['endtime']
+        # Getting the start and endtime as datetime objects
+        starttime = datetime.strptime(startdate + " " + starttime + ":00", '%d/%m/%y %H:%M:%S')
+        endtime = datetime.strptime(enddate + " " + endtime + ":00", '%d/%m/%y %H:%M:%S')
+
+        if 'subject' in json_data:
+            subject = json_data['subject']
+        else:
+            subject = ''
+
+        session = Session(starttime=starttime, subject=subject, user_id=user_id)
+        session.setendtime(endtime=endtime)
+        db.session.add(session)
+        db.session.commit()
+
+        return jsonify({'message':'Session has been added', 'id':session.id})
+    
+    else:
+        return 'Missing starttime, endtime or date', 400
+
 
 
 @app.route('/session/end', methods = ['POST'])
@@ -408,7 +459,7 @@ def endsession():
     if 'id' in json_data:
         # Getting the session that we want to end
         sessionid = json_data['id']
-        session = db.session.execute(db.select(Session).filter_by(id=sessionid)).scalar_one_or_none()   # Can't find session, gets none ????????????????
+        session = db.session.execute(db.select(Session).filter_by(id=sessionid)).scalar_one_or_none()
         
         if session is not None:
             # Checks that the owner of the session is the logged in user

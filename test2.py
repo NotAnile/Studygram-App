@@ -1,5 +1,3 @@
 from datetime import datetime
-a = datetime.now()
-b = a - a
-print(b)
-print(b.__class__)
+
+print(datetime.strptime( '09/19/22 13:55:26', '%m/%d/%y %H:%M:%S'))

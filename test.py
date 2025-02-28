@@ -193,15 +193,19 @@ def test_get_all_posts(client):
 def test_startsession(client):
     token = create_user_get_token(client, "Elina", "1234")
 
-    response1 = client.post('/session/start', headers={'Authorization':'Bearer ' + token})
+    response1 = client.post('/session/start', json={}, headers={'Authorization':'Bearer ' + token})
     json_data = response1.json
     assert json_data['message'] == 'Timer has been started' 
+
+    response2 = client.post('/session/start', json={'subject': 'programming'}, headers={'Authorization':'Bearer ' + token})
+    json_data = response2.json
+    assert json_data['subject'] == 'programming'
 
     
 def test_endsession(client):
     # Starting a session
     token = create_user_get_token(client, "Elina", "1234")
-    response = client.post('/session/start', headers={'Authorization':'Bearer ' + token})
+    response = client.post('/session/start', json={}, headers={'Authorization':'Bearer ' + token})
     sessionid = response.json['id']
 
     # Testing to end a session
@@ -217,3 +221,10 @@ def test_endsession(client):
     response3 = client.post('/session/end', json = {'dfghn':234}, headers={'Authorization':'Bearer ' + token})
     assert b'Session id missing' in response3.data
     assert response3.status_code == 404
+
+def test_addsession(client):
+    # Starting a session
+    token = create_user_get_token(client, "Elina", "1234")
+    json_data = {'startdate':'28/02/25', 'starttime': '15:00', 'enddate': '28/02/25', 'endtime': '16:00'}
+    response = client.post('/session/add', json=json_data, headers={'Authorization':'Bearer ' + token})
+    assert response.json['message'] == 'Session has been added'
