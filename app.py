@@ -85,10 +85,10 @@ class Session(db.Model):
     user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
     user: Mapped['User'] = relationship(back_populates = 'sessions')
 
-    def __init__(self, starttime, user_id):
+    def __init__(self, starttime, startdate, user_id):
         self.user_id = user_id
         self.starttime = starttime
-        self.startdate = date.today()
+        self.startdate = startdate
         self.endtime = starttime
         self.duration = starttime - starttime
     
@@ -386,11 +386,10 @@ def startsession():
 
 
     if user_exists(user_id):
-        session = Session(starttime=datetime.now(), user_id=user_id)
-        sessionid = session.id
+        session = Session(starttime=datetime.now(), startdate=date.today(), user_id=user_id)
         db.session.add(session)
         db.session.commit()
-        return jsonify({'message':'Timer has been started', 'id': sessionid})
+        return jsonify({'message':'Timer has been started', 'id': session.id})
 
     else:
         return 'User does not exist', 404
@@ -416,9 +415,24 @@ def endsession():
             if session.user.id != user_id:
                 return 'Permission denied: User does not own session', 400
             
+            # Getting the values for the session 
+            starttime = session.starttime
+            startdate = session.startdate
+            
+            # Removing the session since we want to change the values
+            db.session.delete(session)
+
+            # Creating a new session with the correct endtime
+            ended_session = Session(starttime=starttime, startdate=startdate, user_id=user_id)
+
             # Sets the endtime and duration of the session
-            session.setendtime(endtime=datetime.now())
-            return jsonify({'message':'Session has ended'})
+            ended_session.setendtime(endtime=datetime.now())
+
+            # Adding the new session to the database
+            db.session.add(ended_session)
+            db.session.commit()
+
+            return jsonify({'message':'Session has ended', 'id': ended_session.id})
         else:
             return 'Session does not exist', 404
 

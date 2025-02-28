@@ -203,9 +203,9 @@ def test_endsession(client):
     token = create_user_get_token(client, "Elina", "1234")
     response = client.post('/session/start', headers={'Authorization':'Bearer ' + token})
     sessionid = response.json['id']
-    
+
     # Testing to end a session
-    response1 = client.post('/session/end', json = {'id':sessionid}, headers={'Authorization':'Bearer ' + token})
+    response1 = client.post('/session/end', json = {'id': sessionid}, headers={'Authorization':'Bearer ' + token})
     assert response1.json['message'] == 'Session has ended'
     
     # Testing to end a session with an invalid session id
