@@ -411,6 +411,7 @@ def startsession():
     else:
         return 'User does not exist', 404
 
+
 @app.route('/session/add', methods = ['POST'])
 @jwt_required()
 def addsession():
@@ -442,7 +443,7 @@ def addsession():
         return jsonify({'message':'Session has been added', 'id':session.id})
     
     else:
-        return 'Missing starttime, endtime or date', 400
+        return 'Missing startdate, starttime, enddate, or endtime', 400
 
 
 
