@@ -85,12 +85,14 @@ class Session(db.Model):
     user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
     user: Mapped['User'] = relationship(back_populates = 'sessions')
     subject: Mapped[str]
+    description: Mapped[str]
 
-    def __init__(self, starttime, user_id, subject):
+    def __init__(self, starttime, user_id, subject, description):
         self.user_id = user_id
         self.starttime = starttime
         self.startdate = starttime.date()
         self.subject = subject
+        self.description = description
         self.endtime = starttime
         self.duration = starttime - starttime
     
@@ -119,12 +121,19 @@ def post_exists(post_id) -> bool:
     return post is not None
 
 
-def data_exist(datalist:List[str], jsondict: dict):
+def data_exist(datalist:List[str], jsondict: dict) -> bool:
     """Returns true iff all data in the given datalist exists in the given jsondict."""
     for data in datalist:
         if not data in jsondict:
             return False
     return True
+
+
+def get_data(key: str, dict: dict) -> str:
+    """Returns the value if the given key exists in the given dict, else it will return an empty string"""
+    if key in dict:
+        return dict[key]
+    return ''
 
 
 @app.route('/user', methods=['POST'])
@@ -133,7 +142,7 @@ def create_user():
     # Checks if the user exists in the User column with filter  
     json_data = request.json
 
-    if ('username' in json_data) and ('password' in json_data):
+    if data_exist(['username', 'password'], json_data):
         username = json_data['username']
         password = json_data['password']
 
@@ -156,7 +165,7 @@ def create_user():
 @app.route('/user/login', methods=['POST'])
 def do_login():
     json_data = request.json
-    if ('username' in json_data) and ('password' in json_data):
+    if data_exist(['username', 'password'], json_data):
         username = json_data['username']
         password = json_data['password']
 
@@ -396,14 +405,12 @@ def startsession():
     user_id = get_jwt_identity()
 
     if user_exists(user_id):
-        # Getting the subject if the user sent one
+        # Getting the subject and description if the user sent one
         json_data = request.json
-        if 'subject' in json_data:
-            subject = json_data['subject']
-        else:
-            subject = ''
+        subject = get_data('subject', json_data)
+        description = get_data('description', json_data)
 
-        session = Session(starttime=datetime.now(), user_id=user_id, subject=subject)
+        session = Session(starttime=datetime.now(), user_id=user_id, subject=subject, description=description)
         db.session.add(session)
         db.session.commit()
         return jsonify({'message':'Timer has been started', 'id': session.id, 'subject': session.subject})
@@ -429,13 +436,11 @@ def addsession():
         # Getting the start and endtime as datetime objects
         starttime = datetime.strptime(startdate + " " + starttime + ":00", '%d/%m/%y %H:%M:%S')
         endtime = datetime.strptime(enddate + " " + endtime + ":00", '%d/%m/%y %H:%M:%S')
+        # Getting the subject and description if the user sent one
+        subject = get_data('subject', json_data)
+        description = get_data('description', json_data)
 
-        if 'subject' in json_data:
-            subject = json_data['subject']
-        else:
-            subject = ''
-
-        session = Session(starttime=starttime, subject=subject, user_id=user_id)
+        session = Session(starttime=starttime, subject=subject, user_id=user_id, description=description)
         session.setendtime(endtime=endtime)
         db.session.add(session)
         db.session.commit()
