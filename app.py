@@ -415,24 +415,11 @@ def endsession():
             if session.user.id != user_id:
                 return 'Permission denied: User does not own session', 400
             
-            # Getting the values for the session 
-            starttime = session.starttime
-            startdate = session.startdate
-            
-            # Removing the session since we want to change the values
-            db.session.delete(session)
-
-            # Creating a new session with the correct endtime
-            ended_session = Session(starttime=starttime, startdate=startdate, user_id=user_id)
-
-            # Sets the endtime and duration of the session
-            ended_session.setendtime(endtime=datetime.now())
-
-            # Adding the new session to the database
-            db.session.add(ended_session)
+            # Updates the endtime and duration of the session
+            session.setendtime(endtime=datetime.now())
             db.session.commit()
 
-            return jsonify({'message':'Session has ended', 'id': ended_session.id})
+            return jsonify({'message':'Session has ended', 'duration': str(session.duration)})
         else:
             return 'Session does not exist', 404
 
