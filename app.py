@@ -274,11 +274,12 @@ def get_post(PostID):
 def delete_post(PostID):
     """Deletes the post if the id exists."""
     # Checks that the user exists
-    if not user_exists(get_jwt_identity()):
+    user_id = get_jwt_identity()
+    if not user_exists(user_id):
         return "User does not exist", 404
-    
-    post = db.session.execute(db.select(Post).filter_by(id=PostID)).scalar_one_or_none()
-    user = db.session.execute(db.select(User).filter_by(id=get_jwt_identity())).scalar_one_or_none()
+
+    post = db.session.get(Post, PostID)
+    user = db.session.get(User, user_id)
 
     if post is not None and post.user_id == user.id:
         # Removes the comments
@@ -310,8 +311,9 @@ def delete_comment(CommentID):
     # Checks that the user exists
     if not user_exists(get_jwt_identity()):
         return "User does not exist", 404
-    
-    comment = db.session.execute(db.select(Comment).filter_by(id=CommentID)).scalar_one_or_none()
+
+    comment = db.session.get(Comment, CommentID)
+
     if comment is not None and comment.user_id == user.id:
         # Removes the comment
         db.session.delete(comment)
