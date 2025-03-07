@@ -148,8 +148,9 @@ def create_user():
         username = json_data['username']
         password = json_data['password']
 
-        user = db.session.execute(db.select(User).filter_by(id=username)).scalar_one_or_none()
-        if user is None:
+        # Checks if there already exists a user with that username
+        existing_user = db.session.get(User, username)
+        if existing_user is None:
             # Creates a new user
             user = User(id=username, password=password)
             db.session.add(user)
@@ -171,8 +172,7 @@ def do_login():
         username = json_data['username']
         password = json_data['password']
 
-
-        user = db.session.execute(db.select(User).filter_by(id = username)).scalar_one_or_none()
+        user = db.session.get(User, username)
         if user is None:
             return jsonify({'message':'No such user or wrong password'}), 400
 
@@ -204,7 +204,7 @@ def save_post():
         if not user_exists(user_id):
             return f'The user {user_id} does not exist', 404
         
-        user = db.session.execute(db.select(User).filter_by(id = user_id)).scalar_one_or_none()
+        user = db.session.get(User, user_id)
         # Saves the post and its owner's id in the database
         new_post = Post(user_id=user_id, body=message, comments=[], likes=[])
         user.posts.append(new_post)
@@ -232,7 +232,7 @@ def save_comment(PostID):
         return 'Post does not exist', 404
     
     json_data = request.json
-    post = db.session.execute(db.select(Post).filter_by(id=PostID)).scalar_one_or_none()
+    post = db.session.get(Post, PostID)
 
     # Gets all the data for storing the message
     if 'message' in json_data:
@@ -263,6 +263,7 @@ def get_post(PostID):
         
         # Gets the amount of likes  on a post
         liked_by_list = [username for username in users]
+        # liked_by_list = db.session.get(Post, PostID).likes
         likes = len(liked_by_list)
         return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'likes': likes}), 200
     else:
@@ -309,12 +310,13 @@ def delete_post(PostID):
 def delete_comment(CommentID):
     """Deletes the comment if the id exists."""
     # Checks that the user exists
-    if not user_exists(get_jwt_identity()):
+    user_id = get_jwt_identity()
+    if not user_exists(user_id):
         return "User does not exist", 404
 
     comment = db.session.get(Comment, CommentID)
 
-    if comment is not None and comment.user_id == user.id:
+    if comment is not None and comment.user_id == user_id:
         # Removes the comment
         db.session.delete(comment)
         db.session.commit()
