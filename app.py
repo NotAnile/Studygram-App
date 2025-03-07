@@ -26,7 +26,7 @@ if 'AZURE_POSTGRESQL_CONNECTIONSTRING' in os.environ:
     host = values['host']
     database = values['dbname']
     password = values['password']
-    db_uri = f'postgres+psycopg2://{user}:{password}@{host}/{database}'
+    db_uri = f'postgresql+psycopg2://{user}:{password}@{host}/{database}'
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     
 else:
