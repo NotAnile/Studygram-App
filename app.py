@@ -285,8 +285,7 @@ def delete_post(PostID):
 
     if post is not None and post.user_id == user.id:
         # Removes the comments
-        comments_generator = db.session.execute(db.select(Comment).filter_by(post=post)).scalars()
-        comments = [comment for comment in comments_generator]
+        comments = post.comments
         for comment in comments:
             db.session.delete(comment)
             
@@ -295,7 +294,7 @@ def delete_post(PostID):
         # Removes the post
         db.session.delete(post)
         # Deletes the likes given to the deleted post
-        db.session.execute(delete(liked_by).where(liked_by.c.post_id == PostID))
+        db.session.execute(delete(liked_by).where(liked_by.c.post_id == PostID))    # Fråga: Behövs detta eller tas likes-raderna bort automatiskt när man tar bort Post?
         db.session.commit()
         return 'Post deleted', 200
     
@@ -371,11 +370,10 @@ def get_all_comments(PostID):
     """Returns a jsonified list of all the comments in a post."""
     result = []
 
-    post = db.session.execute(db.select(Post).filter_by(id=PostID)).scalar_one_or_none()
+    post = db.session.get(Post, PostID)
 
     if post is not None:
-        comment_generator = db.session.execute(db.select(Comment).filter_by(post=post)).scalars()
-        for comment in comment_generator:
+        for comment in post.comments:
             # Creating a list of all the comments in the post
             result.append({'id': comment.id, 'message': comment.message})
     
@@ -471,7 +469,7 @@ def endsession():
     if 'id' in json_data:
         # Getting the session that we want to end
         sessionid = json_data['id']
-        session = db.session.execute(db.select(Session).filter_by(id=sessionid)).scalar_one_or_none()
+        session = db.session.get(Session, sessionid)
         
         if session is not None:
             # Checks that the owner of the session is the logged in user
