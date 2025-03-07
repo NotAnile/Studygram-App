@@ -328,23 +328,22 @@ def like_post(PostID):
     If the user has already liked it, the database won't be changed and 200 will be returned."""
 
     if post_exists(PostID):
-        # Check if the user exists or not and if they've already liked the post 
+        post = db.session.get(Post, PostID)
+        # Gets the user object for the given user id
         user_id = get_jwt_identity()
-        like = db.session.execute(
-            liked_by.select().where(db.and_(liked_by.columns.user_id == user_id, liked_by.columns.post_id == PostID))
-        ).scalar_one_or_none()
+        if user_exists(user_id):
+            user = db.session.get(User, user_id)
+        else:
+            "No user found", 404 
         
-        if (user_exists(user_id)) and (like is None):
-            # Adds the user and post to the liked_by table
-            db.session.execute(db.insert(liked_by).values(user_id=user_id, post_id=PostID))
-            db.session.commit()
-            return "Post liked", 200
+        # Checks if the user has already liked it
+        if user in post.likes:
+            return "Post already liked", 200
 
-        elif not user_exists(user_id):
-            return "No user found", 404 
-            
-        return "Post already liked", 200
-
+        # Adds the user and post to the likes list 
+        post.likes.append(user)
+        db.session.commit()
+        return "Post liked", 200
     else:
         return 'Invalid post ID', 404
 
