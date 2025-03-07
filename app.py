@@ -2,23 +2,25 @@ from flask import Flask, request, jsonify
 from typing import List
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Column, Integer, select, insert, delete, engine
+from sqlalchemy import ForeignKey, Integer, select, delete
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity
 import os
 from datetime import timedelta, datetime, date
+from dotenv import dotenv_values
 
 app = Flask(__name__)
 
 bcrypt = Bcrypt(app)
-file = open('.env', 'r')
-app.config['JWT_SECRET_KEY'] = file.read()
+# Configuring the jwt secret key by getting the secret key from the .env file
+app.config['JWT_SECRET_KEY'] = dotenv_values(".env")["SECRET_KEY"]
 
 #Making the token valid for 5 minutes before it expires
 ACCESS_EXPIRES = timedelta(minutes = 5)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRES
 jwt = JWTManager(app)
 
+# Configuring the database uri depending on 
 if 'AZURE_POSTGRESQL_CONNECTIONSTRING' in os.environ:
     conn = os.environ["AZURE_POSTGRESQL_CONNECTIONSTRING"]
     values = dict (x.split('=') for x in conn.split(' '))
