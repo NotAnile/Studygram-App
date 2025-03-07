@@ -258,12 +258,13 @@ def get_post(PostID):
     users that has liked the message and the amount of likes."""
 
     if post_exists(PostID):
-        message = db.session.execute(db.select(Post).filter_by(id=PostID)).scalar_one_or_none().body
-        users = db.session.execute(select(liked_by.c.user_id).where(liked_by.c.post_id == PostID)).scalars()
-        
+        post = db.session.get(Post, PostID)
+        # Gets the body and users that have liked the post
+        message = post.body
+        users = post.likes 
         # Gets the amount of likes  on a post
-        liked_by_list = [username for username in users]
-        # liked_by_list = db.session.get(Post, PostID).likes
+        liked_by_list = [user.id for user in users]
+        
         likes = len(liked_by_list)
         return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'likes': likes}), 200
     else:
