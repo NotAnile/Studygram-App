@@ -19,6 +19,9 @@ class MainApp extends StatelessWidget {
 final _router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+    GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationScreen()),
   ],
 );
 
@@ -33,8 +36,28 @@ class HomeScreen extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyNavigationBar(
-        child: Text("Hej"),
+      home: MyNavigationBar(
+        defaultIndex: 0,
+        child: const Text("Hej"),
+      ),
+    );
+  }
+}
+
+class NotificationScreen extends StatelessWidget {
+  const NotificationScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Notification screen",
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: MyNavigationBar(
+        defaultIndex: 1,
+        child: const Text("Heeeee"),
       ),
     );
   }
@@ -42,18 +65,23 @@ class HomeScreen extends StatelessWidget {
 
 class MyNavigationBar extends StatefulWidget {
   final Widget child;
-  const MyNavigationBar({super.key, required this.child});
+  int defaultIndex = 0;
+  MyNavigationBar({super.key, required this.child, required this.defaultIndex});
 
   @override
   State<MyNavigationBar> createState() => _MyNavigationBarState();
 }
 
 class _MyNavigationBarState extends State<MyNavigationBar> {
-  int _selectedIndex = 0;
-
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      if (widget.defaultIndex != index) {
+        if (index == 0) {
+          _router.push("/");
+        } else {
+          _router.push("/notifications");
+        }
+      }
     });
   }
 
@@ -67,7 +95,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
           BottomNavigationBarItem(
               icon: Icon(Icons.notifications_sharp), label: "Notifications"),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: widget.defaultIndex,
         selectedItemColor: const Color.fromARGB(255, 195, 151, 202),
         onTap: _onItemTapped,
       ),
