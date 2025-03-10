@@ -57,7 +57,7 @@ class NotificationScreen extends StatelessWidget {
       ),
       home: MyNavigationBar(
         defaultIndex: 1,
-        child: const Text("Heeeee"),
+        child: const Text("AAAAAAAAAAAA"),
       ),
     );
   }
@@ -74,15 +74,19 @@ class MyNavigationBar extends StatefulWidget {
 
 class _MyNavigationBarState extends State<MyNavigationBar> {
   void _onItemTapped(int index) {
-    setState(() {
-      if (widget.defaultIndex != index) {
-        if (index == 0) {
-          _router.push("/");
-        } else {
-          _router.push("/notifications");
+    setState(
+      () {
+        // Compares the page's navigation bar index with the selected index
+        // and changes if the user selects a different page
+        if (widget.defaultIndex != index) {
+          if (index == 0) {
+            _router.push("/");
+          } else {
+            _router.push("/notifications");
+          }
         }
-      }
-    });
+      },
+    );
   }
 
   @override
