@@ -7,19 +7,25 @@ class Post extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(children: [
-        Row(
-          children: [
-            Text(username,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-          ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              Row(children: [
+                Text(username,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 14)),
+              ]),
+              Row(children: [
+                Text(body, style: const TextStyle(fontSize: 13)),
+              ])
+            ],
+          ),
         ),
-        Row(children: [
-          Text(body, style: const TextStyle(fontSize: 13)),
-        ])
-      ]),
+      ),
     );
   }
 }
