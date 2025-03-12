@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
 void main() {
   runApp(const MainApp());
 }
@@ -17,11 +20,24 @@ class MainApp extends StatelessWidget {
 }
 
 final _router = GoRouter(
+  navigatorKey: _rootNavigatorKey,
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
-    GoRoute(
-        path: '/notifications',
-        builder: (context, state) => const NotificationScreen()),
+    ShellRoute(
+      navigatorKey: _shellNavigatorKey,
+      builder: (context, state, child) => MyNavigationBar(child: child),
+      routes: [
+        GoRoute(
+          path: '/',
+          parentNavigatorKey: _shellNavigatorKey,
+          builder: (context, state) => const HomeScreen(),
+        ),
+        GoRoute(
+          path: '/notifications',
+          parentNavigatorKey: _shellNavigatorKey,
+          builder: (context, state) => const NotificationScreen(),
+        ),
+      ],
+    )
   ],
 );
 
@@ -36,10 +52,7 @@ class HomeScreen extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyNavigationBar(
-        defaultIndex: 0,
-        child: const Text("Hej"),
-      ),
+      home: const Text("Hej"),
     );
   }
 }
@@ -55,36 +68,38 @@ class NotificationScreen extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyNavigationBar(
-        defaultIndex: 1,
-        child: const Text("AAAAAAAAAAAA"),
-      ),
+      home: const Text("AAAAAAAAAAAA"),
     );
   }
 }
 
 class MyNavigationBar extends StatefulWidget {
   final Widget child;
-  int defaultIndex = 0;
-  MyNavigationBar({super.key, required this.child, required this.defaultIndex});
+  MyNavigationBar({super.key, required this.child});
 
   @override
   State<MyNavigationBar> createState() => _MyNavigationBarState();
 }
 
 class _MyNavigationBarState extends State<MyNavigationBar> {
+  int currentIndex = 0;
+
   void _onItemTapped(int index) {
+    switch (index) {
+      case 0:
+        context.go('/');
+        break;
+      case 1:
+        context.go('/notifications');
+        break;
+      default:
+        context.go('/');
+        break;
+    }
+
     setState(
       () {
-        // Compares the page's navigation bar index with the selected index
-        // and changes if the user selects a different page
-        if (widget.defaultIndex != index) {
-          if (index == 0) {
-            _router.push("/");
-          } else {
-            _router.push("/notifications");
-          }
-        }
+        currentIndex = index;
       },
     );
   }
@@ -99,7 +114,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
           BottomNavigationBarItem(
               icon: Icon(Icons.notifications_sharp), label: "Notifications"),
         ],
-        currentIndex: widget.defaultIndex,
+        currentIndex: currentIndex,
         selectedItemColor: const Color.fromARGB(255, 195, 151, 202),
         onTap: _onItemTapped,
       ),
