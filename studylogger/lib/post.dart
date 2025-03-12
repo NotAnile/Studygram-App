@@ -11,11 +11,13 @@ class Post extends StatelessWidget {
       child: Column(children: [
         Row(
           children: [
-            Text(username),
+            Text(username,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
           ],
         ),
         Row(children: [
-          Text(body),
+          Text(body, style: const TextStyle(fontSize: 13)),
         ])
       ]),
     );
