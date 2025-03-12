@@ -45,7 +45,7 @@ final _router = GoRouter(
 
 class MyNavigationBar extends StatefulWidget {
   final Widget child;
-  MyNavigationBar({super.key, required this.child});
+  const MyNavigationBar({super.key, required this.child});
 
   @override
   State<MyNavigationBar> createState() => _MyNavigationBarState();
