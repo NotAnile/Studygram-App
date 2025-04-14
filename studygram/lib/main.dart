@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:studylogger/home.dart';
-import 'package:studylogger/notifications.dart';
+import 'package:studygram/home.dart';
+import 'package:studygram/notifications.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
