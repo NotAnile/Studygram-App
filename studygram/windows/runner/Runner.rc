@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "studylogger" "\0"
+            VALUE "FileDescription", "studygram" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "studylogger" "\0"
+            VALUE "InternalName", "studygram" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "studylogger.exe" "\0"
-            VALUE "ProductName", "studylogger" "\0"
+            VALUE "OriginalFilename", "studygram.exe" "\0"
+            VALUE "ProductName", "studygram" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

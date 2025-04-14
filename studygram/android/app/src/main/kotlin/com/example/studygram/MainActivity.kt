@@ -1,4 +1,4 @@
-package com.example.studylogger
+package com.example.studygram
 
 import io.flutter.embedding.android.FlutterActivity
 

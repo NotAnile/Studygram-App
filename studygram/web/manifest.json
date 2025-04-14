@@ -1,6 +1,6 @@
 {
-    "name": "studylogger",
-    "short_name": "studylogger",
+    "name": "studygram",
+    "short_name": "studygram",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

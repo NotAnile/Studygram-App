@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/post.dart';
+import 'post.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,6 +11,7 @@ class HomeScreen extends StatelessWidget {
     List jsonList = [
       {"body": "Hej lorem ipsum asdaskdhagsd0", "username": "Lorem"},
     ];
+
     return Center(
       child: Column(
         children: [

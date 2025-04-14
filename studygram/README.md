@@ -1,4 +1,4 @@
-# studylogger
+# studygram
 
 A new Flutter project.
 
