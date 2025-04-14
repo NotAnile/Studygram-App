@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'post.dart';
+import '../components/postview.dart';
+import '../structure.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,7 +10,11 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Temporary json data for testing since receiving json from backend has not been implemented yet
     List jsonList = [
-      {"body": "Hej lorem ipsum asdaskdhagsd0", "username": "Lorem"},
+      {
+        "body": "Hej lorem ipsum asdaskdhagsd0",
+        "username": "Lorem",
+        "comments": []
+      },
     ];
 
     return Center(
@@ -19,18 +24,8 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-              child: ListView.builder(
-                itemCount: jsonList.length,
-                itemBuilder: (context, index) {
-                  Map json = jsonList[index];
-                  String body = json["body"];
-                  String username = json["username"];
-                  return Post(
-                    body: body,
-                    username: username,
-                  );
-                },
-              ),
+              child: PostView(
+                  posts: jsonList.map((json) => Post.fromJson(json)).toList()),
             ),
           ),
         ],

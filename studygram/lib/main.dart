@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:studygram/home.dart';
-import 'package:studygram/notifications.dart';
+import 'package:studygram/pages/home.dart';
+import 'package:studygram/pages/notifications.dart';
+import 'package:studygram/pages/profile.dart';
+import 'package:studygram/usermodel.dart';
+import 'package:provider/provider.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
-  runApp(const MainApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) => UserModel(), child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -37,6 +41,11 @@ final _router = GoRouter(
           path: '/notifications',
           parentNavigatorKey: _shellNavigatorKey,
           builder: (context, state) => const NotificationScreen(),
+        ),
+        GoRoute(
+          path: '/myprofile',
+          parentNavigatorKey: _shellNavigatorKey,
+          builder: (context, state) => const MyProfilePage(),
         ),
       ],
     )

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class Post extends StatelessWidget {
+class PostCard extends StatelessWidget {
   final String body;
   final String username;
-  const Post({super.key, required this.body, required this.username});
+  const PostCard({super.key, required this.body, required this.username});
 
   @override
   Widget build(BuildContext context) {
