@@ -72,7 +72,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
         context.go('/notifications');
         break;
       default:
-        context.go('/');
+        context.go('/myprofile');
         break;
     }
 
@@ -92,6 +92,8 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
               icon: Icon(Icons.notifications_sharp), label: "Notifications"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person), label: "My profile"),
         ],
         currentIndex: currentIndex,
         selectedItemColor: const Color.fromARGB(255, 195, 151, 202),

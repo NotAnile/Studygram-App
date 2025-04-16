@@ -9,6 +9,8 @@ class User {
       // required this.url,
       required this.posts,
       required this.sessions});
+  // Converts a Map (decoded JSON) into a User object.
+  // .fromJson allows you to create a User object from a JSON
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
         username: json["username"],

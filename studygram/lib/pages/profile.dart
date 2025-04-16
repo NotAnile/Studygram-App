@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/postview.dart';
-import '../structure.dart';
+import 'package:studygram/components/navigationcard.dart';
 import '../data.dart';
 
 //**Page for the current user where you can navigate to own posts,
@@ -10,7 +10,44 @@ class MyProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return const Center(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                  child: Padding(
+                padding: EdgeInsets.all(5),
+                child: NagivationCard(
+                    route: '/', text: 'My posts', icon: Icons.person),
+              )),
+              Expanded(
+                  child: Padding(
+                padding: EdgeInsets.all(5),
+                child: NagivationCard(
+                    route: '/', text: 'My posts', icon: Icons.person),
+              )),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                  child: Padding(
+                padding: EdgeInsets.all(5),
+                child: NagivationCard(
+                    route: '/', text: 'My posts', icon: Icons.person),
+              )),
+              Expanded(
+                  child: Padding(
+                padding: EdgeInsets.all(5),
+                child: NagivationCard(
+                    route: '/', text: 'My posts', icon: Icons.person),
+              )),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -24,10 +61,26 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  // Lägg till en FutureBuilder här ..........................................................................
-  // @override
-  // Widget build(BuildContext context) async {
-  //   List<dynamic> posts = await Data.getPosts(widget.username);
-  //   return Center(child: Column(children: [Expanded(child:PostView(posts: posts))],),);
-  // }
+  @override
+  Widget build(BuildContext context) {
+    Future<dynamic> request = Data.getPosts(widget.username);
+    return FutureBuilder(
+      future: request,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text("An error has occured"));
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          List<dynamic> posts = snapshot.data!;
+          return Center(
+            child: Column(
+              children: [Expanded(child: PostView(posts: posts))],
+            ),
+          );
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
+    );
+  }
 }
