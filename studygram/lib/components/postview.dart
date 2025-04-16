@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'postcard.dart';
 import '../structure.dart';
 
-/**Listview to display all the posts in a row*/
+//**Listview to display all the posts in a row*/
 class PostView extends StatefulWidget {
   final List<dynamic> posts;
   const PostView({super.key, required this.posts});
