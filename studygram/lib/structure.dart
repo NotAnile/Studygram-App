@@ -28,31 +28,37 @@ class User {
   }
 }
 
-class Post {
+abstract class Content {
   final String body;
   final String username;
+  Content({required this.body, required this.username});
+}
+
+class Post extends Content {
   final List comments;
-  Post({required this.body, required this.username, required this.comments});
+  // Inherits the body and username from the Tile class
+  Post({required super.body, required super.username, required this.comments});
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
         body: json["body"],
         username: json["username"],
-        comments: (json["comments"] == [])
-            ? []
-            : json["comments"]
-                .map((comment) => Comment.fromJson(comment))
-                .toList());
+        comments: json["comments"] // Creating comments from the json
+            .map((comment) => Comment.fromJson(comment))
+            .toList());
   }
 
   static Map<String, dynamic> toJson(Post post) {
-    return {"body": post.body, "username": post.username};
+    return {
+      "body": post.body,
+      "username": post.username,
+      "comments":
+          post.comments.map((comment) => Comment.toJson(comment)).toList()
+    };
   }
 }
 
-class Comment {
-  final String body;
-  final String username;
-  Comment({required this.body, required this.username});
+class Comment extends Content {
+  Comment({required super.body, required super.username});
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(body: json["body"], username: json["username"]);
   }

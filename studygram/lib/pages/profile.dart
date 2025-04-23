@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/components/postview.dart';
+import 'package:studygram/components/contentview.dart';
 import 'package:studygram/components/navigationcard.dart';
 import '../data.dart';
 
@@ -74,7 +74,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           List<dynamic> posts = snapshot.data!;
           return Center(
             child: Column(
-              children: [Expanded(child: PostView(posts: posts))],
+              children: [Expanded(child: ContentView(contents: posts))],
             ),
           );
         } else {

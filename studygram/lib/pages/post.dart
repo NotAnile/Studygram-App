@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import '../structure.dart';
+import '../components/postcard.dart';
 
+//**The page for viewing a single post, including its comments*/
 class PostPage extends StatelessWidget {
   final Post post;
   const PostPage({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text("AAAAAAAAAAA"));
+    return Center(
+        child: Column(
+      children: [ContentCard(content: post)],
+    ));
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import '../structure.dart';
 
 //**A card that consists of a username and a text (body). Each post consists of a card.*/
-class PostCard extends StatelessWidget {
-  final String body;
-  final String username;
-  const PostCard({super.key, required this.body, required this.username});
+class ContentCard extends StatelessWidget {
+  final Content content;
+  const ContentCard({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +16,12 @@ class PostCard extends StatelessWidget {
           child: Column(
             children: [
               Row(children: [
-                Text(username,
+                Text(content.username,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 14)),
               ]),
               Row(children: [
-                Text(body, style: const TextStyle(fontSize: 13)),
+                Text(content.body, style: const TextStyle(fontSize: 13)),
               ])
             ],
           ),

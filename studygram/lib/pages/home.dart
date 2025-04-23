@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/postview.dart';
+import '../components/contentview.dart';
 import '../structure.dart';
 //import 'package:provider/provider.dart';
 
@@ -24,8 +24,9 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-              child: PostView(
-                  posts: jsonList.map((json) => Post.fromJson(json)).toList()),
+              child: ContentView(
+                  contents:
+                      jsonList.map((json) => Post.fromJson(json)).toList()),
             ),
           ),
         ],
