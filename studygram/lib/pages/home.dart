@@ -12,7 +12,27 @@ class HomeScreen extends StatelessWidget {
     List jsonList = [
       {
         "body": "Hej lorem ipsum asdaskdhagsd0",
-        "username": "Lorem",
+        "username": "Lorem1",
+        "comments": [
+          {"body": "Comment1", "username": "Commenter1"},
+          {"body": "Comment2", "username": "Commenter1"},
+        ]
+      },
+      {
+        "body": "Hej lorem ipsum asdaskdhagsd0",
+        "username": "Lorem2",
+        "comments": [
+          {"body": "Comment1", "username": "Commenter1"},
+        ]
+      },
+      {
+        "body": "Hej lorem ipsum asdaskdhagsd0",
+        "username": "Lorem3",
+        "comments": []
+      },
+      {
+        "body": "Hej lorem ipsum asdaskdhagsd0",
+        "username": "Lorem4",
         "comments": []
       },
     ];
@@ -24,7 +44,7 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-              child: ContentView(
+              child: PostView(
                   contents:
                       jsonList.map((json) => Post.fromJson(json)).toList()),
             ),

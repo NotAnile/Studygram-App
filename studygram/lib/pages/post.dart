@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../structure.dart';
 import '../components/postcard.dart';
+import '../components/contentview.dart';
 
 //**The page for viewing a single post, including its comments*/
 class PostPage extends StatelessWidget {
@@ -11,7 +12,16 @@ class PostPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: Column(
-      children: [ContentCard(content: post)],
+      children: [
+        ContentCard(content: post),
+        (post.comments.isEmpty)
+            ? const Text("No comments yet")
+            : Expanded(
+                child: ContentView(
+                  contents: post.comments,
+                ),
+              )
+      ],
     ));
   }
 }

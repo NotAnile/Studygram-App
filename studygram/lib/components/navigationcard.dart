@@ -32,7 +32,7 @@ class NagivationCard extends StatelessWidget {
         ),
       ),
       onTap: () {
-        context.go(route);
+        context.push(route);
       },
     );
   }

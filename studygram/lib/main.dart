@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:studygram/pages/home.dart';
 import 'package:studygram/pages/notifications.dart';
 import 'package:studygram/pages/profile.dart';
+import 'package:studygram/pages/post.dart';
 import 'package:studygram/usermodel.dart';
 import 'package:provider/provider.dart';
+import './structure.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -47,6 +49,15 @@ final _router = GoRouter(
           parentNavigatorKey: _shellNavigatorKey,
           builder: (context, state) => const MyProfilePage(),
         ),
+        GoRoute(
+          path: '/post',
+          parentNavigatorKey: _shellNavigatorKey,
+          builder: (context, state) {
+            final post =
+                state.extra! as Post; // Gets the post for the post page
+            return PostPage(post: post);
+          },
+        ),
       ],
     )
   ],
@@ -86,6 +97,16 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 151, 115, 156),
+        // ---------------------------- Arrow to pop - to be implemented
+        // leading: GoRouter.of(context).canPop()
+        //     ? IconButton(
+        //         icon: const Icon(Icons.arrow_back),
+        //         onPressed: () => context.pop(),
+        //       )
+        //     : null,
+      ),
       body: widget.child,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'postcard.dart';
+import 'package:go_router/go_router.dart';
+import '../structure.dart';
 
 //**Listview to display all the posts in a column*/
 class ContentView extends StatefulWidget {
@@ -18,6 +20,33 @@ class _ContentViewState extends State<ContentView> {
       itemBuilder: (context, index) {
         // Getting the right post with the index and returns a PostCard with the body and username
         return ContentCard(content: widget.contents[index]);
+      },
+    );
+  }
+}
+
+class PostView extends ContentView {
+  const PostView({super.key, required super.contents});
+
+  @override
+  State<ContentView> createState() => _PostViewState();
+}
+
+class _PostViewState extends State<ContentView> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: widget.contents.length,
+      itemBuilder: (context, index) {
+        Post post = widget.contents[index];
+        // Getting the right post with the index and returns a PostCard with the body and username
+        return GestureDetector(
+          child: ContentCard(content: post),
+          onTap: () {
+            // Sending the post as the extra parameter when navigating to the specific post page
+            context.push('/post', extra: post);
+          },
+        );
       },
     );
   }
