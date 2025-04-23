@@ -25,7 +25,7 @@ class MyProfilePage extends StatelessWidget {
                   child: Padding(
                 padding: EdgeInsets.all(5),
                 child: NagivationCard(
-                    route: '/', text: 'My posts', icon: Icons.person),
+                    route: '/', text: 'Friends', icon: Icons.group),
               )),
             ],
           ),
@@ -35,13 +35,13 @@ class MyProfilePage extends StatelessWidget {
                   child: Padding(
                 padding: EdgeInsets.all(5),
                 child: NagivationCard(
-                    route: '/', text: 'My posts', icon: Icons.person),
+                    route: '/', text: 'Liked', icon: Icons.favorite),
               )),
               Expanded(
                   child: Padding(
                 padding: EdgeInsets.all(5),
                 child: NagivationCard(
-                    route: '/', text: 'My posts', icon: Icons.person),
+                    route: '/', text: 'Settings', icon: Icons.settings),
               )),
             ],
           ),
