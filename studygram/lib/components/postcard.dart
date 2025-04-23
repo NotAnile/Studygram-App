@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Each post consists of a card
+//**A card that consists of a username and a text (body). Each post consists of a card.*/
 class PostCard extends StatelessWidget {
   final String body;
   final String username;

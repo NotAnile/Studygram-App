@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'postcard.dart';
 import '../structure.dart';
 
-//**Listview to display all the posts in a row*/
+//**Listview to display all the posts in a column*/
 class PostView extends StatefulWidget {
   final List<dynamic> posts;
   const PostView({super.key, required this.posts});
@@ -17,6 +17,7 @@ class _PostViewState extends State<PostView> {
     return ListView.builder(
       itemCount: widget.posts.length,
       itemBuilder: (context, index) {
+        // Getting the right post with the index and returns a PostCard with the body and username
         Post post = widget.posts[index];
         String body = post.body;
         String username = post.username;

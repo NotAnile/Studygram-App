@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-//** Creates a card for navigation*/
+//** Creates a card for navigation. When clicked it will navigate you to the given route.*/
 class NagivationCard extends StatelessWidget {
   final String route;
   final String text;
