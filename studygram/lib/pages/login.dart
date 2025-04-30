@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studygram/components/textbutton.dart';
 import '../components/textfield.dart';
 
 //**The page for viewing a single post, including its comments*/
@@ -33,30 +34,17 @@ class LoginPage extends StatelessWidget {
               obscureText: true,
             ),
           ),
-          Padding(
+          const Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
               width: 400,
               height: 40,
-              child: TextButton(
-                onPressed: () {},
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.resolveWith((states) {
-                    return states.contains(WidgetState.selected)
-                        ? const Color.fromARGB(255, 78, 57, 82)
-                        : const Color.fromARGB(255, 159, 122, 165);
-                  }),
-                  shape: WidgetStateProperty.all(
-                    const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                ),
-                child: const Text(
-                  "Log in",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              child: MyTextButton(
+                  buttonText: "Log in",
+                  textColor: Colors.white,
+                  buttonBGColor: const Color.fromARGB(255, 159, 122, 165),
+                  rectangleShape: true),
+              // route: route)
             ),
           ),
         ],
