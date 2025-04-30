@@ -34,17 +34,19 @@ class LoginPage extends StatelessWidget {
               obscureText: true,
             ),
           ),
-          const Padding(
+          Padding(
             padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: 400,
-              height: 40,
-              child: MyTextButton(
-                  buttonText: "Log in",
-                  textColor: Colors.white,
-                  buttonBGColor: const Color.fromARGB(255, 159, 122, 165),
-                  rectangleShape: true),
-              // route: route)
+            child: MyTextButton(
+              buttonText: "Log in",
+              textColor: Colors.white,
+              buttonBGColor: const Color.fromARGB(255, 159, 122, 165),
+              rectangleShape: true,
+              onPressed: () {
+                // Gör anrop till server för att logga in, skicka med en json av username och password.
+                // Ta emot svar och kolla om det är rätt.
+                // Ja? Sätt logged in till true
+                // Nej? Ändra inget på logged in
+              },
             ),
           ),
         ],

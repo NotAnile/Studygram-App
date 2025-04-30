@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/settings_model.dart';
 
 //**Creates a textfield*/
 class MyTextField extends StatelessWidget {
@@ -6,20 +8,26 @@ class MyTextField extends StatelessWidget {
   // Takes in a text controller to use it to retrieve the current value of a textfield
   final TextEditingController controller;
   final bool obscureText;
-  const MyTextField(
-      {super.key,
-      required this.labelText,
-      required this.controller,
-      required this.obscureText});
+
+  const MyTextField({
+    super.key,
+    required this.labelText,
+    required this.controller,
+    required this.obscureText,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        width: 400,
-        child: TextField(
-            controller: controller,
-            obscureText: obscureText,
-            decoration: InputDecoration(
-                border: const OutlineInputBorder(), labelText: labelText)));
+    Map sizes = {Size.small: 300, Size.medium: 400, Size.large: 500};
+
+    return Consumer<Settings>(builder: (context, model, state) {
+      return SizedBox(
+          width: sizes[model.size] ?? sizes['medium'],
+          child: TextField(
+              controller: controller,
+              obscureText: obscureText,
+              decoration: InputDecoration(
+                  border: const OutlineInputBorder(), labelText: labelText)));
+    });
   }
 }

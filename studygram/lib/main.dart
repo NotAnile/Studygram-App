@@ -9,6 +9,7 @@ import 'package:studygram/models/user.dart';
 import 'package:provider/provider.dart';
 import './structure.dart';
 import 'pages/login.dart';
+import './models/settings_model.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -18,6 +19,7 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (_) => UserModel()),
       ChangeNotifierProvider(create: (_) => Authentication()),
+      ChangeNotifierProvider(create: (_) => Settings()),
     ],
     child: const MainApp(),
   ));
