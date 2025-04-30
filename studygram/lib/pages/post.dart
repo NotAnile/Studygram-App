@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../structure.dart';
 import '../components/postcard.dart';
-import '../components/contentview.dart';
+import '../components/content_view.dart';
 
 //**The page for viewing a single post, including its comments*/
 class PostPage extends StatelessWidget {

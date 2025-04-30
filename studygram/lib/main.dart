@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:studygram/models/authentication.dart';
 import 'package:studygram/pages/home.dart';
 import 'package:studygram/pages/notifications.dart';
-import 'package:studygram/pages/profile.dart';
+import 'package:studygram/pages/mypage.dart';
 import 'package:studygram/pages/post.dart';
-import 'package:studygram/usermodel.dart';
+import 'package:studygram/models/user.dart';
 import 'package:provider/provider.dart';
 import './structure.dart';
 
@@ -12,8 +13,13 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
-  runApp(ChangeNotifierProvider(
-      create: (context) => UserModel(), child: const MainApp()));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => UserModel()),
+      ChangeNotifierProvider(create: (_) => Authentication()),
+    ],
+    child: const MainApp(),
+  ));
 }
 
 class MainApp extends StatelessWidget {
@@ -21,47 +27,82 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
-    );
+    return const MyRouter();
   }
 }
 
-final _router = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  routes: [
-    ShellRoute(
-      navigatorKey: _shellNavigatorKey,
-      builder: (context, state, child) => MyNavigationBar(child: child),
+class MyRouter extends StatelessWidget {
+  const MyRouter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = Provider.of<Authentication>(context, listen: true);
+
+    final router = GoRouter(
+      navigatorKey: _rootNavigatorKey,
+      refreshListenable: auth,
+      redirect: (context, state) {
+        // Checking if the user is logged in
+        if (!auth.isLoggedIn) {
+          return '/login';
+        } else {
+          return null;
+        }
+      },
       routes: [
-        GoRoute(
-          path: '/',
-          parentNavigatorKey: _shellNavigatorKey,
-          builder: (context, state) => const HomeScreen(),
-        ),
-        GoRoute(
-          path: '/notifications',
-          parentNavigatorKey: _shellNavigatorKey,
-          builder: (context, state) => const NotificationScreen(),
-        ),
-        GoRoute(
-          path: '/myprofile',
-          parentNavigatorKey: _shellNavigatorKey,
-          builder: (context, state) => const MyProfilePage(),
-        ),
-        GoRoute(
-          path: '/post',
-          parentNavigatorKey: _shellNavigatorKey,
-          builder: (context, state) {
-            final post =
-                state.extra! as Post; // Gets the post for the post page
-            return PostPage(post: post);
-          },
-        ),
+        ShellRoute(
+          navigatorKey: _shellNavigatorKey,
+          builder: (context, state, child) => MyNavigationBar(child: child),
+          routes: [
+            GoRoute(
+              path: '/',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) => const HomeScreen(),
+            ),
+            GoRoute(
+              path: '/notifications',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) => const NotificationScreen(),
+            ),
+            GoRoute(
+              path: '/mypage',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) => const MyPage(),
+            ),
+            GoRoute(
+              path: '/post',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) {
+                final post =
+                    state.extra! as Post; // Gets the post for the post page
+                return PostPage(post: post);
+              },
+            ),
+            GoRoute(
+              path: '/settings',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) => const MyPage(),
+            ),
+            GoRoute(
+              path: '/timer',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) => const MyPage(),
+            ),
+            GoRoute(
+              path: '/login',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) => const MyPage(),
+            ),
+          ],
+        )
       ],
-    )
-  ],
-);
+    );
+
+    return MaterialApp.router(
+      routerConfig: router,
+    );
+  }
+}
 
 class MyNavigationBar extends StatefulWidget {
   final Widget child;
@@ -82,8 +123,17 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       case 1:
         context.go('/notifications');
         break;
+      case 2:
+        context.go('/timer');
+        break;
+      case 3:
+        context.go('/mypage');
+        break;
+      case 4:
+        context.go('/settings');
+        break;
       default:
-        context.go('/myprofile');
+        context.go('/');
         break;
     }
 
@@ -113,11 +163,16 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
               icon: Icon(Icons.notifications_sharp), label: "Notifications"),
+          BottomNavigationBarItem(icon: Icon(Icons.timer), label: "Timer"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "My page"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person), label: "My profile"),
+              icon: Icon(Icons.settings), label: "Settings"),
         ],
         currentIndex: currentIndex,
         selectedItemColor: const Color.fromARGB(255, 195, 151, 202),
+        unselectedItemColor: Colors.grey,
+        unselectedLabelStyle: const TextStyle(color: Colors.grey),
+        showUnselectedLabels: true,
         onTap: _onItemTapped,
       ),
     );

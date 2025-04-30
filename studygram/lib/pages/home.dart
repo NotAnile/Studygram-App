@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/contentview.dart';
+import '../components/content_view.dart';
 import '../structure.dart';
 //import 'package:provider/provider.dart';
 
