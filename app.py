@@ -58,6 +58,9 @@ class User(db.Model):
     def __init__(self, id, password):
         self.id = id
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    def setPassword(self, password):
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
 
 class Post(db.Model):
@@ -182,6 +185,25 @@ def do_login():
             return jsonify({'token':token}), 200
         
     return jsonify({'message':'No such user or wrong password'}), 400
+
+
+@app.route('/user/change/password', methods=['POST'])
+@jwt_required()
+def change_password():
+    username = get_jwt_identity()
+    json_data = request.json
+    if data_exist(['password'], json_data):
+        password = json_data['password']
+
+        user = db.session.get(User, username)
+        if user is None:
+            return jsonify({'message':'No such user'}), 400
+
+        # Setting the new password
+        user.setPassword(password)
+        return jsonify({'message': 'Password has been updated'}), 200
+        
+    return jsonify({'message':'No password given'}), 400
 
 
 @app.route('/posts', methods=['POST'])

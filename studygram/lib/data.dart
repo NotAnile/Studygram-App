@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'structure.dart';
+import 'models/authentication.dart';
+import 'models/user.dart';
+import 'package:provider/provider.dart';
 
 class Data {
   static String baseUrl = "https://studygram-server.azurewebsite.net";
@@ -43,6 +46,25 @@ class Data {
       return Text("User $username not found");
     } else {
       throw Exception("Could not get posts.");
+    }
+  }
+
+  //**Returns a token for a user. If the user does not exist
+  //it will return a text saying the user was not found. */
+  static void login(
+      String username, String password, BuildContext context) async {
+    final response = await http.get(Uri.parse("$baseUrl/user/login"));
+    // Checks if context is mounted to ensure that the widget associated with the context
+    // has not been disposed or removed
+    if (context.mounted) {
+      Authentication auth = Provider.of<Authentication>(context, listen: false);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> result = json.decode(response.body);
+        // Setting the token for the authentication model from the result
+        auth.setToken = result['token'];
+        auth.login();
+        Provider.of<UserModel>(context, listen: false).setUsername = username;
+      }
     }
   }
 }

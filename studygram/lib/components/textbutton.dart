@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 class MyTextButton extends StatelessWidget {
   final String buttonText;
   final Color textColor;
-  final Color buttonBGColor;
+  final Color backgroundColor;
   final bool rectangleShape;
   final void Function() onPressed;
   // final String route;
@@ -15,7 +15,7 @@ class MyTextButton extends StatelessWidget {
     super.key,
     required this.buttonText,
     required this.textColor,
-    required this.buttonBGColor,
+    required this.backgroundColor,
     required this.rectangleShape,
     required this.onPressed,
   });
@@ -36,7 +36,7 @@ class MyTextButton extends StatelessWidget {
           child: TextButton(
             onPressed: onPressed,
             style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(buttonBGColor),
+              backgroundColor: WidgetStateProperty.all(backgroundColor),
               shape: (rectangleShape)
                   ? WidgetStateProperty.all(
                       const RoundedRectangleBorder(
