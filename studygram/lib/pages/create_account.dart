@@ -3,6 +3,7 @@ import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/models/authentication.dart';
 import '../components/textfield.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});

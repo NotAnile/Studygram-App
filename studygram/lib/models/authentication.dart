@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 class Authentication extends ChangeNotifier {
   String baseUrl = "https://studygram-server.azurewebsite.net";
-  bool _isLoggedIn = true;
+  bool _isLoggedIn = false;
   String _token = "";
   String? _usernameError;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/models/authentication.dart';
+import 'package:studygram/pages/create_account.dart';
 import 'package:studygram/pages/home.dart';
 import 'package:studygram/pages/notifications.dart';
 import 'package:studygram/pages/mypage.dart';
@@ -47,7 +48,11 @@ class MyRouter extends StatelessWidget {
       redirect: (context, state) {
         // Checking if the user is logged in
         if (!auth.isLoggedIn) {
-          return '/login';
+          if (state.fullPath == '/create/account') {
+            return '/create/account';
+          } else {
+            return '/login';
+          }
         } else {
           return null;
         }
@@ -95,6 +100,11 @@ class MyRouter extends StatelessWidget {
               path: '/login',
               parentNavigatorKey: _shellNavigatorKey,
               builder: (context, state) => const LoginPage(),
+            ),
+            GoRoute(
+              path: '/create/account',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) => const CreateAccountPage(),
             ),
           ],
         )

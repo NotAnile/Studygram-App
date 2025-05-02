@@ -58,6 +58,14 @@ class LoginPage extends StatelessWidget {
                   },
                 ),
               ),
+              GestureDetector(
+                  onTap: () {
+                    context.go('/create/account');
+                  },
+                  child: const Text(
+                    "No account? Sign up!",
+                    style: TextStyle(decoration: TextDecoration.underline),
+                  ))
             ],
           ),
         );
