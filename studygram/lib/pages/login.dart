@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/textbutton.dart';
-import 'package:studygram/data.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/user.dart';
 import '../components/textfield.dart';
@@ -17,7 +16,7 @@ class LoginPage extends StatelessWidget {
     TextEditingController passwordController = TextEditingController();
     return Consumer<Authentication>(builder: (context, auth, child) {
       // Checks if the user is already logged in or not
-      if (auth.isLoggedIn) {
+      if (!auth.isLoggedIn) {
         return Center(
           child: Column(
             children: [
@@ -52,8 +51,10 @@ class LoginPage extends StatelessWidget {
                   rectangleShape: true,
                   onPressed: () {
                     // Making a call to the server to log in by sending up the username and password
-                    Data.login(usernameController.text, passwordController.text,
-                        context);
+                    // Provider.of<Authentication>(context, listen: false).login(
+                    //     usernameController.text,
+                    //     passwordController.text,
+                    //     context);
                   },
                 ),
               ),

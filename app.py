@@ -160,7 +160,7 @@ def create_user():
             db.session.commit()
             return jsonify({'message': 'Welcome'}), 200
         
-        return jsonify({'message': "UserId already taken"})
+        return jsonify({'message': "Username already taken"}), 403
 
     else:
         return jsonify({'message':'No username or password received!'}), 400
