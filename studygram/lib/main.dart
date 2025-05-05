@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/models/authentication.dart';
+import 'package:studygram/models/login.dart';
 import 'package:studygram/pages/create_account.dart';
 import 'package:studygram/pages/home.dart';
 import 'package:studygram/pages/notifications.dart';
@@ -21,6 +22,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => UserModel()),
       ChangeNotifierProvider(create: (_) => Authentication()),
       ChangeNotifierProvider(create: (_) => Settings()),
+      ChangeNotifierProvider(create: (_) => LoginModel()),
     ],
     child: const MainApp(),
   ));

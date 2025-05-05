@@ -19,9 +19,10 @@ class LoginPage extends StatelessWidget {
       if (!auth.isLoggedIn) {
         return Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Padding(
-                padding: EdgeInsets.only(top: 200, bottom: 30),
+                padding: EdgeInsets.all(8.0),
                 child: Text("Login",
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
