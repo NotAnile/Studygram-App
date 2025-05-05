@@ -38,12 +38,6 @@ class CreateAccountModel extends ChangeNotifier {
     }
   }
 
-  void testUsernameError() {
-    _errorMessage = "Username already taken";
-    _showErrorMessage = true;
-    notifyListeners();
-  }
-
 // Setting error message for create account page
   void setErrorMessage(String message) {
     _errorMessage = message;

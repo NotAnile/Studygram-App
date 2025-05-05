@@ -131,9 +131,8 @@ class _CreateButtonState extends State<CreateButton> {
                     if (widget.passwordController.text ==
                         widget.passwordController2.text) {
                       model.setShowErrorMessage(false);
-                      // widget.auth.createAccount(widget.usernameController.text,
-                      //     widget.passwordController.text, context);
-                      model.testUsernameError();
+                      model.createAccount(widget.usernameController.text,
+                          widget.passwordController.text, context);
                     } else {
                       // Handle UI when the passwords aren't matching
                       setState(() {
