@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import './authentication.dart';
 
 class CreateAccountModel extends ChangeNotifier {
-  String baseUrl = "https://studygram-server.azurewebsite.net";
+  String baseUrl = "http://127.0.0.1:5003";
   String _errorMessage = "";
   bool _showErrorMessage = false;
 

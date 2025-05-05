@@ -4,7 +4,7 @@ import 'dart:convert';
 import '../structure.dart';
 
 class Feed extends ChangeNotifier {
-  static String baseUrl = "https://studygram-server.azurewebsite.net";
+  static String baseUrl = "http://127.0.0.1:5003";
   static final Map<String, dynamic> _postCache = {};
   static const int maximumCacheLength = 20;
 
