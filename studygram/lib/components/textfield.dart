@@ -18,7 +18,7 @@ class MyTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map sizes = {Size.small: 300, Size.medium: 400, Size.large: 500};
+    Map sizes = {Size.small: 300.0, Size.medium: 400.0, Size.large: 500.0};
 
     return Consumer<Settings>(builder: (context, model, state) {
       return SizedBox(

@@ -23,9 +23,9 @@ class MyTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map sizes = {
-      Size.small: {'width': 300, 'height': 30},
-      Size.medium: {'width': 400, 'height': 40},
-      Size.large: {'width': 500, 'height': 50}
+      Size.small: {'width': 300.0, 'height': 30.0},
+      Size.medium: {'width': 400.0, 'height': 40.0},
+      Size.large: {'width': 500.0, 'height': 50.0}
     };
 
     return Consumer<Settings>(
