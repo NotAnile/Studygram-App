@@ -14,7 +14,8 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController usernameController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
-    return Consumer<Authentication>(builder: (context, auth, child) {
+    return Scaffold(
+        body: Consumer<Authentication>(builder: (context, auth, child) {
       // Checks if the user is already logged in or not
       if (!auth.isLoggedIn) {
         return Center(
@@ -61,7 +62,7 @@ class LoginPage extends StatelessWidget {
               ),
               GestureDetector(
                   onTap: () {
-                    context.go('/create/account');
+                    context.push('/create/account');
                   },
                   child: const Text(
                     "No account? Sign up!",
@@ -96,6 +97,6 @@ class LoginPage extends StatelessWidget {
           ),
         );
       }
-    });
+    }));
   }
 }

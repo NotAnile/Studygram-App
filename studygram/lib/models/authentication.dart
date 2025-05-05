@@ -8,11 +8,9 @@ class Authentication extends ChangeNotifier {
   String baseUrl = "https://studygram-server.azurewebsite.net";
   bool _isLoggedIn = false;
   String _token = "";
-  String? _usernameError;
 
   bool get isLoggedIn => _isLoggedIn;
   String get getToken => _token;
-  String? get usernameError => _usernameError;
 
   set setToken(String token) {
     _token = token;
@@ -37,31 +35,6 @@ class Authentication extends ChangeNotifier {
       }
       _isLoggedIn = true;
       notifyListeners();
-    }
-  }
-
-  void createAccount(
-      String username, String password, BuildContext context) async {
-    // Resetting the error variables before the network call
-    _usernameError = null;
-
-    final response = await http.post(Uri.parse("$baseUrl/user"),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(
-            <String, String>{'username': username, 'password': password}));
-    // Checks if context is mounted to ensure that the widget associated with the context
-    // has not been disposed or removed
-    if (context.mounted) {
-      if (response.statusCode == 200) {
-        // Logging in since the user was succesfully created
-        login(username, password, context);
-      } else if (response.statusCode == 403) {
-        _usernameError = "Username already taken";
-      } else {
-        // Add logic to handle when something else went wrong
-      }
     }
   }
 

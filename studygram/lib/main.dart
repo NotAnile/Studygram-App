@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/models/authentication.dart';
-import 'package:studygram/models/login.dart';
+import 'package:studygram/models/create_account_model.dart';
 import 'package:studygram/pages/create_account.dart';
 import 'package:studygram/pages/home.dart';
 import 'package:studygram/pages/notifications.dart';
@@ -22,7 +22,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => UserModel()),
       ChangeNotifierProvider(create: (_) => Authentication()),
       ChangeNotifierProvider(create: (_) => Settings()),
-      ChangeNotifierProvider(create: (_) => LoginModel()),
+      ChangeNotifierProvider(create: (_) => CreateAccountModel()),
     ],
     child: const MainApp(),
   ));
@@ -56,10 +56,18 @@ class MyRouter extends StatelessWidget {
             return '/login';
           }
         } else {
-          return null;
+          return '/';
         }
       },
       routes: [
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LoginPage(),
+        ),
+        GoRoute(
+          path: '/create/account',
+          builder: (context, state) => const CreateAccountPage(),
+        ),
         ShellRoute(
           navigatorKey: _shellNavigatorKey,
           builder: (context, state, child) => MyNavigationBar(child: child),
@@ -97,16 +105,6 @@ class MyRouter extends StatelessWidget {
               path: '/timer',
               parentNavigatorKey: _shellNavigatorKey,
               builder: (context, state) => const MyPage(),
-            ),
-            GoRoute(
-              path: '/login',
-              parentNavigatorKey: _shellNavigatorKey,
-              builder: (context, state) => const LoginPage(),
-            ),
-            GoRoute(
-              path: '/create/account',
-              parentNavigatorKey: _shellNavigatorKey,
-              builder: (context, state) => const CreateAccountPage(),
             ),
           ],
         )

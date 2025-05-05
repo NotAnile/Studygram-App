@@ -4,7 +4,7 @@ import 'package:studygram/models/authentication.dart';
 import '../components/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../models/login.dart';
+import 'package:studygram/models/create_account_model.dart';
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
@@ -14,52 +14,63 @@ class CreateAccountPage extends StatelessWidget {
     TextEditingController usernameController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     TextEditingController passwordController2 = TextEditingController();
-    return Consumer<Authentication>(
-      builder: (context, auth, child) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text("Create account",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MyTextField(
-                  labelText: "Username",
-                  controller: usernameController,
-                  obscureText: false,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MyTextField(
-                  labelText: "Password",
-                  controller: passwordController,
-                  obscureText: true,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MyTextField(
-                  labelText: "Confirm password",
-                  controller: passwordController2,
-                  obscureText: true,
-                ),
-              ),
-              CreateButton(
-                passwordController: passwordController,
-                passwordController2: passwordController2,
-                usernameController: usernameController,
-                auth: auth,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 151, 115, 156),
+        leading: GoRouter.of(context).canPop()
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.pop(),
               )
-            ],
-          ),
-        );
-      },
+            : null,
+      ),
+      body: Consumer<Authentication>(
+        builder: (context, auth, child) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text("Create account",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyTextField(
+                    labelText: "Username",
+                    controller: usernameController,
+                    obscureText: false,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyTextField(
+                    labelText: "Password",
+                    controller: passwordController,
+                    obscureText: true,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyTextField(
+                    labelText: "Confirm password",
+                    controller: passwordController2,
+                    obscureText: true,
+                  ),
+                ),
+                CreateButton(
+                  passwordController: passwordController,
+                  passwordController2: passwordController2,
+                  usernameController: usernameController,
+                  auth: auth,
+                )
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -83,7 +94,7 @@ class CreateButton extends StatefulWidget {
 class _CreateButtonState extends State<CreateButton> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<LoginModel>(
+    return Consumer<CreateAccountModel>(
       builder: (context, model, child) {
         return Column(
           children: [
@@ -101,18 +112,35 @@ class _CreateButtonState extends State<CreateButton> {
                 backgroundColor: const Color.fromARGB(255, 159, 122, 165),
                 rectangleShape: true,
                 onPressed: () async {
-                  // Making a call to the server to log in by sending up the username and password
-                  if (widget.passwordController.text ==
-                      widget.passwordController2.text) {
-                    model.setShowErrorMessage(false);
-                    widget.auth.createAccount(widget.usernameController.text,
-                        widget.passwordController.text, context);
-                  } else {
-                    // Handle UI when the passwords aren't matching
+                  // Handling error of empty fields
+                  if (widget.usernameController.text == "") {
                     setState(() {
-                      model.setErrorMessage("Passwords aren't matching");
+                      model.setErrorMessage("Missing username");
                       model.setShowErrorMessage(true);
                     });
+                  } else if (widget.passwordController.text == "" ||
+                      widget.passwordController2.text == "") {
+                    // Handle UI when one of the password fields are empty
+                    setState(() {
+                      model.setErrorMessage("Missing password");
+                      model.setShowErrorMessage(true);
+                    });
+                  } else {
+                    // Making a call to the server to log in by sending up the username and password
+                    // Also handles errors when password fields don't match
+                    if (widget.passwordController.text ==
+                        widget.passwordController2.text) {
+                      model.setShowErrorMessage(false);
+                      // widget.auth.createAccount(widget.usernameController.text,
+                      //     widget.passwordController.text, context);
+                      model.testUsernameError();
+                    } else {
+                      // Handle UI when the passwords aren't matching
+                      setState(() {
+                        model.setErrorMessage("Passwords aren't matching");
+                        model.setShowErrorMessage(true);
+                      });
+                    }
                   }
                 },
               ),
