@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from typing import List
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer, String, delete
+from sqlalchemy import ForeignKey, Integer, String, delete, select
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity
 import os
@@ -422,12 +422,17 @@ def get_all_comments(PostID):
         return "Post does not exist", 404
 
 
-def get_user_posts(UserID):
-    """Returns a list of all the posts created by the given user."""
-    result = []
 
-    # Checks if the user exists
-    if user_exists(UserID):
+
+
+@app.route('/profile/<UserID>', methods=['GET'])
+def get_user_profile(UserID):
+    """Returns a jsonified dict of the user's posts (id, body, username and comment), amount of posts, 
+    amount of friends, and friends (usernames of all mutual friends)."""
+
+    def get_user_posts():
+        """Returns a list of all the posts created by the given user."""
+        result = []
 
         post_generator = db.session.execute(db.select(Post).filter_by(user_id=UserID)).scalars().all()
         for post in post_generator:
@@ -439,23 +444,25 @@ def get_user_posts(UserID):
             # Creating a list of all the posts the user has created
             result.append({'id': post.id, 'body': post.body, 'username': UserID, 'comments': comments})
         
-        return jsonify(result)
-
-    else:
-        return "User does not exist", 404
-
-@app.route('/profile/<UserID>', methods=['GET'])
-def get_user_profile(UserID):
-    """Returns a jsonified dict of the user's posts (id, body, username and comment), amount of posts, 
-    amount of friends, and friends (usernames of all mutual friends)."""
+        return result
+    
     # Checks if the user exists
     if user_exists(UserID):
-        posts = get_user_posts(UserID)
-        friends = user.mutual_friends()
+        posts = get_user_posts()
         user = db.session.get(User, UserID)
-        return jsonify({'posts': posts, 'post_count': len(posts), 'friends': friends, 'friend_count': len(friends)})
+        mutual_friends = user.mutual_friends()
+
+        friend_requests = db.session.execute(
+            select(User)
+            .join(friends, User.id == friends.c.user_id)
+            .where(friends.c.friend_id == UserID)  # They follow UserID
+            .where(~User.id.in_(mutual_friends))  # But not mutual
+        ).scalars().all()
+
+        return jsonify({'username': UserID, 'posts': posts, 'post_count': len(posts), 'friends': mutual_friends, 'friend_count': len(mutual_friends), 'friend_requests': friend_requests})
     else:
         return "User does not exist", 404
+    
 
 @app.route('/session/start', methods = ['POST'])
 @jwt_required()

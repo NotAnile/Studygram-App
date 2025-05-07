@@ -1,14 +1,18 @@
 // Commented out url for the time being
 class User {
-  final String username;
+  String username;
   // final String url;
-  final List posts;
-  final List sessions;
+  List posts;
+  List sessions;
+  List friends;
+  List friendRequests;
   User(
       {required this.username,
       // required this.url,
       required this.posts,
-      required this.sessions});
+      required this.sessions,
+      required this.friends,
+      required this.friendRequests});
   // Converts a Map (decoded JSON) into a User object.
   // .fromJson allows you to create a User object from a JSON
   factory User.fromJson(Map<String, dynamic> json) {
@@ -16,14 +20,19 @@ class User {
         username: json["username"],
         // url: json["url"],
         posts: json["posts"].map((json) => Post.fromJson(json)).toList(),
-        sessions:
-            json["sessions"].map((json) => Session.fromJson(json)).toList());
+        sessions: json["sessions"] != null
+            ? json["sessions"].map((json) => Session.fromJson(json)).toList()
+            : [],
+        friends: json['friends'],
+        friendRequests: json['friend_requests']);
   }
 
   static Map<String, dynamic> toJson(User user) {
     return {
       "username": user.username,
-      "posts": user.posts.map((post) => Post.toJson(post)).toList()
+      "posts": user.posts.map((post) => Post.toJson(post)).toList(),
+      "friends": user.friends,
+      "friend_requests": user.friendRequests
     };
   }
 }

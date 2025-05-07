@@ -29,16 +29,16 @@ class Feed extends ChangeNotifier {
 
   //**Returns a list of the posts for a given username. If the user does not exist
   //it will return a text saying the user was not found. */
-  Future<dynamic> getPosts(String username) async {
+  Future<dynamic> getProfile(String username) async {
     // Checks if the username exists in the cache already
     if (_postCache.containsKey(username)) {
       return _postCache[username];
     }
 
-    final response = await http.get(Uri.parse("$baseUrl/posts/$username"));
+    final response = await http.get(Uri.parse("$baseUrl/profile/$username"));
     if (response.statusCode == 200) {
-      final List<dynamic> postList = json.decode(response.body);
-      return postList.map((json) => Post.fromJson(json)).toList();
+      final Map<String, dynamic> result = json.decode(response.body);
+      return User.fromJson(result);
     } else if (response.statusCode == 404) {
       throw Exception("User does not exist.");
     } else {
