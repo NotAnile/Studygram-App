@@ -6,8 +6,13 @@ class NavigationCard extends StatelessWidget {
   final String route;
   final String text;
   final IconData icon;
+  final dynamic extra;
   const NavigationCard(
-      {super.key, required this.route, required this.text, required this.icon});
+      {super.key,
+      required this.route,
+      required this.text,
+      required this.icon,
+      this.extra});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,7 @@ class NavigationCard extends StatelessWidget {
         ),
       ),
       onTap: () {
-        context.push(route);
+        context.push(route, extra: extra);
       },
     );
   }

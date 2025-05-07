@@ -32,9 +32,9 @@ class Authentication extends ChangeNotifier {
         // Setting the token for the authentication model from the result
         _token = result['token'];
         Provider.of<UserModel>(context, listen: false).setUsername = username;
+        _isLoggedIn = true;
+        notifyListeners();
       }
-      _isLoggedIn = true;
-      notifyListeners();
     }
   }
 

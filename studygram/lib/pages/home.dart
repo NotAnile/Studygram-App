@@ -14,26 +14,18 @@ class HomeScreen extends StatelessWidget {
         "body": "Hej lorem ipsum asdaskdhagsd0",
         "username": "Lorem1",
         "comments": [
-          {"body": "Comment1", "username": "Commenter1"},
-          {"body": "Comment2", "username": "Commenter1"},
-        ]
-      },
-      {
-        "body": "Hej lorem ipsum asdaskdhagsd0",
-        "username": "Lorem2",
-        "comments": [
-          {"body": "Comment1", "username": "Commenter1"},
-        ]
-      },
-      {
-        "body": "Hej lorem ipsum asdaskdhagsd0",
-        "username": "Lorem3",
-        "comments": []
-      },
-      {
-        "body": "Hej lorem ipsum asdaskdhagsd0",
-        "username": "Lorem4",
-        "comments": []
+          {
+            "body": "Comment1",
+            "username": "Commenter1",
+            "id": 1,
+          },
+          {
+            "body": "Comment2",
+            "username": "Commenter1",
+            "id": 2,
+          },
+        ],
+        "id": 1,
       },
     ];
 

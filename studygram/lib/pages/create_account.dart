@@ -75,6 +75,7 @@ class CreateAccountPage extends StatelessWidget {
   }
 }
 
+// Creating a stateful class for button since we need to update UI depending on user input
 class CreateButton extends StatefulWidget {
   final TextEditingController passwordController;
   final TextEditingController passwordController2;

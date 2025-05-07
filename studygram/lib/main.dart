@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/create_account_model.dart';
+import 'package:studygram/models/feed.dart';
 import 'package:studygram/pages/create_account.dart';
 import 'package:studygram/pages/home.dart';
 import 'package:studygram/pages/notifications.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 import './structure.dart';
 import 'pages/login.dart';
 import './models/settings_model.dart';
+import 'package:studygram/pages/userprofile.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -23,6 +25,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => Authentication()),
       ChangeNotifierProvider(create: (_) => Settings()),
       ChangeNotifierProvider(create: (_) => CreateAccountModel()),
+      ChangeNotifierProvider(create: (_) => Feed()),
     ],
     child: const MainApp(),
   ));
@@ -50,13 +53,15 @@ class MyRouter extends StatelessWidget {
       redirect: (context, state) {
         // Checking if the user is logged in
         if (!auth.isLoggedIn) {
+          // Make the redirect to create account page if the user goes there
           if (state.fullPath == '/create/account') {
             return '/create/account';
           } else {
+            // Otherwise redirect to login page so the user can't access the rest of the app
             return '/login';
           }
         } else {
-          return '/';
+          return null;
         }
       },
       routes: [
@@ -67,6 +72,14 @@ class MyRouter extends StatelessWidget {
         GoRoute(
           path: '/create/account',
           builder: (context, state) => const CreateAccountPage(),
+        ),
+        GoRoute(
+          path: '/post',
+          builder: (context, state) {
+            final post =
+                state.extra! as Post; // Gets the post for the post page
+            return PostPage(post: post);
+          },
         ),
         ShellRoute(
           navigatorKey: _shellNavigatorKey,
@@ -88,15 +101,6 @@ class MyRouter extends StatelessWidget {
               builder: (context, state) => const MyPage(),
             ),
             GoRoute(
-              path: '/post',
-              parentNavigatorKey: _shellNavigatorKey,
-              builder: (context, state) {
-                final post =
-                    state.extra! as Post; // Gets the post for the post page
-                return PostPage(post: post);
-              },
-            ),
-            GoRoute(
               path: '/settings',
               parentNavigatorKey: _shellNavigatorKey,
               builder: (context, state) => const MyPage(),
@@ -105,6 +109,13 @@ class MyRouter extends StatelessWidget {
               path: '/timer',
               parentNavigatorKey: _shellNavigatorKey,
               builder: (context, state) => const MyPage(),
+            ),
+            GoRoute(
+              path: '/posts',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) {
+                return UserProfilePage();
+              },
             ),
           ],
         )

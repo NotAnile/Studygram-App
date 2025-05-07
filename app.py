@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from typing import List
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer, select, delete
+from sqlalchemy import ForeignKey, Integer, String, delete
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity
 import os
@@ -40,6 +40,11 @@ else:
 db = SQLAlchemy()
 db.init_app(app)
 
+# Association table for friends
+friends = db.Table("Friends", 
+    db.Column('user_id', String, ForeignKey('user.id'), primary_key=True), 
+    db.Column('friend_id', String, ForeignKey('user.id'), primary_key=True))
+
 liked_by = db.Table(
     "LikedBy",
     db.Column('post_id', Integer, ForeignKey('post.id'), primary_key=True),
@@ -54,6 +59,12 @@ class User(db.Model):
     posts: Mapped[List['Post']] = relationship(back_populates = 'user')
     comments: Mapped[List['Comment']] = relationship(back_populates = 'user')
     sessions: Mapped[List['Session']] = relationship(back_populates = 'user')
+    following: Mapped[List['User']] = relationship(
+        secondary=friends, 
+        primaryjoin=id==friends.c.user_id, 
+        secondaryjoin=id==friends.c.friend_id, 
+        backref='followers'  # Followers are all the users who have you in their following list
+    )
 
     def __init__(self, id, password):
         self.id = id
@@ -61,6 +72,11 @@ class User(db.Model):
     
     def setPassword(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    
+    def mutual_friends(self):
+        """Returns a list of all usernames of the user's mutual friends"""
+        return [user.id for user in self.following if user in self.followers]
 
 
 class Post(db.Model):
@@ -275,7 +291,7 @@ def save_comment(PostID):
         return 'Comment missing a message', 400
 
 
-@app.route('/posts/<PostID>', methods=['GET'])
+@app.route('/post/<PostID>', methods=['GET'])
 def get_post(PostID):
     """Returns a json with the given postID, body, and a list of
     users that has liked the message and the amount of likes."""
@@ -398,7 +414,7 @@ def get_all_comments(PostID):
     if post is not None:
         for comment in post.comments:
             # Creating a list of all the comments in the post
-            result.append({'id': comment.id, 'message': comment.message})
+            result.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
     
         return jsonify(result)
 
@@ -406,24 +422,40 @@ def get_all_comments(PostID):
         return "Post does not exist", 404
 
 
-@app.route('/posts/<UserID>', methods=['GET'])
 def get_user_posts(UserID):
-    """Returns a jsonified list of all the posts created by the given user."""
+    """Returns a list of all the posts created by the given user."""
     result = []
 
     # Checks if the user exists
     if user_exists(UserID):
 
-        post_generator = db.session.execute(db.select(Post).filter_by(user_id=UserID)).scalars()
+        post_generator = db.session.execute(db.select(Post).filter_by(user_id=UserID)).scalars().all()
         for post in post_generator:
+            # Creating a list with comments of the post in the form of a dictionary
+            comments = []
+            for comment in post.comments:
+                comments.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
+            
             # Creating a list of all the posts the user has created
-            result.append({'id': post.id, 'body': post.body})
+            result.append({'id': post.id, 'body': post.body, 'username': UserID, 'comments': comments})
         
         return jsonify(result)
 
     else:
         return "User does not exist", 404
 
+@app.route('/profile/<UserID>', methods=['GET'])
+def get_user_profile(UserID):
+    """Returns a jsonified dict of the user's posts (id, body, username and comment), amount of posts, 
+    amount of friends, and friends (usernames of all mutual friends)."""
+    # Checks if the user exists
+    if user_exists(UserID):
+        posts = get_user_posts(UserID)
+        friends = user.mutual_friends()
+        user = db.session.get(User, UserID)
+        return jsonify({'posts': posts, 'post_count': len(posts), 'friends': friends, 'friend_count': len(friends)})
+    else:
+        return "User does not exist", 404
 
 @app.route('/session/start', methods = ['POST'])
 @jwt_required()

@@ -40,7 +40,7 @@ class Feed extends ChangeNotifier {
       final List<dynamic> postList = json.decode(response.body);
       return postList.map((json) => Post.fromJson(json)).toList();
     } else if (response.statusCode == 404) {
-      return Text("User $username not found");
+      throw Exception("User does not exist.");
     } else {
       throw Exception("Could not get posts.");
     }

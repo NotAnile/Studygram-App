@@ -53,10 +53,10 @@ class LoginPage extends StatelessWidget {
                   rectangleShape: true,
                   onPressed: () {
                     // Making a call to the server to log in by sending up the username and password
-                    // Provider.of<Authentication>(context, listen: false).login(
-                    //     usernameController.text,
-                    //     passwordController.text,
-                    //     context);
+                    Provider.of<Authentication>(context, listen: false).login(
+                        usernameController.text,
+                        passwordController.text,
+                        context);
                   },
                 ),
               ),
@@ -72,15 +72,13 @@ class LoginPage extends StatelessWidget {
           ),
         );
       } else {
-        String username =
-            Provider.of<UserModel>(context, listen: false).username;
         return Center(
           child: Column(
             children: [
-              Padding(
-                  padding: const EdgeInsets.only(top: 250, bottom: 50),
-                  child: Text("Welcome back $username",
-                      style: const TextStyle(
+              const Padding(
+                  padding: EdgeInsets.only(top: 250, bottom: 50),
+                  child: Text("Welcome back",
+                      style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 25))),
               Padding(
                 padding: const EdgeInsets.all(20),
