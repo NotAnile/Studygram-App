@@ -3,8 +3,8 @@ import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/models/authentication.dart';
 import '../components/textfield.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 import 'package:studygram/models/create_account_model.dart';
+import 'package:studygram/components/appbar.dart';
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
@@ -15,15 +15,7 @@ class CreateAccountPage extends StatelessWidget {
     TextEditingController passwordController = TextEditingController();
     TextEditingController passwordController2 = TextEditingController();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 151, 115, 156),
-        leading: GoRouter.of(context).canPop()
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.pop(),
-              )
-            : null,
-      ),
+      appBar: getMyAppBar(context, const Text("Create account")),
       body: Consumer<Authentication>(
         builder: (context, auth, child) {
           return Center(

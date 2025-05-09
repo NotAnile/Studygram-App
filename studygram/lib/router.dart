@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:studygram/pages/create_account.dart';
+import 'package:studygram/pages/create_post.dart';
 import 'package:studygram/pages/home.dart';
 import 'package:studygram/pages/notifications.dart';
 import 'package:studygram/pages/mypage.dart';
@@ -47,6 +48,10 @@ class MyRouter extends StatelessWidget {
         GoRoute(
           path: '/create/account',
           builder: (context, state) => const CreateAccountPage(),
+        ),
+        GoRoute(
+          path: '/create/post',
+          builder: (context, state) => const CreatePostPage(),
         ),
         GoRoute(
           path: '/post',

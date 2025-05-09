@@ -52,7 +52,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               builder: (context) => FloatingActionButton.small(
                 backgroundColor: const Color.fromARGB(255, 229, 200, 243),
                 child: const Icon(Icons.add),
-                onPressed: () {},
+                onPressed: () {
+                  context.push('/create/post');
+                },
               ),
             )
           : null,

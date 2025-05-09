@@ -9,6 +9,8 @@ class MyTextButton extends StatelessWidget {
   final Color backgroundColor;
   final bool rectangleShape;
   final void Function() onPressed;
+  final double? width;
+  final double? height;
   // final String route;
 
   const MyTextButton({
@@ -18,6 +20,8 @@ class MyTextButton extends StatelessWidget {
     required this.backgroundColor,
     required this.rectangleShape,
     required this.onPressed,
+    this.width,
+    this.height,
   });
 
   @override
@@ -31,8 +35,8 @@ class MyTextButton extends StatelessWidget {
     return Consumer<Settings>(
       builder: (context, model, state) {
         return SizedBox(
-          width: sizes[model.size]['width'],
-          height: sizes[model.size]['height'],
+          width: width ?? sizes[model.size]['width'],
+          height: height ?? sizes[model.size]['height'],
           child: TextButton(
             onPressed: onPressed,
             style: ButtonStyle(

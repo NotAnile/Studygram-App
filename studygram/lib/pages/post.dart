@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studygram/components/appbar.dart';
 import '../structure.dart';
 import '../components/postcard.dart';
 import '../components/content_view.dart';
@@ -11,16 +12,14 @@ class PostPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String username = post.username;
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 151, 115, 156),
-          leading: GoRouter.of(context).canPop()
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => context.pop(),
-                )
-              : null,
-        ),
+        appBar: getMyAppBar(
+            context,
+            Text(
+              "$username's post",
+              style: const TextStyle(color: Colors.white),
+            )),
         body: Center(
             child: Column(
           children: [
