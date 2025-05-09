@@ -12,9 +12,9 @@ class CreatePostPage extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController bodyController = TextEditingController();
     Map sizes = {
-      Size.small: {'textarea': 500.0, 'textbutton': 100.0},
-      Size.medium: {'textarea': 600.0, 'textbutton': 150.0},
-      Size.large: {'textarea': 700.0, 'textbutton': 200.0},
+      Size.small: {'textarea': 500.0, 'textbutton': 70.0},
+      Size.medium: {'textarea': 600.0, 'textbutton': 120.0},
+      Size.large: {'textarea': 700.0, 'textbutton': 170.0},
     };
 
     return Consumer<Settings>(
