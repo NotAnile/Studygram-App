@@ -6,7 +6,7 @@ import '../components/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-//**The page for viewing a single post, including its comments*/
+//**The page for loggin in*/
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -61,13 +61,14 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                  onTap: () {
-                    context.push('/create/account');
-                  },
-                  child: const Text(
-                    "No account? Sign up!",
-                    style: TextStyle(decoration: TextDecoration.underline),
-                  ))
+                onTap: () {
+                  context.push('/create/account');
+                },
+                child: const Text(
+                  "No account? Sign up!",
+                  style: TextStyle(decoration: TextDecoration.underline),
+                ),
+              )
             ],
           ),
         );
@@ -83,13 +84,14 @@ class LoginPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: MyTextButton(
-                    buttonText: "Go to home page",
-                    textColor: Colors.white,
-                    backgroundColor: const Color.fromARGB(255, 159, 122, 165),
-                    rectangleShape: true,
-                    onPressed: () {
-                      context.go('/');
-                    }),
+                  buttonText: "Go to home page",
+                  textColor: Colors.white,
+                  backgroundColor: const Color.fromARGB(255, 159, 122, 165),
+                  rectangleShape: true,
+                  onPressed: () {
+                    context.go('/');
+                  },
+                ),
               )
             ],
           ),

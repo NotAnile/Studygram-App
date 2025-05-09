@@ -72,34 +72,30 @@ class NumberedBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map sizes = {
-      Size.small: {'width': 300.0, 'height': 30.0},
-      Size.medium: {'width': 400.0, 'height': 40.0},
-      Size.large: {'width': 500.0, 'height': 50.0}
+      Size.small: {"title": 15.0, "number": 12.5},
+      Size.medium: {"title": 20.0, "number": 17.5},
+      Size.large: {"title": 25.0, "number": 22.5},
     };
 
     return Consumer<Settings>(
       builder: (context, model, state) {
-        return SizedBox(
-          width: sizes[model.size]['width'] ?? sizes[Size.medium]['width'],
-          height: sizes[model.size]['height'] ?? sizes[Size.medium]['height'],
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text(title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 25))
-                ],
-              ),
-              Row(
-                children: [
-                  Text("$number",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 25))
-                ],
-              )
-            ],
-          ),
+        return Column(
+          children: [
+            Row(
+              children: [
+                Text(title,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: sizes[model.size]["title"]))
+              ],
+            ),
+            Row(
+              children: [
+                Text("$number",
+                    style: TextStyle(fontSize: sizes[model.size]["number"]))
+              ],
+            )
+          ],
         );
       },
     );

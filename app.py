@@ -454,7 +454,8 @@ def get_user_profile(UserID):
 
         friend_requests = db.session.execute(
             select(User)
-            .join(friends, User.id == friends.c.user_id)
+            .join(friends, User.id == friends.c.user_id) # Joins each row in User with rows in the friends table 
+                                                         # where that user was the one who sent the request.
             .where(friends.c.friend_id == UserID)  # They follow UserID
             .where(~User.id.in_(mutual_friends))  # But not mutual
         ).scalars().all()

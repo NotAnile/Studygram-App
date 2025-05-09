@@ -114,7 +114,7 @@ class MyRouter extends StatelessWidget {
               path: '/posts',
               parentNavigatorKey: _shellNavigatorKey,
               builder: (context, state) {
-                return UserProfilePage();
+                return const UserProfilePage();
               },
             ),
           ],
