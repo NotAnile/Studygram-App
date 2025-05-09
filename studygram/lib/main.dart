@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/create_account_model.dart';
+import 'package:studygram/models/create_post_model.dart';
 import 'package:studygram/models/feed.dart';
 import 'package:studygram/models/user.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => Settings()),
       ChangeNotifierProvider(create: (_) => CreateAccountModel()),
       ChangeNotifierProvider(create: (_) => Feed()),
+      ChangeNotifierProvider(create: (_) => CreatePostModel()),
     ],
     child: const MainApp(),
   ));

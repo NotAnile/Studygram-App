@@ -121,15 +121,16 @@ class Session(db.Model):
         self.endtime = endtime
         self.duration = endtime - self.starttime
 
-with app.app_context():
-    db.create_all()
-
 class BlockedToken(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     jti: Mapped[str] = mapped_column(nullable=False)
 
     def __init__(self, jti):
         self.jti = jti
+
+with app.app_context():
+    db.create_all()
+
 
 def user_exists(user_id) -> bool:
     """Checks if the given user id exists in the database"""

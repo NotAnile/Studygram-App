@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-//import 'package:provider/provider.dart';
-//import 'structure.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:studygram/models/authentication.dart';
 
 //**To be implemented*/
 class UserModel extends ChangeNotifier {
+  String baseUrl = "http://127.0.0.1:5003";
   String _username = "";
   int _amountOfPosts = 0;
 
@@ -14,7 +18,11 @@ class UserModel extends ChangeNotifier {
     _username = username;
   }
 
-  set _setAmountOfPosts(int amount) {
-    _amountOfPosts = amount;
+  void addPost() {
+    _amountOfPosts += 1;
+  }
+
+  void removePost() {
+    _amountOfPosts -= 1;
   }
 }

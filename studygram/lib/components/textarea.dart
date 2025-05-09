@@ -25,6 +25,7 @@ class TextArea extends StatelessWidget {
           child: TextField(
               minLines: 1,
               maxLines: 8,
+              maxLength: 500,
               keyboardType: TextInputType.multiline,
               controller: controller,
               obscureText: obscureText,
