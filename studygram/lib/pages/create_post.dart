@@ -5,7 +5,6 @@ import 'package:studygram/components/textbutton.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/create_post_model.dart';
 import '../models/settings_model.dart';
-import 'package:go_router/go_router.dart';
 
 class CreatePostPage extends StatelessWidget {
   const CreatePostPage({super.key});
@@ -28,6 +27,7 @@ class CreatePostPage extends StatelessWidget {
                     style: TextStyle(color: Colors.white))),
             body: Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                       width: sizes[settings.size]['textarea'],

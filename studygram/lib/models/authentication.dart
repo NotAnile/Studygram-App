@@ -7,20 +7,18 @@ import 'package:provider/provider.dart';
 class Authentication extends ChangeNotifier {
   String baseUrl = "http://127.0.0.1:5003";
   bool _isLoggedIn = false;
-  String _token = "";
+  String _accessToken = "";
+  String _refreshToken = "";
 
   bool get isLoggedIn => _isLoggedIn;
-  String get getToken => _token;
-
-  set setToken(String token) {
-    _token = token;
-  }
+  String get accessToken => _accessToken;
+  String get refreshToken => _refreshToken;
 
   void login(String username, String password, BuildContext context) async {
     final response = await http.post(Uri.parse("$baseUrl/user/login"),
-        // application/json means we want to parse it as a json
         headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+          'Content-Type':
+              'application/json; charset=UTF-8', // application/json means we want to parse it as a json
         },
         body: jsonEncode(
             <String, String>{'username': username, 'password': password}));
@@ -30,9 +28,13 @@ class Authentication extends ChangeNotifier {
       if (response.statusCode == 200) {
         final Map<String, dynamic> result = json.decode(response.body);
         // Setting the token for the authentication model from the result
-        _token = result['token'];
+        _accessToken = result['access_token'];
+        _refreshToken = result['refresh_token'];
+
+        // Setting up user model and updating isLoggedIn bool
         Provider.of<UserModel>(context, listen: false).setUsername = username;
         _isLoggedIn = true;
+
         notifyListeners();
       }
     }

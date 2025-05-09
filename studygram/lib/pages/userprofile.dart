@@ -3,7 +3,6 @@ import 'package:studygram/components/content_view.dart';
 import '../models/feed.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/user.dart';
-import 'package:provider/provider.dart';
 import 'package:studygram/structure.dart';
 import 'package:studygram/models/settings_model.dart';
 

@@ -3,7 +3,6 @@ import 'package:studygram/components/appbar.dart';
 import '../structure.dart';
 import '../components/postcard.dart';
 import '../components/content_view.dart';
-import 'package:go_router/go_router.dart';
 
 //**The page for viewing a single post, including its comments*/
 class PostPage extends StatelessWidget {

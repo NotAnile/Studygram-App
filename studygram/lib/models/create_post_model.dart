@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
+import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/user.dart';
-import './authentication.dart';
 import 'package:go_router/go_router.dart';
 
 class CreatePostModel extends ChangeNotifier {
@@ -15,8 +15,9 @@ class CreatePostModel extends ChangeNotifier {
   bool get showErrorMessage => _showErrorMessage;
 
   void createPost(BuildContext context, String body) async {
-    // Getting the token
-    String token = Provider.of<Authentication>(context, listen: false).getToken;
+    // Getting token
+    String token =
+        Provider.of<Authentication>(context, listen: false).accessToken;
     UserModel userModel = Provider.of<UserModel>(context, listen: false);
     // Creating a JSON to send to the server
     final response = await http.post(Uri.parse("$baseUrl/posts"),
@@ -42,7 +43,6 @@ class CreatePostModel extends ChangeNotifier {
       // Something went wrong, so error message is updated
       _errorMessage = response.body;
       _showErrorMessage = true;
-      throw Exception(response.body);
     }
     notifyListeners();
   }

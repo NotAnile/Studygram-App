@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Integer, String, delete, select
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity, create_refresh_token
 import os
 from datetime import timedelta, datetime, date
 from dotenv import dotenv_values
@@ -15,9 +15,11 @@ bcrypt = Bcrypt(app)
 # Configuring the jwt secret key by getting the secret key from the .env file
 app.config['JWT_SECRET_KEY'] = dotenv_values(".env")["SECRET_KEY"]
 
-#Making the token valid for 5 minutes before it expires
-ACCESS_EXPIRES = timedelta(minutes = 5)
+#Making the token valid for 15 minutes before it expires
+ACCESS_EXPIRES = timedelta(minutes = 15)
+REFRESH_EXPIRES = timedelta(days=7)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRES
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = REFRESH_EXPIRES
 jwt = JWTManager(app)
 
 # Configuring the database uri depending on 
@@ -184,6 +186,12 @@ def create_user():
         return jsonify({'message':'No username or password received!'}), 400
 
 
+@app.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    username = get_jwt_identity()
+    new_access_token = create_access_token(identity=username)
+    return jsonify(access_token=new_access_token)
 
 
 @app.route('/user/login', methods=['POST'])
@@ -199,8 +207,9 @@ def do_login():
 
         #bcrypt.check_password_hash hashes the given password and compares it
         if bcrypt.check_password_hash(user.password, password):
-            token = create_access_token(identity = user.id)
-            return jsonify({'token':token}), 200
+            access_token = create_access_token(identity=user.id)
+            refresh_token = create_refresh_token(identity=user.id)
+            return jsonify(access_token=access_token, refresh_token=refresh_token), 200
         
     return jsonify({'message':'No such user or wrong password'}), 400
 
@@ -561,6 +570,7 @@ def logout():
     return jsonify({'message':'You are now logged out'}), 200
     
 
+@app.route('/expiredtoken', methods = ['POST'])
 @jwt.token_in_blocklist_loader
 def is_token_in_blocklist(jwt_header, jwt_payload: dict) -> bool:
     '''Filtering out the jti in the BlockedToken column to see if the jti is in there.

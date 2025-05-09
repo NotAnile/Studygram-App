@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'package:studygram/models/authentication.dart';
 
 //**To be implemented*/
 class UserModel extends ChangeNotifier {

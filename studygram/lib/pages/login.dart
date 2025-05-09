@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/models/authentication.dart';
-import 'package:studygram/models/user.dart';
 import '../components/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
