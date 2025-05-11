@@ -46,7 +46,7 @@ class MyPage extends StatelessWidget {
                   child: Padding(
                 padding: const EdgeInsets.all(5),
                 child: NavigationCard(
-                  route: '/',
+                  route: '/liked',
                   text: 'Liked',
                   icon: Icons.favorite,
                   extra: username,

@@ -14,19 +14,12 @@ class ContentCard extends StatefulWidget {
 }
 
 class _ContentCardState extends State<ContentCard> {
-  bool isLiked = false;
-
-  void handleLike() {
-    setState(() {
-      isLiked = !isLiked;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     UserModel userModel = Provider.of<UserModel>(context, listen: false);
     String accessToken =
         Provider.of<Authentication>(context, listen: false).accessToken;
+    bool isLiked = userModel.likedPosts.contains(widget.content);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -34,9 +27,8 @@ class _ContentCardState extends State<ContentCard> {
       // if they haven't already liked it
       child: GestureDetector(
         onDoubleTap: () {
-          if (!userModel.likedPosts.contains(widget.content)) {
+          if (!isLiked) {
             userModel.likePost(accessToken, widget.content);
-            handleLike();
           }
         },
         child: Card(
@@ -57,11 +49,9 @@ class _ContentCardState extends State<ContentCard> {
                     // Likes or removes the like on a single tap on the heart icon
                     GestureDetector(
                       onTap: () {
-                        (!userModel.likedPosts.contains(widget.content))
+                        (!isLiked)
                             ? userModel.likePost(accessToken, widget.content)
                             : userModel.unlikePost(accessToken, widget.content);
-
-                        handleLike();
                       },
                       child: Icon(
                         isLiked ? Icons.favorite : Icons.favorite_border,
@@ -80,51 +70,3 @@ class _ContentCardState extends State<ContentCard> {
     );
   }
 }
-
-// class ContentCard extends StatelessWidget {
-//   final Content content; // Content is a post
-//   ContentCard({super.key, required this.content});
-
-//   bool isLiked = false;
-
-//   void handleLike() {
-//     isLiked = !isLiked;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     UserModel userModel = Provider.of<UserModel>(context, listen: false);
-
-//     return Padding(
-//       padding: const EdgeInsets.all(8.0),
-//       child: Card(
-//         child: Padding(
-//           padding: const EdgeInsets.all(12.0),
-//           child: Column(
-//             children: [
-//               Row(children: [
-//                 Text(content.username,
-//                     style: const TextStyle(
-//                         fontWeight: FontWeight.bold, fontSize: 14)),
-//               ]),
-//               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-//                 Text(content.body, style: const TextStyle(fontSize: 13)),
-//                 GestureDetector(
-//                   onDoubleTap: () {
-//                     (!userModel.likedPosts.contains(content))
-//                         ? userModel.likePost(context, content)
-//                         : userModel.unlikePost(context, content);
-//                   },
-//                   child: Icon(
-//                     Icons.favorite_border,
-//                     color: Colors.grey,
-//                   ),
-//                 )
-//               ])
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

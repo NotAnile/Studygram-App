@@ -157,4 +157,28 @@ class UserModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void getLikedPosts(String token) async {
+    final String baseUrl = BaseUrl().baseUrl;
+
+    // Creating a JSON to send to the server
+    final response = await http.get(
+      Uri.parse("$baseUrl/liked/posts"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+    );
+    // Handling the result depending on the status code
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      // Setting no error message since everything went well
+      _errorMessage = "";
+    } else {
+      _status = Status.error;
+      // Something went wrong, so error message is updated
+      _errorMessage = json.decode(response.body)['message'];
+    }
+    notifyListeners();
+  }
 }

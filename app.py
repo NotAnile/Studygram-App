@@ -149,7 +149,7 @@ def post_exists(post_id) -> bool:
 def data_exist(datalist:List[str], jsondict: dict) -> bool:
     """Returns true iff all data in the given datalist exists in the given jsondict."""
     for data in datalist:
-        if not data in jsondict:
+        if jsondict.get(data) is None:
             return False
     return True
 
@@ -541,7 +541,6 @@ def get_user_profile(UserID):
         user = db.session.get(User, UserID)
         mutual_friends = user.mutual_friends()
         following = user.following
-        liked_posts = user.liked_posts
 
         friend_requests = db.session.execute(
             select(User)
@@ -553,20 +552,19 @@ def get_user_profile(UserID):
 
         return jsonify({'username': UserID, 'posts': posts, 'post_count': len(posts), 
                         'friends': mutual_friends, 'following': following, 'friend_count': len(mutual_friends), 
-                        'friend_requests': friend_requests, 'liked_posts': liked_posts})
+                        'friend_requests': friend_requests})
     else:
         return jsonify({'message': "User does not exist"}), 404
 
 
-@app.route('/posts', methods=['POST'])
+@app.route('/posts/all', methods=['POST'])
 def get_all_posts():
     """Takes in a JSON with usernames returns a jsonified list of all the posts of the given users.
     If the body of users in the JSON is empty, this function will return posts of random users
     excluding the given usernames to exclude."""
 
     data = request.json
-
-    if data_exist(['users', 'exclude', 'post_count'], data):
+    if data_exist(['selected_users', 'excluded_users', 'post_count'], data):
         selected_users = data['selected_users']
         excluded_users = data['excluded_users']
         post_count = data['post_count']
@@ -591,9 +589,28 @@ def get_all_posts():
     
     # Checking if result is empty
     if not result:
-        return jsonify({'message': 'No posts found'}), 404
+        return jsonify({'message': 'No posts found'}), 200
     else:
         return jsonify(result), 200
+
+
+@app.route('/liked/posts', methods=['GET'])
+@jwt_required()
+def get_liked_posts():
+    """Returns a jsonified dict of all the user's liked posts."""
+
+    username = get_jwt_identity()
+    # Checks if the user exists
+    if user_exists(username):
+        result = []
+
+        liked_posts = user.liked_posts
+        for post in liked_posts:
+            result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes)})
+
+        return jsonify({'liked_posts': result})
+    else:
+        return jsonify({'message': "User does not exist"}), 404
 
 
 @app.route('/session/start', methods = ['POST'])

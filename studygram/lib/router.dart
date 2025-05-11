@@ -4,6 +4,7 @@ import 'package:studygram/models/authentication.dart';
 import 'package:studygram/pages/create_account.dart';
 import 'package:studygram/pages/create_post.dart';
 import 'package:studygram/pages/home.dart';
+import 'package:studygram/pages/liked.dart';
 import 'package:studygram/pages/notifications.dart';
 import 'package:studygram/pages/mypage.dart';
 import 'package:studygram/pages/post.dart';
@@ -98,6 +99,11 @@ class MyRouter extends StatelessWidget {
                     as String; // Getting the username for the userprofile page
                 return UserProfilePage(username: username);
               },
+            ),
+            GoRoute(
+              path: '/liked',
+              parentNavigatorKey: _shellNavigatorKey,
+              builder: (context, state) => const LikedPage(),
             ),
           ],
         )
