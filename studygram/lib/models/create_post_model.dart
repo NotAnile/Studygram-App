@@ -39,7 +39,7 @@ class CreatePostModel extends ChangeNotifier {
       }
     } else {
       // Something went wrong, so error message is updated
-      _errorMessage = response.body;
+      _errorMessage = json.decode(response.body)['message'];
       _showErrorMessage = true;
     }
     notifyListeners();

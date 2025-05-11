@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from typing import List
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer, String, delete, select
+from sqlalchemy import ForeignKey, Integer, String, delete, select, desc
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity, create_refresh_token
 import os
@@ -305,11 +305,11 @@ def save_post():
 
         # Ensures that the length of the message is not over 500 characters
         if len(message) > 500:
-            return 'Message length is over 500 characters', 400
+            return jsonify({'message': 'Message length is over 500 characters'}), 400
 
         # Checks if the given userid already exists or not
         if not user_exists(user_id):
-            return f'The user {user_id} does not exist', 404
+            return jsonify({'message': f'The user {user_id} does not exist'}), 404
         
         user = db.session.get(User, user_id)
         # Saves the post and its owner's id in the database
@@ -320,7 +320,7 @@ def save_post():
 
         return jsonify({'id': new_post.id}), 200
     else:
-        return 'Post missing a message', 400
+        return jsonify({'message': 'Post missing a message'}), 400
 
 
 @app.route('/posts/comment/<PostID>', methods=['POST'])
@@ -332,11 +332,11 @@ def save_comment(PostID):
     # Checks if the given userid already exists or not
     user_id = get_jwt_identity()
     if not user_exists(user_id):
-        return f'The user {user_id} does not exist', 404
+        return jsonify({'message': f'The user {user_id} does not exist'}), 404
     
     # Checks if the given post exists or not
     if not post_exists(PostID):
-        return 'Post does not exist', 404
+        return jsonify({'message': 'Post does not exist'}), 404
     
     json_data = request.json
     post = db.session.get(Post, PostID)
@@ -347,7 +347,7 @@ def save_comment(PostID):
 
         # Ensures that the length of the message is not over 300 characters
         if len(message) > 300:
-            return 'Message length is over 300 characters', 400
+            return jsonify({'message':'Message length is over 300 characters'}), 400
 
         # Saves the post and its owner's id in the database
         comment = Comment(user_id=user_id, post=post, message=message)
@@ -356,7 +356,7 @@ def save_comment(PostID):
 
         return jsonify({'id': comment.id}), 200
     else:
-        return 'Comment missing a message', 400
+        return jsonify({'message':'Comment missing a message'}), 400
 
 
 @app.route('/post/<PostID>', methods=['GET'])
@@ -379,7 +379,7 @@ def get_post(PostID):
             comments.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
         return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'likes': likes, 'comments': comments, 'username': post.user_id}), 200
     else:
-        return 'Invalid post ID', 400
+        return jsonify({'message':'Invalid post ID'}), 400
 
 
 @app.route('/posts/delete/<PostID>', methods=['DELETE'])
@@ -389,7 +389,7 @@ def delete_post(PostID):
     # Checks that the user exists
     user_id = get_jwt_identity()
     if not user_exists(user_id):
-        return "User does not exist", 404
+        return jsonify({'message': "User does not exist"}), 404
 
     post = db.session.get(Post, PostID)
     user = db.session.get(User, user_id)
@@ -407,13 +407,14 @@ def delete_post(PostID):
         # Deletes the likes given to the deleted post
         db.session.execute(delete(liked_by).where(liked_by.c.post_id == PostID))    # Fråga: Behövs detta eller tas likes-raderna bort automatiskt när man tar bort Post?
         db.session.commit()
-        return 'Post deleted', 200
+        
+        return jsonify({'message': 'Post deleted'}), 200
     
     elif post is None:
-        return 'Invalid post ID', 400 
+        return jsonify({'message': 'Invalid post ID'}), 400 
     
     else:
-        return 'Permission denied: User does not own the post', 400
+        return jsonify({'message': 'Permission denied: User does not own the post'}), 400
         
 
 @app.route('/posts/delete/<CommentID>', methods=['DELETE'])
@@ -423,7 +424,7 @@ def delete_comment(CommentID):
     # Checks that the user exists
     user_id = get_jwt_identity()
     if not user_exists(user_id):
-        return "User does not exist", 404
+        return jsonify({'message': "User does not exist"}), 404
 
     comment = db.session.get(Comment, CommentID)
 
@@ -431,9 +432,9 @@ def delete_comment(CommentID):
         # Removes the comment
         db.session.delete(comment)
         db.session.commit()
-        return 'Comment deleted', 200
+        return jsonify({'message': 'Comment deleted'}), 200
     else:
-        return 'Invalid comment', 400 
+        return jsonify({'message': 'Invalid comment'}), 400 
 
 
 @app.route('/posts/like/<PostID>', methods=['POST'])
@@ -449,31 +450,45 @@ def like_post(PostID):
         if user_exists(user_id):
             user = db.session.get(User, user_id)
         else:
-            "No user found", 404 
+            return jsonify({'message': "No user found"}), 404 
         
         # Checks if the user has already liked it
         if user in post.likes:
-            return "Post already liked", 200
+            return jsonify({'message': "Post already liked"}), 200
 
         # Adds the user and post to the likes list 
         post.likes.append(user)
         db.session.commit()
-        return "Post liked", 200
+        return jsonify({'message': "Post liked"}), 200
     else:
-        return 'Invalid post ID', 404
+        return jsonify({'message': 'Invalid post ID'}), 404
 
 
-@app.route('/posts', methods=['GET'])
-def get_all_posts():
-    """Returns a jsonified list of all the posts."""
-    result = []
+@app.route('/posts/unlike/<PostID>', methods=['DELETE'])
+@jwt_required()
+def unlike_post(PostID):
+    """Unlikes the post if the given post ID exists and if the logged in user is valid.
+    If the user has already unliked it, the database won't be changed and 200 will be returned."""
 
-    post_generator = db.session.execute(db.select(Post)).scalars()
-    for post in post_generator:
-        # Creating a list of all posts
-        result.append({'id': post.id, 'body': post.body})
-    
-    return jsonify(result)
+    if post_exists(PostID):
+        post = db.session.get(Post, PostID)
+        # Gets the user object for the given user id
+        user_id = get_jwt_identity()
+        if user_exists(user_id):
+            user = db.session.get(User, user_id)
+        else:
+            jsonify({'message':"No user found"}), 404 
+        
+        # Checks if the user has already unliked it
+        if user not in post.likes:
+            return jsonify({'message': "Post already not liked"}), 200
+
+        # Removes the user and post from the likes list 
+        post.likes.remove(user)
+        db.session.commit()
+        return jsonify({'message': "Removed like from post" }), 200
+    else:
+        return jsonify({'message': 'Invalid post ID'}), 404
 
 
 @app.route('/posts/<PostID>/comments', methods=['GET'])
@@ -491,48 +506,95 @@ def get_all_comments(PostID):
         return jsonify(result)
 
     else:
-        return "Post does not exist", 404
+        return jsonify({'message':"Post does not exist"}), 404
 
+def get_user_posts(usernames: List[str], limit: int):
+    """Helper function that returns a list of posts created by the given users. The amount of posts selected is 
+    determined by the given limit. If limit is None then all posts will be selected."""
+    result = []
+    # Creates a new list of user_ids containing all existing users
+    user_ids = []
+    for username in usernames:
+        if user_exists(username):
+            user_ids.append(username)
+    
+    if limit is None:
+        post_generator = db.session.execute(db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id))).scalars().all()
+    else:
+        post_generator = db.session.execute(
+            db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id).limit(limit))
+        ).scalars().all()
+    
+    for post in post_generator:
+        result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes)})
+    
+    return result
 
 @app.route('/profile/<UserID>', methods=['GET'])
 def get_user_profile(UserID):
-    """Returns a jsonified dict of the user's posts (id, body, username and comment), amount of posts, 
-    amount of friends, and friends (usernames of all mutual friends)."""
-
-    def get_user_posts():
-        """Returns a list of all the posts created by the given user."""
-        result = []
-
-        post_generator = db.session.execute(db.select(Post).filter_by(user_id=UserID)).scalars().all()
-        for post in post_generator:
-            # Creating a list with comments of the post in the form of a dictionary
-            # comments = []
-            # for comment in post.comments:
-            #    comments.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
-            # Creating a list of all the posts the user has created
-            result.append({'id': post.id, 'body': post.body, 'username': UserID, 'like_count': len(post.likes)})
-        
-        return result
+    """Returns a jsonified dict of all the user's information such as posts, amount of posts, 
+    friends, amount of friends, people they follow, friend requests and liked posts."""
     
     # Checks if the user exists
     if user_exists(UserID):
-        posts = get_user_posts()
+        posts = get_user_posts([UserID], None)
         user = db.session.get(User, UserID)
         mutual_friends = user.mutual_friends()
         following = user.following
+        liked_posts = user.liked_posts
 
         friend_requests = db.session.execute(
             select(User)
             .join(friends, User.id == friends.c.user_id) # Joins each row in User with rows in the friends table 
                                                          # where that user was the one who sent the request.
-            .where(friends.c.friend_id == UserID)  # They follow UserID
-            .where(~User.id.in_(mutual_friends))  # But not mutual
+            .where(friends.c.friend_id == UserID)  # Users that follow the given user
+            .where(~User.id.in_(mutual_friends))  # The users that the given user does not follow back
         ).scalars().all()
 
-        return jsonify({'username': UserID, 'posts': posts, 'post_count': len(posts), 'friends': mutual_friends, 'following': following, 'friend_count': len(mutual_friends), 'friend_requests': friend_requests})
+        return jsonify({'username': UserID, 'posts': posts, 'post_count': len(posts), 
+                        'friends': mutual_friends, 'following': following, 'friend_count': len(mutual_friends), 
+                        'friend_requests': friend_requests, 'liked_posts': liked_posts})
     else:
-        return "User does not exist", 404
+        return jsonify({'message': "User does not exist"}), 404
+
+
+@app.route('/posts', methods=['POST'])
+def get_all_posts():
+    """Takes in a JSON with usernames returns a jsonified list of all the posts of the given users.
+    If the body of users in the JSON is empty, this function will return posts of random users
+    excluding the given usernames to exclude."""
+
+    data = request.json
+
+    if data_exist(['users', 'exclude', 'post_count'], data):
+        selected_users = data['selected_users']
+        excluded_users = data['excluded_users']
+        post_count = data['post_count']
+    else:
+        return jsonify({'message': 'Missing selected_users, excluded_users or post count'}), 400
     
+    result = []
+    # Checks if selected users is empty
+    if not selected_users:
+        # Returns the latest posts if there are no selected users
+        post_generator = db.session.execute(db.select(Post)
+            .where(~Post.user_id.in_(excluded_users))   # Selecting posts where user_id is not in excluded users
+            .order_by(desc(Post.id)).limit(post_count)
+        ).scalars()
+
+        for post in post_generator:
+            # Creating a list of all posts
+            result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes)})
+    else:
+        # Gets the posts from the selected users
+        postsAsDicts = get_user_posts(selected_users, post_count)
+    
+    # Checking if result is empty
+    if not result:
+        return jsonify({'message': 'No posts found'}), 404
+    else:
+        return jsonify(result), 200
+
 
 @app.route('/session/start', methods = ['POST'])
 @jwt_required()
@@ -552,7 +614,7 @@ def startsession():
         return jsonify({'message':'Timer has been started', 'id': session.id, 'subject': session.subject})
 
     else:
-        return 'User does not exist', 404
+        return jsonify({'message': 'User does not exist'}), 404
 
 
 @app.route('/session/add', methods = ['POST'])
@@ -561,7 +623,7 @@ def addsession():
     """Adds a session manually by setting the start and end time """
     user_id = get_jwt_identity()
     if not user_exists(user_id):
-        return "User does not exist", 404
+        return jsonify({'message': "User does not exist"}), 404
     
     json_data = request.json
     if data_exist(['startdate', 'starttime', 'enddate', 'endtime'], json_data):
@@ -581,10 +643,10 @@ def addsession():
         db.session.add(session)
         db.session.commit()
 
-        return jsonify({'message':'Session has been added', 'id':session.id})
+        return jsonify({'message': 'Session has been added', 'id':session.id})
     
     else:
-        return 'Missing startdate, starttime, enddate, or endtime', 400
+        return jsonify({'message':'Missing startdate, starttime, enddate, or endtime'}), 400
 
 
 @app.route('/session/end', methods = ['POST'])
@@ -594,7 +656,7 @@ def endsession():
 
     user_id = get_jwt_identity()
     if not user_exists(user_id):
-        return 'User does not exist', 404
+        return jsonify({'message': 'User does not exist'}), 404
     
     json_data = request.json
     if 'id' in json_data:
@@ -605,7 +667,7 @@ def endsession():
         if session is not None:
             # Checks that the owner of the session is the logged in user
             if session.user.id != user_id:
-                return 'Permission denied: User does not own session', 400
+                return jsonify({'message': 'Permission denied: User does not own session'}), 400
             
             # Updates the endtime and duration of the session
             session.setendtime(endtime=datetime.now())
@@ -613,10 +675,10 @@ def endsession():
 
             return jsonify({'message':'Session has ended', 'duration': str(session.duration)})
         else:
-            return 'Session does not exist', 404
+            return jsonify({'message': 'Session does not exist'}), 404
 
     else:
-        return 'Session id missing', 404
+        return jsonify({'message': 'Session id missing'}), 404
 
 
 @app.route('/user/logout', methods = ['POST'])

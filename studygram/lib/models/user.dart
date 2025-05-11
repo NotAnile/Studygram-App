@@ -12,11 +12,11 @@ class UserModel extends ChangeNotifier {
   bool _isInitialized = false;
   String _username = "";
   List<dynamic> _posts = [];
-
   int _amountOfPosts = 0;
   List<dynamic> _following = [];
   List<dynamic> _friends = [];
   List _friendRequests = [];
+  List<dynamic> _likedPosts = [];
   Status _status = Status.idle;
   String _errorMessage = "";
 
@@ -25,7 +25,8 @@ class UserModel extends ChangeNotifier {
   int get amountOfPosts => _amountOfPosts;
   List<dynamic> get following => _following;
   List<dynamic> get friends => _friends;
-  List get friendRequests => _friendRequests;
+  List<dynamic> get friendRequests => _friendRequests;
+  List<dynamic> get likedPosts => _likedPosts;
 
   set setUsername(String username) {
     _username = username;
@@ -64,7 +65,7 @@ class UserModel extends ChangeNotifier {
       } else {
         // Something went wrong, so error message is updated
         _status = Status.error;
-        _errorMessage = response.body;
+        _errorMessage = json.decode(response.body)['message'];
       }
       notifyListeners();
     } else {
@@ -83,15 +84,77 @@ class UserModel extends ChangeNotifier {
 
   /// Adds the person that the user wants to follow to the list
   void followUser(String username) {
-    if (!following.contains(username)) {
-      following.add(username);
+    if (!_following.contains(username)) {
+      _following.add(username);
     }
   }
 
   /// Removes the person that the user wants to unfollow to the list
   void unfollowUser(String username) {
-    if (following.contains(username)) {
-      following.remove(username);
+    if (_following.contains(username)) {
+      _following.remove(username);
     }
+  }
+
+  /// Adds the post that the user has liked to the list
+  void likePost(String token, Content post) async {
+    // Add post to list
+    if (!_likedPosts.contains(post)) {
+      _likedPosts.add(post);
+    }
+
+    final String baseUrl = BaseUrl().baseUrl;
+    int postID = post.id;
+
+    // Creating a JSON to send to the server
+    final response = await http.post(
+      Uri.parse("$baseUrl/posts/like/$postID"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+    );
+    // Handling the result depending on the status code
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      // Setting no error message since everything went well
+      _errorMessage = "";
+    } else {
+      _status = Status.error;
+      // Something went wrong, so error message is updated
+      _errorMessage = json.decode(response.body)['message'];
+    }
+    notifyListeners();
+  }
+
+  /// Removes the post that the user wants to unlike from the list
+  void unlikePost(String token, Content post) async {
+    // Remove post from list
+    if (_likedPosts.contains(post)) {
+      _likedPosts.remove(post);
+    }
+
+    final String baseUrl = BaseUrl().baseUrl;
+    int postID = post.id;
+
+    // Creating a JSON to send to the server
+    final response = await http.delete(
+      Uri.parse("$baseUrl/posts/unlike/$postID"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+    );
+    // Handling the result depending on the status code
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      // Setting no error message since everything went well
+      _errorMessage = "";
+    } else {
+      _status = Status.error;
+      // Something went wrong, so error message is updated
+      _errorMessage = json.decode(response.body)['message'];
+    }
+    notifyListeners();
   }
 }

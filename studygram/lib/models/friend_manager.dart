@@ -64,7 +64,7 @@ class FriendManager extends ChangeNotifier {
     } else {
       _status = Status.error;
       // Something went wrong, so error message is updated
-      _errorMessage = response.body;
+      _errorMessage = json.decode(response.body)['message'];
     }
     notifyListeners();
   }
