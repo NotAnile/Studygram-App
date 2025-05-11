@@ -19,7 +19,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     String username = Provider.of<UserModel>(context, listen: false).username;
     Future<dynamic> request =
-        Provider.of<Feed>(context, listen: true).getProfile(username);
+        Provider.of<Feed>(context, listen: true).getProfile(context, username);
     return FutureBuilder(
       future: request,
       builder: (context, snapshot) {

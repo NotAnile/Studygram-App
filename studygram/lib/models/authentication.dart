@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './user.dart';
 import 'package:provider/provider.dart';
+import './url.dart';
 
 class Authentication extends ChangeNotifier {
-  String baseUrl = "http://127.0.0.1:5003";
   bool _isLoggedIn = false;
   String _accessToken = "";
   String _refreshToken = "";
@@ -15,6 +15,7 @@ class Authentication extends ChangeNotifier {
   String get refreshToken => _refreshToken;
 
   void login(String username, String password, BuildContext context) async {
+    final String baseUrl = BaseUrl().baseUrl;
     final response = await http.post(Uri.parse("$baseUrl/user/login"),
         headers: <String, String>{
           'Content-Type':

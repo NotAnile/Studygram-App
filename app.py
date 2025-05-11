@@ -582,4 +582,4 @@ def is_token_in_blocklist(jwt_header, jwt_payload: dict) -> bool:
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(port=5003)
+    app.run(port=5000)

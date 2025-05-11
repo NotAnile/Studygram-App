@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/user.dart';
 import 'package:go_router/go_router.dart';
+import './url.dart';
 
 class CreatePostModel extends ChangeNotifier {
-  String baseUrl = "http://127.0.0.1:5003";
   String _errorMessage = "";
   bool _showErrorMessage = false;
 
@@ -15,6 +15,7 @@ class CreatePostModel extends ChangeNotifier {
   bool get showErrorMessage => _showErrorMessage;
 
   void createPost(BuildContext context, String body) async {
+    final String baseUrl = BaseUrl().baseUrl;
     // Getting token
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;

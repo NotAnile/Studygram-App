@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import './authentication.dart';
+import './url.dart';
 
 class CreateAccountModel extends ChangeNotifier {
-  String baseUrl = "http://127.0.0.1:5003";
   String _errorMessage = "";
   bool _showErrorMessage = false;
 
@@ -14,6 +14,7 @@ class CreateAccountModel extends ChangeNotifier {
 
   void createAccount(
       String username, String password, BuildContext context) async {
+    final String baseUrl = BaseUrl().baseUrl;
     final response = await http.post(Uri.parse("$baseUrl/user"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

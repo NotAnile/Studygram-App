@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 //**To be implemented*/
 class UserModel extends ChangeNotifier {
-  String baseUrl = "http://127.0.0.1:5003";
   String _username = "";
   int _amountOfPosts = 0;
 

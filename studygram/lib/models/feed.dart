@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../structure.dart';
+import './url.dart';
 
 class Feed extends ChangeNotifier {
-  final String baseUrl = "http://127.0.0.1:5003";
   static final Map<String, dynamic> _postCache = {};
   static const int maximumCacheLength = 20;
 
@@ -29,12 +29,12 @@ class Feed extends ChangeNotifier {
 
   //**Returns a list of the posts for a given username. If the user does not exist
   //it will return a text saying the user was not found. */
-  Future<dynamic> getProfile(String username) async {
+  Future<dynamic> getProfile(BuildContext context, String username) async {
     // Checks if the username exists in the cache already
     if (_postCache.containsKey(username)) {
       return _postCache[username];
     }
-
+    final String baseUrl = BaseUrl().baseUrl;
     final response = await http.get(Uri.parse("$baseUrl/profile/$username"));
     if (response.statusCode == 200) {
       final Map<String, dynamic> result = json.decode(response.body);
