@@ -27,9 +27,16 @@ class CreateAccountModel extends ChangeNotifier {
     if (context.mounted) {
       if (response.statusCode == 200) {
         // Logging in since the user was succesfully created
-        _status = Status.success;
-        Provider.of<Authentication>(context, listen: false)
-            .login(username, password, context);
+        Status loginStatus =
+            await Provider.of<Authentication>(context, listen: false)
+                .login(username, password, context);
+        // Checking if login was successful
+        if (loginStatus == Status.success) {
+          _status = Status.success;
+        } else {
+          _errorMessage = "Account created but could not log in";
+          _status = Status.error;
+        }
       } else if (response.statusCode == 403) {
         _errorMessage = "Username already taken";
         _status = Status.error;
