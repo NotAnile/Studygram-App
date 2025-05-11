@@ -6,6 +6,7 @@ import 'package:studygram/models/feed.dart';
 import 'package:studygram/models/user.dart';
 import 'package:provider/provider.dart';
 import './models/settings_model.dart';
+import 'package:studygram/models/friend_manager.dart';
 import 'router.dart';
 
 void main() {
@@ -17,6 +18,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => CreateAccountModel()),
       ChangeNotifierProvider(create: (_) => Feed()),
       ChangeNotifierProvider(create: (_) => CreatePostModel()),
+      ChangeNotifierProvider(create: (_) => FriendManager())
     ],
     child: const MainApp(),
   ));

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 //**To be implemented*/
 class UserModel extends ChangeNotifier {
+  bool _isInitialized = false;
   String _username = "";
   int _amountOfPosts = 0;
   List<String> following = [];
@@ -15,6 +16,16 @@ class UserModel extends ChangeNotifier {
 
   set setUsername(String username) {
     _username = username;
+  }
+
+  //** Initializes the usermodel and sets all the values by getting the data from backend. */
+  void initialize(String username) async {
+    if (!_isInitialized) {
+      // Making a call to backend to get data
+    } else {
+      // Model already initialized, so it does nothing
+      return;
+    }
   }
 
   void incrementPostCount() {
@@ -28,5 +39,10 @@ class UserModel extends ChangeNotifier {
   void followUser(String username) {
     // Adds the person that the user wants to follow to the list
     following.add(username);
+  }
+
+  void unfollowUser(String username) {
+    // Adds the person that the user wants to follow to the list
+    following.remove(username);
   }
 }

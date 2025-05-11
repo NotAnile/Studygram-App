@@ -5,6 +5,7 @@ import '../components/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/create_account_model.dart';
 import 'package:studygram/components/appbar.dart';
+import 'package:studygram/models/url.dart';
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
@@ -89,9 +90,16 @@ class _CreateButtonState extends State<CreateButton> {
   Widget build(BuildContext context) {
     return Consumer<CreateAccountModel>(
       builder: (context, model, child) {
+        // Showing snackbar to notify the user that the account has successfully been created
+        if (model.status == Status.success) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+                  "Account successfully created! You are now logged in.")));
+        }
+
         return Column(
           children: [
-            model.showErrorMessage
+            (model.status == Status.error)
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(model.errorMessage),
@@ -109,28 +117,24 @@ class _CreateButtonState extends State<CreateButton> {
                   if (widget.usernameController.text == "") {
                     setState(() {
                       model.setErrorMessage("Missing username");
-                      model.setShowErrorMessage(true);
                     });
                   } else if (widget.passwordController.text == "" ||
                       widget.passwordController2.text == "") {
                     // Handle UI when one of the password fields are empty
                     setState(() {
                       model.setErrorMessage("Missing password");
-                      model.setShowErrorMessage(true);
                     });
                   } else {
                     // Making a call to the server to log in by sending up the username and password
                     // Also handles errors when password fields don't match
                     if (widget.passwordController.text ==
                         widget.passwordController2.text) {
-                      model.setShowErrorMessage(false);
                       model.createAccount(widget.usernameController.text,
                           widget.passwordController.text, context);
                     } else {
                       // Handle UI when the passwords aren't matching
                       setState(() {
                         model.setErrorMessage("Passwords aren't matching");
-                        model.setShowErrorMessage(true);
                       });
                     }
                   }

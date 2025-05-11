@@ -6,14 +6,15 @@ import './authentication.dart';
 import './url.dart';
 
 class CreateAccountModel extends ChangeNotifier {
+  Status _status = Status.idle;
   String _errorMessage = "";
-  bool _showErrorMessage = false;
 
   String get errorMessage => _errorMessage;
-  bool get showErrorMessage => _showErrorMessage;
+  Status get status => _status;
 
   void createAccount(
       String username, String password, BuildContext context) async {
+    _status = Status.loading;
     final String baseUrl = BaseUrl().baseUrl;
     final response = await http.post(Uri.parse("$baseUrl/user"),
         headers: <String, String>{
@@ -26,25 +27,23 @@ class CreateAccountModel extends ChangeNotifier {
     if (context.mounted) {
       if (response.statusCode == 200) {
         // Logging in since the user was succesfully created
+        _status = Status.success;
         Provider.of<Authentication>(context, listen: false)
             .login(username, password, context);
-        notifyListeners();
       } else if (response.statusCode == 403) {
         _errorMessage = "Username already taken";
-        _showErrorMessage = true;
-        notifyListeners();
+        _status = Status.error;
       } else {
-        // Add logic to handle when something else went wrong
+        _errorMessage = "Unknown error";
+        _status = Status.error;
       }
     }
+    notifyListeners();
   }
 
 // Setting error message for create account page
   void setErrorMessage(String message) {
     _errorMessage = message;
-  }
-
-  void setShowErrorMessage(bool show) {
-    _showErrorMessage = show;
+    _status = Status.error;
   }
 }

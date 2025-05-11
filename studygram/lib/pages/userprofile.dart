@@ -23,6 +23,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
     Future<dynamic> request = Provider.of<Feed>(context, listen: true)
         .getProfile(context, widget.username);
 
+    FriendManager friendManagerModel =
+        Provider.of<FriendManager>(context, listen: false);
+
     UserModel userModel = Provider.of<UserModel>(context, listen: false);
 
     return FutureBuilder(
@@ -51,25 +54,37 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         NumberedBox(
                             title: "Friends", number: user.friends.length),
                         NumberedBox(title: "Posts", number: user.posts.length),
-                        MyTextButton(
-                            // Checking if the user has already followed the person in this page
-                            buttonText: (userModel.following
-                                        .contains(widget.username)) !=
-                                    true
-                                ? 'Follow'
-                                : 'Unfollow',
-                            textColor: Colors.white,
-                            backgroundColor:
-                                const Color.fromARGB(255, 191, 152, 197),
-                            rectangleShape: true,
-                            onPressed: () {
-                              // Make a call to backend
-                              Provider.of<FriendManager>(context, listen: false)
-                                  .addFriend(context, widget.username);
+                        // Checking if the person in the profile page is the logged in user
+                        // If yes, then don't display the follow button
+                        (userModel.username != widget.username)
+                            ? MyTextButton(
+                                // Changing the buttontext depending on if the user
+                                // has already followed the person in this page or not
+                                buttonText: (!userModel.following
+                                        .contains(widget.username))
+                                    ? 'Follow '
+                                    : 'Unfollow',
+                                textColor: Colors.white,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 191, 152, 197),
+                                rectangleShape: true,
+                                onPressed: () {
+                                  // Checking if the user is following the person already or not
+                                  // to make the right call to backend to either follow or unfollow
+                                  if (userModel.following
+                                      .contains(widget.username)) {
+                                    friendManagerModel.addFriend(
+                                        context, widget.username);
 
-                              // Add the person that the user wants to follow to the following list
-                              userModel.followUser(widget.username);
-                            })
+                                    // Add the person that the user wants to follow to the following list
+                                    userModel.followUser(widget.username);
+                                  } else {
+                                    friendManagerModel.removeFriend(
+                                        context, widget.username);
+                                    userModel.unfollowUser(widget.username);
+                                  }
+                                })
+                            : const Text("")
                       ],
                     )),
                 const Divider(),
