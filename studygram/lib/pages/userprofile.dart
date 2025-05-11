@@ -20,8 +20,8 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
-    Future<dynamic> request = Provider.of<Feed>(context, listen: true)
-        .getProfile(context, widget.username);
+    Future<dynamic> request =
+        Provider.of<Feed>(context, listen: true).getProfile(widget.username);
 
     FriendManager friendManagerModel =
         Provider.of<FriendManager>(context, listen: false);

@@ -58,9 +58,11 @@ class Post extends Content {
         id: json['id'],
         body: json["body"],
         username: json["username"],
-        comments: json["comments"] // Creating comments from the json
-            .map((comment) => Comment.fromJson(comment))
-            .toList());
+        comments: (json["comments"] == null)
+            ? []
+            : json["comments"]
+                .map((comment) => Comment.fromJson(comment))
+                .toList());
   }
 
   static Map<String, dynamic> toJson(Post post) {

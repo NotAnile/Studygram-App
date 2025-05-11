@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'postcard.dart';
 import 'package:go_router/go_router.dart';
 import '../structure.dart';
+import '../models/feed.dart';
+import 'package:provider/provider.dart';
 
 //**Listview to display all the posts in a column*/
 class ContentView extends StatefulWidget {
@@ -42,9 +44,16 @@ class _PostViewState extends State<ContentView> {
         // Getting the right post with the index and returns a PostCard with the body and username
         return GestureDetector(
           child: ContentCard(content: post),
-          onTap: () {
+          onTap: () async {
+            // Getting the comments for the post with that ID
+            int postID = post.id;
+            // Getting the post including comments from the backend
+            Post postWithComments =
+                await Provider.of<Feed>(context, listen: false).getPost(postID);
             // Sending the post as the extra parameter when navigating to the specific post page
-            context.push('/post', extra: post);
+            if (context.mounted) {
+              context.push('/post', extra: postWithComments);
+            }
           },
         );
       },

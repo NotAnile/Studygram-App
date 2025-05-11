@@ -7,6 +7,7 @@ import './url.dart';
 class Feed extends ChangeNotifier {
   static final Map<String, dynamic> _postCache = {};
   static const int maximumCacheLength = 20;
+  final String baseUrl = BaseUrl().baseUrl;
 
   // Using a cache to prevent unnecessary network calls so if we've already searched on a user
   // (in this application run) we don't need to do a network call again
@@ -27,14 +28,12 @@ class Feed extends ChangeNotifier {
     }
   }
 
-  //**Returns a list of the posts for a given username. If the user does not exist
-  //it will return a text saying the user was not found. */
-  Future<dynamic> getProfile(BuildContext context, String username) async {
+  //**Returns a list of the posts for a given username.*/
+  Future<dynamic> getProfile(String username) async {
     // Checks if the username exists in the cache already
     if (_postCache.containsKey(username)) {
       return _postCache[username];
     }
-    final String baseUrl = BaseUrl().baseUrl;
     final response = await http.get(Uri.parse("$baseUrl/profile/$username"));
     if (response.statusCode == 200) {
       final Map<String, dynamic> result = json.decode(response.body);
@@ -43,6 +42,19 @@ class Feed extends ChangeNotifier {
       throw Exception("User does not exist.");
     } else {
       throw Exception("Could not get posts.");
+    }
+  }
+
+  //**Returns a post object for the given post id. */
+  Future<dynamic> getPost(int postID) async {
+    final response = await http.get(Uri.parse("$baseUrl/post/$postID"));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> result = json.decode(response.body);
+      return Post.fromJson(result);
+    } else if (response.statusCode == 400) {
+      throw Exception("Invalid postID.");
+    } else {
+      throw Exception("Could not get post.");
     }
   }
 }

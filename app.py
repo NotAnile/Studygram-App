@@ -289,7 +289,7 @@ def remove_friend():
             return  jsonify({'message':'Not following friend'}), 200
     else:
         return jsonify({'message': 'Missing friend username'}), 400
-
+    
 
 @app.route('/posts', methods=['POST'])
 @jwt_required()
@@ -502,12 +502,12 @@ def get_user_profile(UserID):
         post_generator = db.session.execute(db.select(Post).filter_by(user_id=UserID)).scalars().all()
         for post in post_generator:
             # Creating a list with comments of the post in the form of a dictionary
-            comments = []
-            for comment in post.comments:
-                comments.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
+            # comments = []
+            # for comment in post.comments:
+            #    comments.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
             
             # Creating a list of all the posts the user has created
-            result.append({'id': post.id, 'body': post.body, 'username': UserID, 'comments': comments})
+            result.append({'id': post.id, 'body': post.body, 'username': UserID})
         
         return result
     
@@ -516,6 +516,7 @@ def get_user_profile(UserID):
         posts = get_user_posts()
         user = db.session.get(User, UserID)
         mutual_friends = user.mutual_friends()
+        following = user.following
 
         friend_requests = db.session.execute(
             select(User)
@@ -525,7 +526,7 @@ def get_user_profile(UserID):
             .where(~User.id.in_(mutual_friends))  # But not mutual
         ).scalars().all()
 
-        return jsonify({'username': UserID, 'posts': posts, 'post_count': len(posts), 'friends': mutual_friends, 'friend_count': len(mutual_friends), 'friend_requests': friend_requests})
+        return jsonify({'username': UserID, 'posts': posts, 'post_count': len(posts), 'friends': mutual_friends, 'following': following, 'friend_count': len(mutual_friends), 'friend_requests': friend_requests})
     else:
         return "User does not exist", 404
     
