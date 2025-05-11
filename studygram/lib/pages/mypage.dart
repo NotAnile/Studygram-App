@@ -21,7 +21,7 @@ class MyPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(5),
                   child: NavigationCard(
-                    route: '/posts',
+                    route: '/profile',
                     text: 'My posts',
                     icon: Icons.person,
                     extra: username,

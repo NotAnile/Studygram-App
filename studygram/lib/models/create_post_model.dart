@@ -19,17 +19,14 @@ class CreatePostModel extends ChangeNotifier {
     // Getting token
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
-    UserModel userModel = Provider.of<UserModel>(context, listen: false);
     // Creating a JSON to send to the server
     final response = await http.post(Uri.parse("$baseUrl/posts"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token'
         },
-        body: jsonEncode(<String, String>{
-          'username': userModel.username,
-          'body': body,
-        }));
+        // We don't need to send the username when we use the token
+        body: jsonEncode(<String, String>{'body': body}));
     // Handling the result depending on the status code
     if (response.statusCode == 200) {
       // Setting no error message since everything went well
@@ -37,7 +34,7 @@ class CreatePostModel extends ChangeNotifier {
       _showErrorMessage = false;
       // Updating the post count of the user and pops the user back to home screen
       if (context.mounted) {
-        Provider.of<UserModel>(context, listen: false).addPost();
+        Provider.of<UserModel>(context, listen: false).incrementPostCount();
         context.pop();
       }
     } else {

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/content_view.dart';
+import 'package:studygram/components/textbutton.dart';
 import '../models/feed.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/user.dart';
 import 'package:studygram/structure.dart';
 import 'package:studygram/models/settings_model.dart';
+import 'package:studygram/models/friend_manager.dart';
 
-//**Page that contains all the posts and followers of a user */
+//**Page that contains all the posts and followers of a specific user */
 class UserProfilePage extends StatefulWidget {
-  const UserProfilePage({super.key});
+  final String username;
+  const UserProfilePage({super.key, required this.username});
 
   @override
   State<UserProfilePage> createState() => _UserProfilePageState();
@@ -17,9 +20,11 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
-    String username = Provider.of<UserModel>(context, listen: false).username;
-    Future<dynamic> request =
-        Provider.of<Feed>(context, listen: true).getProfile(context, username);
+    Future<dynamic> request = Provider.of<Feed>(context, listen: true)
+        .getProfile(context, widget.username);
+
+    UserModel userModel = Provider.of<UserModel>(context, listen: false);
+
     return FutureBuilder(
       future: request,
       builder: (context, snapshot) {
@@ -39,13 +44,32 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(username,
+                          child: Text(widget.username,
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 25)),
                         ),
                         NumberedBox(
                             title: "Friends", number: user.friends.length),
                         NumberedBox(title: "Posts", number: user.posts.length),
+                        MyTextButton(
+                            // Checking if the user has already followed the person in this page
+                            buttonText: (userModel.following
+                                        .contains(widget.username)) !=
+                                    true
+                                ? 'Follow'
+                                : 'Unfollow',
+                            textColor: Colors.white,
+                            backgroundColor:
+                                const Color.fromARGB(255, 191, 152, 197),
+                            rectangleShape: true,
+                            onPressed: () {
+                              // Make a call to backend
+                              Provider.of<FriendManager>(context, listen: false)
+                                  .addFriend(context, widget.username);
+
+                              // Add the person that the user wants to follow to the following list
+                              userModel.followUser(widget.username);
+                            })
                       ],
                     )),
                 const Divider(),

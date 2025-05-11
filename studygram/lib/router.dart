@@ -91,10 +91,12 @@ class MyRouter extends StatelessWidget {
               builder: (context, state) => const MyPage(),
             ),
             GoRoute(
-              path: '/posts',
+              path: '/profile',
               parentNavigatorKey: _shellNavigatorKey,
               builder: (context, state) {
-                return const UserProfilePage();
+                final String username = state.extra!
+                    as String; // Getting the username for the userprofile page
+                return UserProfilePage(username: username);
               },
             ),
           ],

@@ -4,6 +4,7 @@ import 'package:studygram/models/authentication.dart';
 import '../components/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:studygram/models/url.dart';
 
 //**The page for loggin in*/
 class LoginPage extends StatelessWidget {
@@ -15,6 +16,16 @@ class LoginPage extends StatelessWidget {
     TextEditingController passwordController = TextEditingController();
     return Scaffold(
         body: Consumer<Authentication>(builder: (context, auth, child) {
+      // Showing a snackbar to notify the user about how the login went
+      if (auth.status == Status.success) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Succesfully logged in")));
+      } else if (auth.status == Status.error) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text((auth.errorMessage.isEmpty
+                ? "Unknown error"
+                : auth.errorMessage))));
+      }
       // Checks if the user is already logged in or not
       if (!auth.isLoggedIn) {
         return Center(
@@ -52,9 +63,7 @@ class LoginPage extends StatelessWidget {
                   rectangleShape: true,
                   onPressed: () {
                     // Making a call to the server to log in by sending up the username and password
-                    Provider.of<Authentication>(context, listen: false).login(
-                        usernameController.text,
-                        passwordController.text,
+                    auth.login(usernameController.text, passwordController.text,
                         context);
                   },
                 ),

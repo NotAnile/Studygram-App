@@ -125,7 +125,7 @@ class Session(db.Model):
 
 class BlockedToken(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    jti: Mapped[str] = mapped_column(nullable=False)
+    jti: Mapped[str] = mapped_column(nullable=False, unique=True)
 
     def __init__(self, jti):
         self.jti = jti
@@ -231,6 +231,64 @@ def change_password():
         return jsonify({'message': 'Password has been updated'}), 200
         
     return jsonify({'message':'No password given'}), 400
+
+
+@app.route('/friend/add', methods=['POST'])
+@jwt_required()
+def add_friend():
+    """Sends a friend request to the given username by adding it to the user's
+    following list."""
+    username = get_jwt_identity()
+    json_data = request.json
+
+    # Gets the data
+    if 'username' in json_data:
+        friend_username = json_data['username']
+
+        # Checks if the users exist or not
+        if not user_exists(username) or not user_exists(friend_username):
+            return jsonify({'message': 'The user does not exist'}), 404
+        
+        user = db.session.get(User, username)
+        friend = db.session.get(User, friend_username)
+        # Adds the friend to the following list of the user
+        user.following.append(friend)
+        db.session.commit()
+
+        return jsonify({'message': 'Friend added'}), 200
+    else:
+        return jsonify({'message': 'Missing friend username'}), 400
+
+
+@app.route('/friend/remove', methods=['DELETE'])
+@jwt_required()
+def remove_friend():
+    """Removes the given friend from the user's following list if the
+    user has followed the friend."""
+    # Checks that the user exists
+    username = get_jwt_identity()
+    json_data = request.json
+
+    # Gets the data
+    if 'username' in json_data:
+        friend_username = json_data['username']
+
+        # Checks if the users exist or not
+        if not user_exists(username) or not user_exists(friend_username):
+            return jsonify({'message':'The user does not exist'}), 404
+        
+        user = db.session.get(User, username)
+        friend = db.session.get(User, friend_username)
+
+        # Removes the friend from the users following list if the user is following the friend
+        if friend in user.following:
+            user.following.remove(friend)
+            db.session.commit()
+            return jsonify({'message':'Friend removed'}), 200
+        else:
+            return  jsonify({'message':'Not following friend'}), 200
+    else:
+        return jsonify({'message': 'Missing friend username'}), 400
 
 
 @app.route('/posts', methods=['POST'])
@@ -432,9 +490,6 @@ def get_all_comments(PostID):
         return "Post does not exist", 404
 
 
-
-
-
 @app.route('/profile/<UserID>', methods=['GET'])
 def get_user_profile(UserID):
     """Returns a jsonified dict of the user's posts (id, body, username and comment), amount of posts, 
@@ -526,7 +581,6 @@ def addsession():
     
     else:
         return 'Missing startdate, starttime, enddate, or endtime', 400
-
 
 
 @app.route('/session/end', methods = ['POST'])

@@ -7,15 +7,20 @@ import './url.dart';
 
 class Authentication extends ChangeNotifier {
   bool _isLoggedIn = false;
+  final String baseUrl = BaseUrl().baseUrl;
+  Status _status = Status.idle;
+  String _errorMessage = "";
   String _accessToken = "";
   String _refreshToken = "";
 
   bool get isLoggedIn => _isLoggedIn;
+  Status get status => _status;
   String get accessToken => _accessToken;
   String get refreshToken => _refreshToken;
+  String get errorMessage => _errorMessage;
 
   void login(String username, String password, BuildContext context) async {
-    final String baseUrl = BaseUrl().baseUrl;
+    _status = Status.loading;
     final response = await http.post(Uri.parse("$baseUrl/user/login"),
         headers: <String, String>{
           'Content-Type':
@@ -23,11 +28,12 @@ class Authentication extends ChangeNotifier {
         },
         body: jsonEncode(
             <String, String>{'username': username, 'password': password}));
+    // Getting the result
+    final Map<String, dynamic> result = json.decode(response.body);
     // Checks if context is mounted to ensure that the widget associated with the context
     // has not been disposed or removed
     if (context.mounted) {
       if (response.statusCode == 200) {
-        final Map<String, dynamic> result = json.decode(response.body);
         // Setting the token for the authentication model from the result
         _accessToken = result['access_token'];
         _refreshToken = result['refresh_token'];
@@ -35,14 +41,32 @@ class Authentication extends ChangeNotifier {
         // Setting up user model and updating isLoggedIn bool
         Provider.of<UserModel>(context, listen: false).setUsername = username;
         _isLoggedIn = true;
+        _status = Status.success;
 
         notifyListeners();
+      } else {
+        _errorMessage = result['message'];
+        _status = Status.error;
       }
     }
   }
 
-  void logout() {
-    _isLoggedIn = false;
+  void logout() async {
+    final String token = _accessToken;
+    final response = await http.post(
+      Uri.parse("$baseUrl/user/logout"),
+      headers: <String, String>{
+        'Content-Type':
+            'application/json; charset=UTF-8', // application/json means we want to parse it as a json
+        'Authorization': 'Bearer $token'
+      },
+    );
+    if (response.statusCode == 200) {
+      _isLoggedIn = false;
+      _status = Status.success;
+    } else {
+      _status = Status.error;
+    }
     notifyListeners();
   }
 }
