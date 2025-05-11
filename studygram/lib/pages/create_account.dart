@@ -90,13 +90,6 @@ class _CreateButtonState extends State<CreateButton> {
   Widget build(BuildContext context) {
     return Consumer<CreateAccountModel>(
       builder: (context, model, child) {
-        // Showing snackbar to notify the user that the account has successfully been created
-        if (model.status == Status.success) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text(
-                  "Account successfully created! You are now logged in.")));
-        }
-
         return Column(
           children: [
             (model.status == Status.error)
@@ -129,8 +122,17 @@ class _CreateButtonState extends State<CreateButton> {
                     // Also handles errors when password fields don't match
                     if (widget.passwordController.text ==
                         widget.passwordController2.text) {
-                      model.createAccount(widget.usernameController.text,
-                          widget.passwordController.text, context);
+                      final status = await model.createAccount(
+                          widget.usernameController.text,
+                          widget.passwordController.text,
+                          context);
+
+                      // Showing snackbar to notify the user that the account has successfully been created
+                      if (status == Status.success) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text(
+                                "Account successfully created! You are now logged in.")));
+                      }
                     } else {
                       // Handle UI when the passwords aren't matching
                       setState(() {

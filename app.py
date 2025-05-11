@@ -373,7 +373,11 @@ def get_post(PostID):
         liked_by_list = [user.id for user in users]
         
         likes = len(liked_by_list)
-        return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'likes': likes}), 200
+        # Getting all the comments
+        comments = []
+        for comment in post.comments:
+            comments.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
+        return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'likes': likes, 'comments': comments, 'username': post.user_id}), 200
     else:
         return 'Invalid post ID', 400
 
@@ -505,9 +509,8 @@ def get_user_profile(UserID):
             # comments = []
             # for comment in post.comments:
             #    comments.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
-            
             # Creating a list of all the posts the user has created
-            result.append({'id': post.id, 'body': post.body, 'username': UserID})
+            result.append({'id': post.id, 'body': post.body, 'username': UserID, 'like_count': len(post.likes)})
         
         return result
     

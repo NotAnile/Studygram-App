@@ -16,16 +16,6 @@ class LoginPage extends StatelessWidget {
     TextEditingController passwordController = TextEditingController();
     return Scaffold(
         body: Consumer<Authentication>(builder: (context, auth, child) {
-      // Showing a snackbar to notify the user about how the login went
-      if (auth.status == Status.success) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Succesfully logged in")));
-      } else if (auth.status == Status.error) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text((auth.errorMessage.isEmpty
-                ? "Unknown error"
-                : auth.errorMessage))));
-      }
       // Checks if the user is already logged in or not
       if (!auth.isLoggedIn) {
         return Center(
@@ -61,10 +51,21 @@ class LoginPage extends StatelessWidget {
                   textColor: Colors.white,
                   backgroundColor: const Color.fromARGB(255, 159, 122, 165),
                   rectangleShape: true,
-                  onPressed: () {
+                  onPressed: () async {
                     // Making a call to the server to log in by sending up the username and password
-                    auth.login(usernameController.text, passwordController.text,
-                        context);
+                    final status = await auth.login(usernameController.text,
+                        passwordController.text, context);
+
+                    // Showing a snackbar to notify the user about how the login went
+                    if (status == Status.success) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Succesfully logged in")));
+                    } else if (status == Status.error) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text((auth.errorMessage.isEmpty
+                              ? "Unknown error"
+                              : auth.errorMessage))));
+                    }
                   },
                 ),
               ),

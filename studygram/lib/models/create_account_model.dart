@@ -12,7 +12,7 @@ class CreateAccountModel extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   Status get status => _status;
 
-  void createAccount(
+  Future<Status> createAccount(
       String username, String password, BuildContext context) async {
     _status = Status.loading;
     final String baseUrl = BaseUrl().baseUrl;
@@ -39,6 +39,7 @@ class CreateAccountModel extends ChangeNotifier {
       }
     }
     notifyListeners();
+    return _status;
   }
 
 // Setting error message for create account page

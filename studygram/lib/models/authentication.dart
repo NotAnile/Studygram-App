@@ -19,7 +19,8 @@ class Authentication extends ChangeNotifier {
   String get refreshToken => _refreshToken;
   String get errorMessage => _errorMessage;
 
-  void login(String username, String password, BuildContext context) async {
+  Future<Status> login(
+      String username, String password, BuildContext context) async {
     _status = Status.loading;
     final response = await http.post(Uri.parse("$baseUrl/user/login"),
         headers: <String, String>{
@@ -39,16 +40,16 @@ class Authentication extends ChangeNotifier {
         _refreshToken = result['refresh_token'];
 
         // Setting up user model and updating isLoggedIn bool
-        Provider.of<UserModel>(context, listen: false).setUsername = username;
+        Provider.of<UserModel>(context, listen: false).initialize(username);
         _isLoggedIn = true;
         _status = Status.success;
-
-        notifyListeners();
       } else {
         _errorMessage = result['message'];
         _status = Status.error;
       }
     }
+    notifyListeners();
+    return _status;
   }
 
   void logout() async {

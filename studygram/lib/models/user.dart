@@ -11,20 +11,20 @@ import 'dart:convert';
 class UserModel extends ChangeNotifier {
   bool _isInitialized = false;
   String _username = "";
-  List<Post> _posts = [];
+  List<dynamic> _posts = [];
 
   int _amountOfPosts = 0;
-  List<String> _following = [];
-  List<String> _friends = [];
+  List<dynamic> _following = [];
+  List<dynamic> _friends = [];
   List _friendRequests = [];
   Status _status = Status.idle;
   String _errorMessage = "";
 
   String get username => _username;
-  List<Post> get posts => _posts;
+  List<dynamic> get posts => _posts;
   int get amountOfPosts => _amountOfPosts;
-  List<String> get following => _following;
-  List<String> get friends => _friends;
+  List<dynamic> get following => _following;
+  List<dynamic> get friends => _friends;
   List get friendRequests => _friendRequests;
 
   set setUsername(String username) {
@@ -52,7 +52,7 @@ class UserModel extends ChangeNotifier {
 
         _isInitialized = true;
         _username = data['username'];
-        _posts = data['posts'];
+        _posts = data['posts'].map((json) => Post.fromJson(json)).toList();
         _amountOfPosts = data['post_count'];
         _following = data['following'];
         _friends = data['friends'];
