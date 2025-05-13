@@ -56,9 +56,9 @@ liked_by = db.Table(
 
 
 class Size(Enum):
-    SMALL = "Small"
-    MEDIUM = "Medium"
-    LARGE = "Large"
+    SMALL = "small"
+    MEDIUM = "medium"
+    LARGE = "large"
 
 
 class User(db.Model):
@@ -75,12 +75,10 @@ class User(db.Model):
         secondaryjoin=id==friends.c.friend_id, 
         backref='followers'  # Followers are all the users who have you in their following list
     )
-    setting: Mapped[Size]
 
     def __init__(self, id, password):
         self.id = id
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
-        self.size = Size.MEDIUM
     
     def setPassword(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -624,6 +622,35 @@ def get_liked_posts():
     else:
         return jsonify({'message': "User does not exist"}), 404
 
+
+@app.route('/settings', methods=['POST'])
+@jwt_required()
+def update_settings():
+    """Updates the settings field of the logged in user."""
+    username = get_jwt_identity()
+    # Checks if the user exists
+    if not user_exists(username):
+        return jsonify({'message': 'User does not exist'}), 404
+    # Gets the user
+    user = db.session.get(User, username)
+    # Getting the data
+    data = request.json
+    if 'size' in data:
+        size = data['size']
+        # Turns the size data into Size
+        if size.lower() == Size.SMALL.value:
+            size = Size.SMALL
+        elif size.lower() == Size.MEDIUM.value:
+            size = Size.MEDIUM
+        elif size.lower() == Size.LARGE.value:
+            size = Size.LARGE
+        else:
+            return jsonify({f'message': 'Invalid size value: {size}'}), 400
+    # Changing the settings field of the user and updating the database
+    # user.setting = size.value
+    db.session.commit()
+    return jsonify({f'message': 'Settings for {username} has succesfully been updated'}), 200
+        
 
 @app.route('/session/start', methods = ['POST'])
 @jwt_required()
