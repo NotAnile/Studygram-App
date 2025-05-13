@@ -50,9 +50,7 @@ class UserModel extends ChangeNotifier {
       if (response.statusCode == 200) {
         // Decoding the json to a map
         final Map<String, dynamic> data = json.decode(response.body);
-
         _isInitialized = true;
-        _username = data['username'];
         _posts = data['posts'].map((json) => Post.fromJson(json)).toList();
         _amountOfPosts = data['post_count'];
         _following = data['following'];
