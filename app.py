@@ -754,6 +754,16 @@ def is_token_in_blocklist(jwt_header, jwt_payload: dict) -> bool:
     token = db.session.execute(db.select(BlockedToken.jti).filter_by(jti=jti)).scalar()
     return token is not None
 
+# Query all users (assuming you have a User model)
+users = db.session.query(User).all()
+
+# Loop through each user and insert a row into the Settings table
+for user in users:
+    new_setting = settings.insert().values(user_id=user.id, setting="medium")
+    db.session.execute(new_setting)
+
+# Commit the transaction
+db.session.commit()
 
 if __name__ == "__main__":
     app.debug = True
