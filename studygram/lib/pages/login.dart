@@ -57,14 +57,17 @@ class LoginPage extends StatelessWidget {
                         passwordController.text, context);
 
                     // Showing a snackbar to notify the user about how the login went
-                    if (status == Status.success) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Succesfully logged in")));
-                    } else if (status == Status.error) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text((auth.errorMessage.isEmpty
-                              ? "Unknown error"
-                              : auth.errorMessage))));
+                    if (context.mounted) {
+                      if (status == Status.success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Succesfully logged in")));
+                      } else if (status == Status.error) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text((auth.errorMessage.isEmpty
+                                ? "Unknown error"
+                                : auth.errorMessage))));
+                      }
                     }
                   },
                 ),

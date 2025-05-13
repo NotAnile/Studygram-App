@@ -11,43 +11,51 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String token =
-        Provider.of<Authentication>(context, listen: false).accessToken;
-    return Consumer<Feed>(
-      builder: (context, feed, child) {
-        UserModel userModel = Provider.of<UserModel>(context, listen: false);
-        List<dynamic> selectedUsers = userModel.friends;
-        return FutureBuilder(
-          future: feed.getPosts(token, selectedUsers, [userModel.username]),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const Center(
-                  child: Text("An error has occurred. Could not get posts."));
-            }
+    return Consumer<UserModel>(builder: (context, userModel, child) {
+      // Checking if the usermodel is initalized before showing the feed
+      if (userModel.isInitialized) {
+        return const CircularProgressIndicator();
+      }
+      // UserModel is initialized so we can load and show the feed
+      String token =
+          Provider.of<Authentication>(context, listen: false).accessToken;
+      return Consumer<Feed>(
+        builder: (context, feed, child) {
+          UserModel userModel = Provider.of<UserModel>(context, listen: false);
+          List<dynamic> selectedUsers = userModel.friends;
+          return FutureBuilder(
+            future: feed.getPosts(token, selectedUsers, [userModel.username]),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const Center(
+                    child: Text("An error has occurred. Could not get posts."));
+              }
 
-            if (snapshot.connectionState == ConnectionState.done) {
-              final data = snapshot.data!;
-              return Center(
-                child: Column(
-                  children: [
-                    // Creates a list view to display all the posts
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                        child: (data.isEmpty)
-                            ? const Text("No posts found")
-                            : PostView(contents: data),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
-          },
-        );
-      },
-    );
+              if (snapshot.connectionState == ConnectionState.done) {
+                final data = snapshot.data!;
+                return Center(
+                  child: Column(
+                    children: [
+                      // Creates a list view to display all the posts
+                      Expanded(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 15.0, right: 15.0),
+                          child: (data.isEmpty)
+                              ? const Text("No posts found")
+                              : PostView(contents: data),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            },
+          );
+        },
+      );
+    });
   }
 }
