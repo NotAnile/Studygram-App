@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/models/settings_model.dart';
 import 'package:provider/provider.dart';
+import 'package:studygram/models/settings_model.dart';
+import 'package:provider/provider.dart';
 
-//** Creates a card for navigation. When clicked it will navigate you to the given route.*/
 class NavigationCard extends StatelessWidget {
   final String route;
   final String text;

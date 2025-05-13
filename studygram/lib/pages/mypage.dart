@@ -10,8 +10,7 @@ class MyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String username =
-        Provider.of<UserModel>(context, listen: false).username;
+    final UserModel userModel = Provider.of<UserModel>(context, listen: false);
     return Center(
       child: Column(
         children: [
@@ -24,7 +23,7 @@ class MyPage extends StatelessWidget {
                     route: '/profile',
                     text: 'My posts',
                     icon: Icons.person,
-                    extra: username,
+                    extra: userModel.username,
                   ),
                 ),
               ),
@@ -32,10 +31,11 @@ class MyPage extends StatelessWidget {
                   child: Padding(
                 padding: const EdgeInsets.all(5),
                 child: NavigationCard(
-                  route: '/',
+                  route: '/user/friends',
                   text: 'Friends',
                   icon: Icons.group,
-                  extra: username,
+                  extra: userModel
+                      .friends, // send the user's list of friends when we go to friends page
                 ),
               )),
             ],
@@ -49,7 +49,7 @@ class MyPage extends StatelessWidget {
                   route: '/liked',
                   text: 'Liked',
                   icon: Icons.favorite,
-                  extra: username,
+                  extra: userModel.username,
                 ),
               )),
               Expanded(
@@ -59,7 +59,7 @@ class MyPage extends StatelessWidget {
                   route: '/',
                   text: 'Statistics',
                   icon: Icons.bar_chart,
-                  extra: username,
+                  extra: userModel.username,
                 ),
               )),
             ],

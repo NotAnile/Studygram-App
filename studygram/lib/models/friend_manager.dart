@@ -10,13 +10,13 @@ import 'package:studygram/models/user.dart';
 class FriendManager extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";
+  final String baseUrl = BaseUrl().baseUrl;
 
   Status get status => _status;
   String get errorMessage => _errorMessage;
 
   void addFriend(BuildContext context, String friendUsername) async {
     _status = Status.loading;
-    final String baseUrl = BaseUrl().baseUrl;
     // Getting token
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
@@ -43,7 +43,6 @@ class FriendManager extends ChangeNotifier {
   }
 
   void removeFriend(BuildContext context, String friendUsername) async {
-    final String baseUrl = BaseUrl().baseUrl;
     // Getting token
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
