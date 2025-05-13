@@ -8,6 +8,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 import os
 from datetime import timedelta, datetime, date
 from dotenv import dotenv_values
+from enum import Enum
 
 app = Flask(__name__)
 
@@ -53,6 +54,13 @@ liked_by = db.Table(
     db.Column('user_id', Integer, ForeignKey('user.id'), primary_key=True)
 )
 
+
+class Size(Enum):
+    SMALL = "Small"
+    MEDIUM = "Medium"
+    LARGE = "Large"
+
+
 class User(db.Model):
     id: Mapped[str] = mapped_column(primary_key = True)
     password: Mapped[str] = mapped_column(nullable=False)
@@ -67,10 +75,12 @@ class User(db.Model):
         secondaryjoin=id==friends.c.friend_id, 
         backref='followers'  # Followers are all the users who have you in their following list
     )
+    setting: Mapped[Size]
 
     def __init__(self, id, password):
         self.id = id
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.size = Size.MEDIUM
     
     def setPassword(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -586,6 +596,8 @@ def get_all_posts():
     else:
         # Gets the posts from the selected users
         postsAsDicts = get_user_posts(selected_users, post_count)
+        for post in postsAsDicts:
+            result.append(post)
     
     # Checking if result is empty
     if not result:
