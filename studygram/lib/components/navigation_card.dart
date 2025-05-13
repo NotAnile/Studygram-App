@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:studygram/models/settings_model.dart';
+import 'package:provider/provider.dart';
 
 //** Creates a card for navigation. When clicked it will navigate you to the given route.*/
 class NavigationCard extends StatelessWidget {
@@ -16,28 +18,40 @@ class NavigationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: SizedBox(
-        height: 250,
-        child: Card(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  text,
-                  style: const TextStyle(
-                      fontSize: 25, color: Color.fromARGB(255, 51, 42, 53)),
-                ),
+    Map sizes = {
+      Size.small: {'text': 20.0, 'icon': 80.0},
+      Size.medium: {'text': 25.0, 'icon': 100.0},
+      Size.large: {'text': 30.0, 'icon': 120.0},
+    };
+
+    return Consumer<Settings>(
+      builder: (context, settings, child) {
+        return GestureDetector(
+          child: SizedBox(
+            height: 250,
+            child: Card(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                          fontSize: sizes[settings.size]['text'],
+                          color: const Color.fromARGB(255, 51, 42, 53)),
+                    ),
+                  ),
+                  Icon(icon,
+                      size: sizes[settings.size]['icon'],
+                      color: const Color.fromARGB(255, 151, 115, 156))
+                ],
               ),
-              Icon(icon,
-                  size: 100, color: const Color.fromARGB(255, 151, 115, 156))
-            ],
+            ),
           ),
-        ),
-      ),
-      onTap: () {
-        context.push(route, extra: extra);
+          onTap: () {
+            context.push(route, extra: extra);
+          },
+        );
       },
     );
   }

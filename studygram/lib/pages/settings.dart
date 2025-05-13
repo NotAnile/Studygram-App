@@ -1,0 +1,57 @@
+import 'package:flutter/material.dart';
+import 'package:studygram/components/content_view.dart';
+import 'package:studygram/components/textbutton.dart';
+import 'package:studygram/models/settings_model.dart';
+import 'package:provider/provider.dart';
+import 'package:studygram/models/user.dart';
+import 'package:studygram/models/authentication.dart';
+
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    String token =
+        Provider.of<Authentication>(context, listen: false).accessToken;
+    return Consumer<Settings>(builder: (context, model, child) {
+      Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
+      return Center(
+        child: Column(
+          children: [
+            const Text("Sizes"),
+            const Divider(),
+            Wrap(spacing: 10.0, runSpacing: 10.0, children: [
+              MyTextButton(
+                onPressed: () {
+                  model.changeSize(Size.small, token);
+                },
+                buttonText: "Small",
+                textColor: Colors.white,
+                backgroundColor: buttonColor,
+                rectangleShape: false,
+              ),
+              MyTextButton(
+                onPressed: () {
+                  model.changeSize(Size.medium, token);
+                },
+                buttonText: "Medium",
+                textColor: Colors.white,
+                backgroundColor: buttonColor,
+                rectangleShape: false,
+              ),
+              MyTextButton(
+                onPressed: () {
+                  model.changeSize(Size.large, token);
+                },
+                buttonText: "Large",
+                textColor: Colors.white,
+                backgroundColor: buttonColor,
+                rectangleShape: false,
+              ),
+            ])
+          ],
+        ),
+      );
+    });
+  }
+}

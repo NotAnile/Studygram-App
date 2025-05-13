@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../structure.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/user.dart';
+import 'package:studygram/models/like_manager.dart';
 import 'package:studygram/models/authentication.dart';
 
 //**A card that consists of a username and a text (body). Each post consists of a card.*/
@@ -16,10 +16,10 @@ class ContentCard extends StatefulWidget {
 class _ContentCardState extends State<ContentCard> {
   @override
   Widget build(BuildContext context) {
-    UserModel userModel = Provider.of<UserModel>(context, listen: false);
+    LikeManager likeManager = Provider.of<LikeManager>(context, listen: false);
     String accessToken =
         Provider.of<Authentication>(context, listen: false).accessToken;
-    bool isLiked = userModel.likedPosts.contains(widget.content);
+    bool isLiked = likeManager.likedPosts.contains(widget.content);
 
     void handleLike() {
       setState(() {
@@ -34,7 +34,7 @@ class _ContentCardState extends State<ContentCard> {
       child: GestureDetector(
         onDoubleTap: () {
           if (!isLiked) {
-            userModel.likePost(accessToken, widget.content);
+            likeManager.likePost(accessToken, widget.content);
             handleLike();
           }
         },
@@ -57,9 +57,9 @@ class _ContentCardState extends State<ContentCard> {
                     GestureDetector(
                       onTap: () {
                         if (!isLiked) {
-                          userModel.likePost(accessToken, widget.content);
+                          likeManager.likePost(accessToken, widget.content);
                         } else {
-                          userModel.unlikePost(accessToken, widget.content);
+                          likeManager.unlikePost(accessToken, widget.content);
                         }
                         handleLike();
                       },

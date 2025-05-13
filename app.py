@@ -628,9 +628,25 @@ def get_liked_posts():
         return jsonify({'message': "User does not exist"}), 404
 
 
-@app.route('/update/textsize', methods=['POST'])
+@app.route('/settings', methods=['GET'])
 @jwt_required()
-def update_textsize():
+def get_settings():
+    """Gets the settings of the logged in user."""
+    username = get_jwt_identity()
+    # Checks if the user exists
+    if not user_exists(username):
+        return jsonify({'message': 'User does not exist'}), 404
+    # Getting the data
+    size = db.session.execute(select(settings.c.size_setting).where(settings.c.user_id == username)).scalar_one_or_none()
+    # Setting size to medium as default value if no setting for the user is found
+    if size is None:
+        size = Size.MEDIUM.value
+    return jsonify({'size': size}), 200
+
+
+@app.route('/update/settings', methods=['POST'])
+@jwt_required()
+def update_settings():
     """Updates the settings field of the logged in user."""
     username = get_jwt_identity()
     # Checks if the user exists

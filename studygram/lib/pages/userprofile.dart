@@ -57,6 +57,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         // Checking if the person in the profile page is the logged in user
                         // If yes, then don't display the follow button
                         (userModel.username != widget.username)
+                            // Follow/unfollow button
                             ? MyTextButton(
                                 // Changing the buttontext depending on if the user
                                 // has already followed the person in this page or not

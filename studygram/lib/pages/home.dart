@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<UserModel>(builder: (context, userModel, child) {
       // Checking if the usermodel is initalized before showing the feed
-      if (userModel.isInitialized) {
+      if (!userModel.isInitialized) {
         return const CircularProgressIndicator();
       }
       // UserModel is initialized so we can load and show the feed

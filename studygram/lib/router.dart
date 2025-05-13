@@ -13,6 +13,7 @@ import './structure.dart';
 import 'pages/login.dart';
 import 'package:studygram/pages/userprofile.dart';
 import 'components/navigationbar.dart';
+import 'package:studygram/pages/settings.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -84,7 +85,7 @@ class MyRouter extends StatelessWidget {
             GoRoute(
               path: '/settings',
               parentNavigatorKey: _shellNavigatorKey,
-              builder: (context, state) => const MyPage(),
+              builder: (context, state) => const SettingsPage(),
             ),
             GoRoute(
               path: '/timer',

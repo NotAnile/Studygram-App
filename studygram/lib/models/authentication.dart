@@ -4,6 +4,7 @@ import 'dart:convert';
 import './user.dart';
 import 'package:provider/provider.dart';
 import './url.dart';
+import 'package:studygram/models/settings_model.dart';
 
 class Authentication extends ChangeNotifier {
   bool _isLoggedIn = false;
@@ -43,6 +44,10 @@ class Authentication extends ChangeNotifier {
         UserModel userModel = Provider.of<UserModel>(context, listen: false);
         userModel.setUsername = username;
         userModel.initialize(username);
+
+        // Getting the size that the user has chosen
+        Provider.of<Settings>(context, listen: false).getSize(_accessToken);
+
         _isLoggedIn = true;
         _status = Status.success;
       } else {
