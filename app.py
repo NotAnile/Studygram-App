@@ -51,7 +51,7 @@ friends = db.Table("Friends",
 liked_by = db.Table(
     "LikedBy",
     db.Column('post_id', Integer, ForeignKey('post.id'), primary_key=True),
-    db.Column('user_id', Integer, ForeignKey('user.id'), primary_key=True)
+    db.Column('user_id', String, ForeignKey('user.id'), primary_key=True)
 )
 
 
@@ -60,6 +60,15 @@ class Size(Enum):
     MEDIUM = "medium"
     LARGE = "large"
 
+    def values():
+        return [Size.SMALL.value, Size.MEDIUM.value, Size.LARGE.value]
+
+
+settings = db.Table(
+    "Settings",
+    db.Column('user_id', String, ForeignKey('user.id'), primary_key=True),
+    db.Column('size_setting', String)
+)
 
 class User(db.Model):
     id: Mapped[str] = mapped_column(primary_key = True)
@@ -183,7 +192,7 @@ def create_user():
         existing_user = db.session.get(User, username)
         if existing_user is None:
             # Creates a new user
-            user = User(id=username, password=password)
+            user = User(id=username, password=password, settings=Size.MEDIUM.value)
             db.session.add(user)
             db.session.commit()
             return jsonify({'message': 'Welcome'}), 200
@@ -597,11 +606,7 @@ def get_all_posts():
         for post in postsAsDicts:
             result.append(post)
     
-    # Checking if result is empty
-    if not result:
-        return jsonify({'message': 'No posts found'}), 200
-    else:
-        return jsonify(result), 200
+    return jsonify(result), 200
 
 
 @app.route('/liked/posts', methods=['GET'])
@@ -623,31 +628,25 @@ def get_liked_posts():
         return jsonify({'message': "User does not exist"}), 404
 
 
-@app.route('/settings', methods=['POST'])
+@app.route('/update/textsize', methods=['POST'])
 @jwt_required()
-def update_settings():
+def update_textsize():
     """Updates the settings field of the logged in user."""
     username = get_jwt_identity()
     # Checks if the user exists
     if not user_exists(username):
         return jsonify({'message': 'User does not exist'}), 404
-    # Gets the user
-    user = db.session.get(User, username)
     # Getting the data
     data = request.json
     if 'size' in data:
-        size = data['size']
-        # Turns the size data into Size
-        if size.lower() == Size.SMALL.value:
-            size = Size.SMALL
-        elif size.lower() == Size.MEDIUM.value:
-            size = Size.MEDIUM
-        elif size.lower() == Size.LARGE.value:
-            size = Size.LARGE
-        else:
+        size = data['size'].lower()
+        # Checks if the given size is valid
+        if not size in Size.values():
             return jsonify({f'message': 'Invalid size value: {size}'}), 400
+        
     # Changing the settings field of the user and updating the database
-    # user.setting = size.value
+    new_setting = settings.insert().values(user_id=username, size_setting=size)
+    db.session.execute(new_setting)
     db.session.commit()
     return jsonify({f'message': 'Settings for {username} has succesfully been updated'}), 200
         
