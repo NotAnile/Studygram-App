@@ -21,6 +21,12 @@ class _ContentCardState extends State<ContentCard> {
         Provider.of<Authentication>(context, listen: false).accessToken;
     bool isLiked = userModel.likedPosts.contains(widget.content);
 
+    void handleLike() {
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       // Likes the post when user double taps on card
@@ -29,6 +35,7 @@ class _ContentCardState extends State<ContentCard> {
         onDoubleTap: () {
           if (!isLiked) {
             userModel.likePost(accessToken, widget.content);
+            handleLike();
           }
         },
         child: Card(
@@ -49,9 +56,12 @@ class _ContentCardState extends State<ContentCard> {
                     // Likes or removes the like on a single tap on the heart icon
                     GestureDetector(
                       onTap: () {
-                        (!isLiked)
-                            ? userModel.likePost(accessToken, widget.content)
-                            : userModel.unlikePost(accessToken, widget.content);
+                        if (!isLiked) {
+                          userModel.likePost(accessToken, widget.content);
+                        } else {
+                          userModel.unlikePost(accessToken, widget.content);
+                        }
+                        handleLike();
                       },
                       child: Icon(
                         isLiked ? Icons.favorite : Icons.favorite_border,
