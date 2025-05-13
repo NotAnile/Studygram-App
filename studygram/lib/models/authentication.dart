@@ -40,7 +40,9 @@ class Authentication extends ChangeNotifier {
         _refreshToken = result['refresh_token'];
 
         // Setting up user model and updating isLoggedIn bool
-        Provider.of<UserModel>(context, listen: false).initialize(username);
+        UserModel userModel = Provider.of<UserModel>(context, listen: false);
+        userModel.setUsername = username;
+        userModel.initialize(username);
         _isLoggedIn = true;
         _status = Status.success;
       } else {

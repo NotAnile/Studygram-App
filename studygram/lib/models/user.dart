@@ -27,6 +27,7 @@ class UserModel extends ChangeNotifier {
   List<dynamic> get friends => _friends;
   List<dynamic> get friendRequests => _friendRequests;
   List<dynamic> get likedPosts => _likedPosts;
+  bool get isInitialized => _isInitialized;
 
   set setUsername(String username) {
     _username = username;
