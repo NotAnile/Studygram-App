@@ -7,60 +7,28 @@ import 'package:provider/provider.dart';
 import '../models/authentication.dart';
 import 'package:studygram/components/textbutton.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
-    FeedScreen feed = FeedScreen();
-    return const Center(
-        child: Column(
-      children: [
-        Row(children: [
-          MyTextButton(
-              buttonText: "Following",
-              textColor: Colors.white,
-              backgroundColor: buttonColor,
-              rectangleShape: true,
-              onPressed: () {feed.toggleMode();}),
-          MyTextButton(
-              buttonText: "Explore",
-              textColor: Colors.white,
-              backgroundColor: buttonColor,
-              rectangleShape: true,
-              onPressed: () {feed.toggleMode();})
-        ]),
-        Divider(),
-        feed,
-      ],
-    ));
-  }
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class FeedScreen extends StatefulWidget {
-  const FeedScreen({super.key});
-
-  @override
-  State<FeedScreen> createState() => _FeedScreenState();
-
-  void toggleMode() {
-    _FeedScreenState().toggleMode();
-  }
-}
-
-class _FeedScreenState extends State<FeedScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   bool seeFollowing = true;
 
-  void toggleMode() {
-    setState(() {
-      seeFollowing = !seeFollowing;
-    })
+  void toggleMode(bool following) {
+    if (seeFollowing != following) {
+      setState(() {
+        seeFollowing = !seeFollowing;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<UserModel>(builder: (context, userModel, child) {
+      Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
       // Checking if the usermodel is initalized before showing the feed
       if (!userModel.isInitialized) {
         return const SizedBox(
@@ -76,19 +44,53 @@ class _FeedScreenState extends State<FeedScreen> {
         builder: (context, feed, child) {
           UserModel userModel = Provider.of<UserModel>(context, listen: false);
           List<dynamic> selectedUsers = seeFollowing ? userModel.friends : [];
-          List<dynamic> excludedUsers = seeFollowing ? [userModel.username] : userModel.friends.add(userModel.username);
+          List<dynamic> excludedUsers = [userModel.username];
+          // Excludes the users friend if the togg
+          if (seeFollowing) {
+            userModel.friends.add(userModel.username);
+          }
+          ;
           return FutureBuilder(
-            future: feed.getPosts(token, selectedUsers, excluded_users),
+            future: feed.getPosts(token, selectedUsers, excludedUsers),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return const Text(
-                    "An error has occurred. Could not get posts.");
+                return const Center(
+                    child: Text("An error has occurred. Could not get posts."));
               }
 
               if (snapshot.connectionState == ConnectionState.done) {
                 final data = snapshot.data!;
                 return Column(
                   children: [
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MyTextButton(
+                                buttonText: "Following",
+                                textColor: Colors.white,
+                                backgroundColor: buttonColor,
+                                rectangleShape: true,
+                                onPressed: () {
+                                  // Sets seeFollowing to true if it is false
+                                  toggleMode(true);
+                                }),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MyTextButton(
+                                buttonText: "Explore",
+                                textColor: Colors.white,
+                                backgroundColor: buttonColor,
+                                rectangleShape: true,
+                                onPressed: () {
+                                  // Sets seeFollowing to false if it is true
+                                  toggleMode(false);
+                                }),
+                          )
+                        ]),
+                    Divider(),
                     // Creates a list view to display all the posts
                     Expanded(
                       child: Padding(

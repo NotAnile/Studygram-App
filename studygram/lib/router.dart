@@ -14,6 +14,7 @@ import 'pages/login.dart';
 import 'package:studygram/pages/userprofile.dart';
 import 'components/navigationbar.dart';
 import 'package:studygram/pages/settings.dart';
+import 'package:studygram/pages/friends.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -64,7 +65,7 @@ class MyRouter extends StatelessWidget {
           },
         ),
         GoRoute(
-          path: '/user/friends',
+          path: '/friends',
           builder: (context, state) {
             final friends = state.extra!
                 as List<dynamic>; // Gets the post for the post page

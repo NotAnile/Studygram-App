@@ -7,6 +7,8 @@ import 'package:studygram/components/content_view.dart';
 import 'package:studygram/models/friend_manager.dart';
 import 'package:studygram/models/user.dart';
 import '../models/settings_model.dart';
+import 'package:studygram/components/userview.dart';
+import 'package:studygram/models/feed.dart';
 
 class FriendsPage extends StatelessWidget {
   final List<dynamic> friends;
@@ -14,20 +16,19 @@ class FriendsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String username = Provider.of<UserModel>(context, listen: false).username;
     return Scaffold(
       appBar: getMyAppBar(
           context,
-          Text(
-            "$username's friends",
-            style: const TextStyle(color: Colors.white),
+          const Text(
+            "Friends",
+            style: TextStyle(color: Colors.white),
           )),
       body: Center(
         child: Column(children: [
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: UserView(users: friends),
+              child: UserView(friends: friends),
             ),
           ),
         ]),

@@ -7,6 +7,7 @@ import 'package:studygram/models/user.dart';
 import 'package:studygram/structure.dart';
 import 'package:studygram/models/settings_model.dart';
 import 'package:studygram/models/friend_manager.dart';
+import 'package:go_router/go_router.dart';
 
 //**Page that contains all the posts and followers of a specific user */
 class UserProfilePage extends StatefulWidget {
@@ -51,8 +52,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 25)),
                         ),
-                        NumberedBox(
-                            title: "Friends", number: user.friends.length),
+                        GestureDetector(
+                          onTap: () {
+                            context.push('/friends', extra: user.friends);
+                          },
+                          child: NumberedBox(
+                              title: "Friends", number: user.friends.length),
+                        ),
                         NumberedBox(title: "Posts", number: user.posts.length),
                         // Checking if the person in the profile page is the logged in user
                         // If yes, then don't display the follow button

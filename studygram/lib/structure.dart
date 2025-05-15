@@ -54,8 +54,10 @@ class Post extends Content {
       required super.id});
 
   factory Post.fromJson(Map<String, dynamic> json) {
+    bool parseToInt = json['id'] is String;
+
     return Post(
-        id: json['id'],
+        id: parseToInt ? int.parse(json['id']) : json['id'],
         body: json["body"],
         username: json["username"],
         comments: (json["comments"] == null)

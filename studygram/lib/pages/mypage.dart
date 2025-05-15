@@ -31,7 +31,7 @@ class MyPage extends StatelessWidget {
                   child: Padding(
                 padding: const EdgeInsets.all(5),
                 child: NavigationCard(
-                  route: '/user/friends',
+                  route: '/friends',
                   text: 'Friends',
                   icon: Icons.group,
                   extra: userModel

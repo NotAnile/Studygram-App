@@ -5,7 +5,7 @@ import '../structure.dart';
 import '../models/feed.dart';
 import 'package:provider/provider.dart';
 
-//**Listview to display all the posts in a column*/
+//**Listview to display all the comments in a column*/
 class ContentView extends StatefulWidget {
   final List<dynamic> contents;
   const ContentView({super.key, required this.contents});
@@ -27,6 +27,8 @@ class _ContentViewState extends State<ContentView> {
   }
 }
 
+/// PostView is used to display posts and it extends ContentView which is used for comments.
+/// The difference between PostView and ContentView is that PostView also gets the comments
 class PostView extends ContentView {
   const PostView({super.key, required super.contents});
 

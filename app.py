@@ -539,7 +539,7 @@ def get_user_posts(usernames: List[str], limit: int):
         post_generator = db.session.execute(db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id))).scalars().all()
     else:
         post_generator = db.session.execute(
-            db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id).limit(limit))
+            db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id)).limit(limit)
         ).scalars().all()
     
     for post in post_generator:
