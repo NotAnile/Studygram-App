@@ -26,7 +26,7 @@ class CreatePostModel extends ChangeNotifier {
           'Authorization': 'Bearer $token'
         },
         // We don't need to send the username when we use the token
-        body: jsonEncode(<String, String>{'body': body}));
+        body: jsonEncode(<String, String>{'body': body.trim()}));
     // Handling the result depending on the status code
     if (response.statusCode == 200) {
       // Setting no error message since everything went well

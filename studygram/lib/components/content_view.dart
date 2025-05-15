@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/commentcard.dart';
+import 'package:studygram/components/loading_indicator.dart';
 import 'postcard.dart';
 import 'package:go_router/go_router.dart';
 import '../structure.dart';
 import '../models/feed.dart';
 import 'package:provider/provider.dart';
+import 'package:studygram/models/like_manager.dart';
+import 'package:studygram/models/authentication.dart';
 
 //**Listview to display all the comments in a column*/
 class CommentView extends StatefulWidget {
@@ -32,8 +35,11 @@ class _CommentViewState extends State<CommentView> {
 /// PostView is used to display posts and it extends CommentView which is used for comments.
 /// The difference between PostView and CommentView is that PostView also gets the comments
 class PostView extends StatefulWidget {
+  final List<dynamic>? selectedUsers;
+  final List<dynamic>? excludedUsers;
   final List<dynamic> posts;
-  const PostView({super.key, required this.posts});
+  const PostView(
+      {super.key, this.selectedUsers, this.excludedUsers, required this.posts});
 
   @override
   State<PostView> createState() => _PostViewState();
@@ -42,23 +48,74 @@ class PostView extends StatefulWidget {
 class _PostViewState extends State<PostView> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<Feed>(builder: (context, feed, child) {
-      return ListView.builder(
-        itemCount: widget.posts.length,
-        itemBuilder: (context, index) {
-          Post post = widget.posts[index];
-          // Getting the right post with the index and returns a PostCard with the body and username
-          return GestureDetector(
-            child: PostCard(post: post),
-            onTap: () async {
-              // Sending the post as the extra parameter when navigating to the specific post page
-              if (context.mounted) {
-                context.push('/post', extra: post.id);
-              }
-            },
-          );
-        },
-      );
-    });
+    if (widget.selectedUsers != null && widget.excludedUsers != null) {
+      // Getting the posts
+      String token =
+          Provider.of<Authentication>(context, listen: false).accessToken;
+
+      return Consumer<LikeManager>(builder: (context, likeManager, child) {
+        return Consumer<Feed>(builder: (context, feed, child) {
+          return FutureBuilder(
+              future: feed.getPosts(
+                  token, widget.selectedUsers!, widget.excludedUsers!),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                      child:
+                          Text("An error has occurred. Could not get posts."));
+                }
+
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final posts = snapshot.data!;
+
+                  if (posts.isEmpty) {
+                    return const Text("No posts found");
+                  }
+
+                  return ListView.builder(
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      Post post = posts[index];
+                      // Getting the right post with the index and returns a PostCard with the body and username
+                      return GestureDetector(
+                        child: PostCard(post: post),
+                        onTap: () async {
+                          // Sending the post as the extra parameter when navigating to the specific post page
+                          if (context.mounted) {
+                            context.push('/post', extra: post.id);
+                          }
+                        },
+                      );
+                    },
+                  );
+                } else {
+                  return const LoadingIndicator();
+                }
+              });
+        });
+      });
+    } else {
+      // We recieved posts to display
+      if (widget.posts.isEmpty) {
+        return const Text("No posts found");
+      } else {
+        return ListView.builder(
+          itemCount: widget.posts.length,
+          itemBuilder: (context, index) {
+            Post post = widget.posts[index];
+            // Getting the right post with the index and returns a PostCard with the body and username
+            return GestureDetector(
+              child: PostCard(post: post),
+              onTap: () async {
+                // Sending the post as the extra parameter when navigating to the specific post page
+                if (context.mounted) {
+                  context.push('/post', extra: post.id);
+                }
+              },
+            );
+          },
+        );
+      }
+    }
   }
 }

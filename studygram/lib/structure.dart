@@ -47,14 +47,15 @@ abstract class Content {
 class Post extends Content {
   final List comments;
   bool isLiked;
+  int likeCount;
   // Inherits the body and username from the Tile class
-  Post({
-    required super.body,
-    required super.username,
-    required this.comments,
-    required this.isLiked,
-    required super.id,
-  });
+  Post(
+      {required super.body,
+      required super.username,
+      required this.comments,
+      required this.isLiked,
+      required super.id,
+      required this.likeCount});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     bool parseToInt = json['id'] is String;
@@ -68,7 +69,8 @@ class Post extends Content {
             : json["comments"]
                 .map((comment) => Comment.fromJson(comment))
                 .toList(),
-        isLiked: json["isLiked"]);
+        isLiked: json["isLiked"],
+        likeCount: json["like_count"]);
   }
 
   static Map<String, dynamic> toJson(Post post) {

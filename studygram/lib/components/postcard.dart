@@ -17,73 +17,102 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
-    LikeManager likeManager = Provider.of<LikeManager>(context, listen: false);
     String accessToken =
         Provider.of<Authentication>(context, listen: false).accessToken;
     bool isLiked = widget.post.isLiked;
+    int likeCount = widget.post.likeCount;
 
-    void handleLike() {
+    void handleLike(bool liked) {
       setState(() {
         isLiked = !isLiked;
+        // Updates like count
+        if (liked) {
+          likeCount += 1;
+        } else {
+          likeCount -= 1;
+        }
       });
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      // Likes the post when user double taps on card
-      // if they haven't already liked it
-      child: GestureDetector(
-        onDoubleTap: () {
-          if (!isLiked) {
-            likeManager.likePost(accessToken, widget.post);
-            handleLike();
-          }
-        },
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              children: [
-                Row(children: [
-                  // If you click on the user's name, then go to their profile page
-                  GestureDetector(
-                    child: Text(widget.post.username,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14)),
-                    onTap: () {
-                      context.go('/profile');
-                    },
-                  ),
-                ]),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(widget.post.body,
-                        style: const TextStyle(fontSize: 13)),
-                    // Likes or removes the like on a single tap on the heart icon
+    return Consumer<LikeManager>(builder: (context, likeManager, child) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        // Likes the post when user double taps on card
+        // if they haven't already liked it
+        child: GestureDetector(
+          onDoubleTap: () {
+            if (!isLiked) {
+              likeManager.likePost(accessToken, widget.post);
+              handleLike(true);
+            }
+          },
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                children: [
+                  Row(children: [
+                    // If you click on the user's name, then go to their profile page
                     GestureDetector(
+                      child: Text(widget.post.username,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14)),
                       onTap: () {
-                        if (!isLiked) {
-                          likeManager.likePost(accessToken, widget.post);
-                        } else {
-                          likeManager.unlikePost(accessToken, widget.post);
-                        }
-                        handleLike();
+                        context.go('/profile');
                       },
-                      child: Icon(
-                        isLiked ? Icons.favorite : Icons.favorite_border,
-                        color: isLiked
-                            ? const Color.fromARGB(255, 233, 107, 98)
-                            : Colors.grey,
+                    ),
+                  ]),
+                  Row(
+                    children: [
+                      // The post's body/message
+                      Flexible(
+                        // Makes the text wrap so it doesn't overflow
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            widget.post.body,
+                            softWrap: true,
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                        ),
                       ),
-                    )
-                  ],
-                )
-              ],
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "$likeCount",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+
+                      // Heart icon
+                      // Likes or removes the like on a single tap on the heart icon
+                      GestureDetector(
+                        onTap: () {
+                          if (!isLiked) {
+                            likeManager.likePost(accessToken, widget.post);
+                            handleLike(true);
+                          } else {
+                            likeManager.unlikePost(accessToken, widget.post);
+                            handleLike(false);
+                          }
+                        },
+                        child: Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: isLiked
+                              ? const Color.fromARGB(255, 233, 107, 98)
+                              : Colors.grey,
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

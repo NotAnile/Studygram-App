@@ -363,9 +363,9 @@ def save_comment(PostID):
     if 'message' in json_data:
         message = json_data['message']
 
-        # Ensures that the length of the message is not over 300 characters
-        if len(message) > 300:
-            return jsonify({'message':'Message length is over 300 characters'}), 400
+        # Ensures that the length of the message is not over 500 characters
+        if len(message) > 500:
+            return jsonify({'message':'Message length is over 500 characters'}), 400
 
         # Saves the post and its owner's id in the database
         comment = Comment(user_id=user_id, post=post, message=message)
@@ -401,7 +401,7 @@ def get_post(PostID):
         comments = []
         for comment in post.comments:
             comments.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
-        return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'likes': likes, 'comments': comments, 'username': post.user_id, 'isLiked': ((post in user.liked_posts))}), 200
+        return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'like_count': likes, 'comments': comments, 'username': post.user_id, 'isLiked': ((post in user.liked_posts))}), 200
     else:
         return jsonify({'message':'Invalid post ID'}), 400
 
