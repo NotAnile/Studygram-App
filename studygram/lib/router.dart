@@ -9,7 +9,6 @@ import 'package:studygram/pages/notifications.dart';
 import 'package:studygram/pages/mypage.dart';
 import 'package:studygram/pages/post.dart';
 import 'package:provider/provider.dart';
-import './structure.dart';
 import 'pages/login.dart';
 import 'package:studygram/pages/userprofile.dart';
 import 'components/navigationbar.dart';
@@ -59,9 +58,9 @@ class MyRouter extends StatelessWidget {
         GoRoute(
           path: '/post',
           builder: (context, state) {
-            final post =
-                state.extra! as Post; // Gets the post for the post page
-            return PostPage(post: post);
+            final postID =
+                state.extra! as int; // Gets the post for the post page
+            return PostPage(postID: postID);
           },
         ),
         GoRoute(

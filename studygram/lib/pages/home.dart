@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:studygram/components/loading_indicator.dart';
 import 'package:studygram/models/like_manager.dart';
 import '../components/content_view.dart';
-import '../structure.dart';
 import '../models/feed.dart';
 import '../models/user.dart';
 import 'package:provider/provider.dart';
@@ -34,11 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
         // Checking if the usermodel is initalized before showing the feed
         if (!userModel.isInitialized) {
-          return const SizedBox(
-            width: 20.0,
-            height: 20.0,
-            child: CircularProgressIndicator(),
-          );
+          return const LoadingIndicator();
         }
         // UserModel is initialized so we can load and show the feed
         String token =
@@ -49,11 +45,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 Provider.of<UserModel>(context, listen: false);
             List<dynamic> selectedUsers = seeFollowing ? userModel.friends : [];
             List<dynamic> excludedUsers = [userModel.username];
-            // Excludes the users friend if the togg
-            if (seeFollowing) {
-              userModel.friends.add(userModel.username);
+            // Excludes the user's following list if the toggleMode is on Explore
+            if (!seeFollowing) {
+              excludedUsers.addAll(userModel.following);
             }
-            ;
+
             return FutureBuilder(
               future: feed.getPosts(token, selectedUsers, excludedUsers),
               builder: (context, snapshot) {
@@ -103,17 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               const EdgeInsets.only(left: 15.0, right: 15.0),
                           child: (data.isEmpty)
                               ? const Text("No posts found")
-                              : PostView(contents: data),
+                              : PostView(posts: data),
                         ),
                       )
                     ],
                   );
                 } else {
-                  return const SizedBox(
-                    width: 20.0,
-                    height: 20.0,
-                    child: CircularProgressIndicator(),
-                  );
+                  return const LoadingIndicator();
                 }
               },
             );

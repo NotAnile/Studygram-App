@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 // Enum class with statuses for async operations
 enum Status {
   idle,

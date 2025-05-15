@@ -99,6 +99,8 @@ class Feed extends ChangeNotifier {
         },
       ),
     );
+
+    // Adding all the posts from json to a list
     final result = json.decode(response.body);
     if (response.statusCode == 200) {
       _status = Status.success;

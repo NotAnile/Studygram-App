@@ -1,67 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:studygram/components/commentcard.dart';
 import 'postcard.dart';
 import 'package:go_router/go_router.dart';
 import '../structure.dart';
 import '../models/feed.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/authentication.dart';
 
 //**Listview to display all the comments in a column*/
-class ContentView extends StatefulWidget {
-  final List<dynamic> contents;
-  const ContentView({super.key, required this.contents});
+class CommentView extends StatefulWidget {
+  final List<dynamic> comments;
+  const CommentView({super.key, required this.comments});
 
   @override
-  State<ContentView> createState() => _ContentViewState();
+  State<CommentView> createState() => _CommentViewState();
 }
 
-class _ContentViewState extends State<ContentView> {
+class _CommentViewState extends State<CommentView> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: widget.contents.length,
+      itemCount: widget.comments.length,
       itemBuilder: (context, index) {
+        Comment comment = widget.comments[index] as Comment;
         // Getting the right post with the index and returns a PostCard with the body and username
-        return PostCard(post: widget.contents[index]);
+        return CommentCard(comment: comment);
       },
     );
   }
 }
 
-/// PostView is used to display posts and it extends ContentView which is used for comments.
-/// The difference between PostView and ContentView is that PostView also gets the comments
-class PostView extends ContentView {
-  const PostView({super.key, required super.contents});
+/// PostView is used to display posts and it extends CommentView which is used for comments.
+/// The difference between PostView and CommentView is that PostView also gets the comments
+class PostView extends StatefulWidget {
+  final List<dynamic> posts;
+  const PostView({super.key, required this.posts});
 
   @override
-  State<ContentView> createState() => _PostViewState();
+  State<PostView> createState() => _PostViewState();
 }
 
-class _PostViewState extends State<ContentView> {
+class _PostViewState extends State<PostView> {
   @override
   Widget build(BuildContext context) {
     return Consumer<Feed>(builder: (context, feed, child) {
       return ListView.builder(
-        itemCount: widget.contents.length,
+        itemCount: widget.posts.length,
         itemBuilder: (context, index) {
-          Post post = widget.contents[index];
+          Post post = widget.posts[index];
           // Getting the right post with the index and returns a PostCard with the body and username
           return GestureDetector(
             child: PostCard(post: post),
             onTap: () async {
-              // Getting the comments for the post with that ID
-              int postID = post.id;
-
-              // Getting the access token
-              String token = Provider.of<Authentication>(context, listen: false)
-                  .accessToken;
-              // Getting the post including comments from the backend
-              Post postWithComments =
-                  await Provider.of<Feed>(context, listen: false)
-                      .getPost(postID, token);
               // Sending the post as the extra parameter when navigating to the specific post page
               if (context.mounted) {
-                context.push('/post', extra: postWithComments);
+                context.push('/post', extra: post.id);
               }
             },
           );

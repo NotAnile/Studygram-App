@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:studygram/models/user.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:go_router/go_router.dart';
+import 'package:studygram/models/url.dart';
 
 /// A card that consists of a username and a follow/unfollow button which takes you to their profile page when clicked.
 class UserCard extends StatefulWidget {
@@ -20,6 +21,13 @@ class _UserCardState extends State<UserCard> {
     UserModel userModel = Provider.of<UserModel>(context, listen: false);
     FriendManager friendManagerModel =
         Provider.of<FriendManager>(context, listen: false);
+
+    bool isFollowing = userModel.following.contains(widget.username);
+    void handleFollow() {
+      setState(() {
+        isFollowing = !isFollowing;
+      });
+    }
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -38,24 +46,39 @@ class _UserCardState extends State<UserCard> {
                   MyTextButton(
                     // Changing the buttontext depending on if the user
                     // has already followed the person in this page or not
-                    buttonText: (!userModel.following.contains(widget.username))
-                        ? 'Follow'
-                        : 'Unfollow',
+                    buttonText: (!isFollowing) ? 'Follow' : 'Unfollow',
                     textColor: Colors.white,
                     backgroundColor: const Color.fromARGB(255, 191, 152, 197),
                     rectangleShape: true,
-                    onPressed: () {
+                    onPressed: () async {
+                      Status? status;
                       // Checking if the user is following the person already or not
                       // to make the right call to backend to either follow or unfollow
-                      if (userModel.following.contains(widget.username)) {
-                        friendManagerModel.addFriend(context, widget.username);
-
+                      if (!isFollowing) {
                         // Add the person that the user wants to follow to the following list
-                        userModel.followUser(widget.username);
-                      } else {
-                        friendManagerModel.removeFriend(
+                        status = await friendManagerModel.addFriend(
                             context, widget.username);
-                        userModel.unfollowUser(widget.username);
+                      } else {
+                        status = await friendManagerModel.removeFriend(
+                            context, widget.username);
+                      }
+                      // Checking what status we got
+                      if (status == Status.success) {
+                        handleFollow();
+                      } else {
+                        // Showing a snackbar to let the user know that something went wrong whilst handling the follow/unfollow request
+                        if (context.mounted) {
+                          String errorMessage = friendManagerModel.errorMessage;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                (errorMessage.isEmpty
+                                    ? "Unknown error"
+                                    : errorMessage),
+                              ),
+                            ),
+                          );
+                        }
                       }
                     },
                   )
@@ -66,7 +89,7 @@ class _UserCardState extends State<UserCard> {
         ),
         // Go to the user's profile when clicking on it
         onTap: () {
-          context.push('/profile', extra: widget.username);
+          context.go('/profile', extra: widget.username);
         },
       ),
     );

@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/appbar.dart';
-import 'package:studygram/components/textarea.dart';
-import 'package:studygram/components/textbutton.dart';
-import 'package:provider/provider.dart';
-import 'package:studygram/components/content_view.dart';
-import 'package:studygram/models/friend_manager.dart';
-import 'package:studygram/models/user.dart';
-import '../models/settings_model.dart';
 import 'package:studygram/components/userview.dart';
-import 'package:studygram/models/feed.dart';
 
 class FriendsPage extends StatelessWidget {
   final List<dynamic> friends;
@@ -25,12 +17,17 @@ class FriendsPage extends StatelessWidget {
           )),
       body: Center(
         child: Column(children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: UserView(friends: friends),
-            ),
-          ),
+          friends.isEmpty
+              ? const Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Text("Go touch some grass."),
+                )
+              : Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UserView(friends: friends),
+                  ),
+                ),
         ]),
       ),
     );

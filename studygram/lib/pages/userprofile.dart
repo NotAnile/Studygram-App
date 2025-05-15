@@ -100,7 +100,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 const Divider(),
                 posts.isEmpty
                     ? const Text("This user has no posts")
-                    : Expanded(child: ContentView(contents: posts))
+                    : Expanded(child: PostView(posts: posts))
               ],
             ),
           );

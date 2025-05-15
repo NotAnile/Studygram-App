@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/content_view.dart';
-import 'package:studygram/components/textbutton.dart';
-import '../models/feed.dart';
 import 'package:studygram/models/like_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/user.dart';
 
 class LikedPage extends StatelessWidget {
   const LikedPage({super.key});
@@ -17,7 +14,7 @@ class LikedPage extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: PostView(contents: model.likedPosts),
+              child: PostView(posts: model.likedPosts),
             ),
           ),
         ]),

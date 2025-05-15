@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../structure.dart';
 import './url.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/authentication.dart';
@@ -15,7 +14,7 @@ class FriendManager extends ChangeNotifier {
   Status get status => _status;
   String get errorMessage => _errorMessage;
 
-  void addFriend(BuildContext context, String friendUsername) async {
+  Future<Status> addFriend(BuildContext context, String friendUsername) async {
     _status = Status.loading;
     // Getting token
     String token =
@@ -34,15 +33,20 @@ class FriendManager extends ChangeNotifier {
       _status = Status.success;
       // Setting no error message since everything went well
       _errorMessage = "";
+      // Updates the UserModel
+      Provider.of<UserModel>(context, listen: false).followUser(friendUsername);
+      return Status.success;
     } else {
       // Something went wrong, so error message is updated
       _status = Status.error;
-      _errorMessage = response.body;
+      _errorMessage = json.decode(response.body)['message'];
+      notifyListeners();
+      return Status.error;
     }
-    notifyListeners();
   }
 
-  void removeFriend(BuildContext context, String friendUsername) async {
+  Future<Status> removeFriend(
+      BuildContext context, String friendUsername) async {
     // Getting token
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
@@ -60,11 +64,17 @@ class FriendManager extends ChangeNotifier {
       _status = Status.success;
       // Setting no error message since everything went well
       _errorMessage = "";
+      //Updates the FriendModel
+      Provider.of<UserModel>(context, listen: false)
+          .unfollowUser(friendUsername);
+      notifyListeners();
+      return Status.success;
     } else {
       _status = Status.error;
       // Something went wrong, so error message is updated
       _errorMessage = json.decode(response.body)['message'];
+      notifyListeners();
+      return Status.error;
     }
-    notifyListeners();
   }
 }

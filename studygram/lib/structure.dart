@@ -87,7 +87,7 @@ class Comment extends Content {
   Comment({required super.body, required super.username, required super.id});
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
-      body: json["body"],
+      body: json["message"],
       username: json["username"],
       id: json["id"],
     );
@@ -95,7 +95,7 @@ class Comment extends Content {
 
   static Map<String, dynamic> toJson(Comment comment) {
     return {
-      "body": comment.body,
+      "message": comment.body,
       "username": comment.username,
       "id": comment.id,
     };

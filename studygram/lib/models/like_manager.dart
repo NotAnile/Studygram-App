@@ -8,11 +8,13 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class LikeManager extends ChangeNotifier {
-  List<dynamic> _likedPosts = [];
+  final List<dynamic> _likedPosts = [];
   Status _status = Status.idle;
   String _errorMessage = "";
 
   List<dynamic> get likedPosts => _likedPosts;
+  String get errorMessage => _errorMessage;
+  Status get status => _status;
 
   /// Adds the post that the user has liked to the list
   void likePost(String token, Content post) async {

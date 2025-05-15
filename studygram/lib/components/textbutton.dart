@@ -8,6 +8,7 @@ class MyTextButton extends StatelessWidget {
   final Color textColor;
   final Color backgroundColor;
   final bool rectangleShape;
+  final bool? wrapText;
   final void Function() onPressed;
   final double? width;
   final double? height;
@@ -20,6 +21,7 @@ class MyTextButton extends StatelessWidget {
     required this.backgroundColor,
     required this.rectangleShape,
     required this.onPressed,
+    this.wrapText,
     this.width,
     this.height,
   });
@@ -34,10 +36,8 @@ class MyTextButton extends StatelessWidget {
 
     return Consumer<Settings>(
       builder: (context, model, state) {
-        return SizedBox(
-          width: width ?? sizes[model.size]['width'],
-          height: height ?? sizes[model.size]['height'],
-          child: TextButton(
+        if (wrapText != null && wrapText!) {
+          return TextButton(
             onPressed: onPressed,
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(backgroundColor),
@@ -53,8 +53,30 @@ class MyTextButton extends StatelessWidget {
               buttonText,
               style: TextStyle(color: textColor),
             ),
-          ),
-        );
+          );
+        } else {
+          return SizedBox(
+            width: width ?? sizes[model.size]['width'],
+            height: height ?? sizes[model.size]['height'],
+            child: TextButton(
+              onPressed: onPressed,
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(backgroundColor),
+                shape: (rectangleShape)
+                    ? WidgetStateProperty.all(
+                        const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      )
+                    : null,
+              ),
+              child: Text(
+                buttonText,
+                style: TextStyle(color: textColor),
+              ),
+            ),
+          );
+        }
       },
     );
   }

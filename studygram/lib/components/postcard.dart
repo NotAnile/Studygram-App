@@ -3,6 +3,7 @@ import '../structure.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/like_manager.dart';
 import 'package:studygram/models/authentication.dart';
+import 'package:go_router/go_router.dart';
 
 //**A card that consists of a username and a text (body). Each post consists of a card.*/
 class PostCard extends StatefulWidget {
@@ -44,9 +45,15 @@ class _PostCardState extends State<PostCard> {
             child: Column(
               children: [
                 Row(children: [
-                  Text(widget.post.username,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14)),
+                  // If you click on the user's name, then go to their profile page
+                  GestureDetector(
+                    child: Text(widget.post.username,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                    onTap: () {
+                      context.go('/profile');
+                    },
+                  ),
                 ]),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

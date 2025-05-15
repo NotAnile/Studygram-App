@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import './models/settings_model.dart';
 import 'package:studygram/models/friend_manager.dart';
 import 'package:studygram/models/like_manager.dart';
+import 'package:studygram/models/post_page_model.dart';
 import 'router.dart';
 
 void main() {
@@ -21,6 +22,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => CreatePostModel()),
       ChangeNotifierProvider(create: (_) => FriendManager()),
       ChangeNotifierProvider(create: (_) => LikeManager()),
+      ChangeNotifierProvider(create: (_) => PostPageModel())
     ],
     child: const MainApp(),
   ));

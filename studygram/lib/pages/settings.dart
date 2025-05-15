@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/components/content_view.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/models/settings_model.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/user.dart';
 import 'package:studygram/models/authentication.dart';
 
 class SettingsPage extends StatelessWidget {

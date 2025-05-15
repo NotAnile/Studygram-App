@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'usercard.dart';
-import 'package:go_router/go_router.dart';
-import '../structure.dart';
-import '../models/feed.dart';
-import 'package:provider/provider.dart';
 
 //**Listview to display all the users in a column*/
 class UserView extends StatefulWidget {

@@ -147,6 +147,7 @@ class BlockedToken(db.Model):
     def __init__(self, jti):
         self.jti = jti
 
+
 with app.app_context():
     db.create_all()
 
@@ -371,7 +372,7 @@ def save_comment(PostID):
         db.session.add(comment)
         db.session.commit()
 
-        return jsonify({'id': comment.id}), 200
+        return jsonify({'message': 'Comment added successfully added'}), 200
     else:
         return jsonify({'message':'Comment missing a message'}), 400
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import './url.dart';
-import 'package:studygram/models/authentication.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
