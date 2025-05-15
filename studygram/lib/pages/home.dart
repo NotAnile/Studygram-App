@@ -18,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool seeFollowing = true;
 
+  // The user can choose to see the posts of the people they follow or explore
   void toggleMode(bool following) {
     if (seeFollowing != following) {
       setState(() {
