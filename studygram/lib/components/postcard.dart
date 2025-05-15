@@ -5,21 +5,21 @@ import 'package:studygram/models/like_manager.dart';
 import 'package:studygram/models/authentication.dart';
 
 //**A card that consists of a username and a text (body). Each post consists of a card.*/
-class ContentCard extends StatefulWidget {
-  final Content content; // Content is a post
-  const ContentCard({super.key, required this.content});
+class PostCard extends StatefulWidget {
+  final Post post;
+  const PostCard({super.key, required this.post});
 
   @override
-  State<ContentCard> createState() => _ContentCardState();
+  State<PostCard> createState() => _PostCardState();
 }
 
-class _ContentCardState extends State<ContentCard> {
+class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     LikeManager likeManager = Provider.of<LikeManager>(context, listen: false);
     String accessToken =
         Provider.of<Authentication>(context, listen: false).accessToken;
-    bool isLiked = likeManager.likedPosts.contains(widget.content);
+    bool isLiked = widget.post.isLiked;
 
     void handleLike() {
       setState(() {
@@ -34,7 +34,7 @@ class _ContentCardState extends State<ContentCard> {
       child: GestureDetector(
         onDoubleTap: () {
           if (!isLiked) {
-            likeManager.likePost(accessToken, widget.content);
+            likeManager.likePost(accessToken, widget.post);
             handleLike();
           }
         },
@@ -44,22 +44,22 @@ class _ContentCardState extends State<ContentCard> {
             child: Column(
               children: [
                 Row(children: [
-                  Text(widget.content.username,
+                  Text(widget.post.username,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 14)),
                 ]),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(widget.content.body,
+                    Text(widget.post.body,
                         style: const TextStyle(fontSize: 13)),
                     // Likes or removes the like on a single tap on the heart icon
                     GestureDetector(
                       onTap: () {
                         if (!isLiked) {
-                          likeManager.likePost(accessToken, widget.content);
+                          likeManager.likePost(accessToken, widget.post);
                         } else {
-                          likeManager.unlikePost(accessToken, widget.content);
+                          likeManager.unlikePost(accessToken, widget.post);
                         }
                         handleLike();
                       },

@@ -33,7 +33,7 @@ class UserModel extends ChangeNotifier {
   }
 
   //** Initializes the usermodel and sets all the values by getting the data from backend. */
-  void initialize(String username) async {
+  void initialize(String username, String token) async {
     if (!_isInitialized) {
       _status = Status.loading;
       final String baseUrl = BaseUrl().baseUrl;
@@ -43,6 +43,7 @@ class UserModel extends ChangeNotifier {
         Uri.parse("$baseUrl/profile/$username"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
         },
       );
 

@@ -35,12 +35,19 @@ class Feed extends ChangeNotifier {
   }
 
   //**Returns a list of the posts for a given username.*/
-  Future<dynamic> getProfile(String username) async {
+  Future<dynamic> getProfile(String username, String token) async {
     // Checks if the username exists in the cache already
     if (_postCache.containsKey(username)) {
       return _postCache[username];
     }
-    final response = await http.get(Uri.parse("$baseUrl/profile/$username"));
+    final response = await http.get(
+      Uri.parse("$baseUrl/profile/$username"),
+      headers: <String, String>{
+        'Content-Type':
+            'application/json; charset=UTF-8', // application/json means we want to parse it as a json
+        'Authorization': 'Bearer $token',
+      },
+    );
     final result = json.decode(response.body);
     if (response.statusCode == 200) {
       _status = Status.success;
@@ -53,9 +60,16 @@ class Feed extends ChangeNotifier {
   }
 
   //**Returns a post object for the given post id. */
-  Future<dynamic> getPost(int postID) async {
+  Future<dynamic> getPost(int postID, String token) async {
     _status = Status.loading;
-    final response = await http.get(Uri.parse("$baseUrl/post/$postID"));
+    final response = await http.get(
+      Uri.parse("$baseUrl/post/$postID"),
+      headers: <String, String>{
+        'Content-Type':
+            'application/json; charset=UTF-8', // application/json means we want to parse it as a json
+        'Authorization': 'Bearer $token',
+      },
+    );
     final result = json.decode(response.body);
     if (response.statusCode == 200) {
       _status = Status.success;

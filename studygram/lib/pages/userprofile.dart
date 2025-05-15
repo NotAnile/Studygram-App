@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/content_view.dart';
 import 'package:studygram/components/textbutton.dart';
+import 'package:studygram/models/authentication.dart';
 import '../models/feed.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/user.dart';
@@ -21,8 +22,10 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
-    Future<dynamic> request =
-        Provider.of<Feed>(context, listen: true).getProfile(widget.username);
+    String token =
+        Provider.of<Authentication>(context, listen: false).accessToken;
+    Future<dynamic> request = Provider.of<Feed>(context, listen: true)
+        .getProfile(widget.username, token);
 
     FriendManager friendManagerModel =
         Provider.of<FriendManager>(context, listen: false);

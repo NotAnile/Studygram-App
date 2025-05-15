@@ -377,9 +377,15 @@ def save_comment(PostID):
 
 
 @app.route('/post/<PostID>', methods=['GET'])
+@jwt_required()
 def get_post(PostID):
     """Returns a json with the given postID, body, and a list of
     users that has liked the message and the amount of likes."""
+    username = get_jwt_identity()
+    if (not user_exists(username)):
+        return jsonify({'message': 'User does not exist'}), 404
+    
+    user = db.session.get(User, username)
 
     if post_exists(PostID):
         post = db.session.get(Post, PostID)
@@ -394,7 +400,7 @@ def get_post(PostID):
         comments = []
         for comment in post.comments:
             comments.append({'id': comment.id, 'message': comment.message, 'username': comment.user_id})
-        return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'likes': likes, 'comments': comments, 'username': post.user_id}), 200
+        return jsonify({'id': PostID, 'body': message, 'likedBy': liked_by_list, 'likes': likes, 'comments': comments, 'username': post.user_id, 'isLiked': ((post in user.liked_posts))}), 200
     else:
         return jsonify({'message':'Invalid post ID'}), 400
 
@@ -525,7 +531,7 @@ def get_all_comments(PostID):
     else:
         return jsonify({'message':"Post does not exist"}), 404
 
-def get_user_posts(usernames: List[str], limit: int):
+def get_user_posts(usernames: List[str], limit: int, logged_in_user):
     """Helper function that returns a list of posts created by the given users. The amount of posts selected is 
     determined by the given limit. If limit is None then all posts will be selected."""
     result = []
@@ -543,19 +549,23 @@ def get_user_posts(usernames: List[str], limit: int):
         ).scalars().all()
     
     for post in post_generator:
-        result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes)})
+        result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes), 'isLiked': (post in logged_in_user.liked_posts)})
     
     return result
 
 @app.route('/profile/<UserID>', methods=['GET'])
+@jwt_required()
 def get_user_profile(UserID):
     """Returns a jsonified dict of all the user's information such as posts, amount of posts, 
     friends, amount of friends, people they follow, friend requests and liked posts."""
-    
+    # Gets the username/userID of the logged in user
+    username = get_jwt_identity()
     # Checks if the user exists
-    if user_exists(UserID):
-        posts = get_user_posts([UserID], None)
+    if user_exists(UserID) and user_exists(username):
+        logged_in_user = db.session.get(User, username)
+        posts = get_user_posts([UserID], None, logged_in_user)
         user = db.session.get(User, UserID)
+        logged_in_user = db.session.get(User, username)
         mutual_friends = user.mutual_friends()
         following = user.following
 
@@ -575,11 +585,16 @@ def get_user_profile(UserID):
 
 
 @app.route('/posts/all', methods=['POST'])
+@jwt_required()
 def get_all_posts():
     """Takes in a JSON with usernames returns a jsonified list of all the posts of the given users.
     If the body of users in the JSON is empty, this function will return posts of random users
     excluding the given usernames to exclude."""
-
+    username = get_jwt_identity()
+    if (not user_exists(username)):
+        return jsonify({'message': "User does not exist"}), 404
+ 
+    user = db.session.get(User, username)
     data = request.json
     if data_exist(['selected_users', 'excluded_users', 'post_count'], data):
         selected_users = data['selected_users']
@@ -599,10 +614,10 @@ def get_all_posts():
 
         for post in post_generator:
             # Creating a list of all posts
-            result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes)})
+            result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes), 'isLiked': (post in user.liked_posts)})
     else:
         # Gets the posts from the selected users
-        postsAsDicts = get_user_posts(selected_users, post_count)
+        postsAsDicts = get_user_posts(selected_users, post_count, user)
         for post in postsAsDicts:
             result.append(post)
     
@@ -621,7 +636,7 @@ def get_liked_posts():
 
         liked_posts = user.liked_posts
         for post in liked_posts:
-            result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes)})
+            result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes), 'isLiked': True})
 
         return jsonify({'liked_posts': result})
     else:

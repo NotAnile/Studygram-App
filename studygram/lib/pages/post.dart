@@ -22,7 +22,7 @@ class PostPage extends StatelessWidget {
         body: Center(
             child: Column(
           children: [
-            ContentCard(content: post),
+            PostCard(post: post),
             (post.comments.isEmpty)
                 ? const Text("No comments yet")
                 : Expanded(

@@ -43,7 +43,7 @@ class Authentication extends ChangeNotifier {
         // Setting up user model and updating isLoggedIn bool
         UserModel userModel = Provider.of<UserModel>(context, listen: false);
         userModel.setUsername = username;
-        userModel.initialize(username);
+        userModel.initialize(username, _accessToken);
 
         // Getting the size that the user has chosen
         Provider.of<Settings>(context, listen: false).getSize(_accessToken);
