@@ -5,6 +5,10 @@ import './user.dart';
 import 'package:provider/provider.dart';
 import './url.dart';
 import 'package:studygram/models/settings_model.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fresh_dio/fresh_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:studygram/token.dart';
 
 class Authentication extends ChangeNotifier {
   bool _isLoggedIn = false;
@@ -76,5 +80,37 @@ class Authentication extends ChangeNotifier {
       _status = Status.error;
     }
     notifyListeners();
+  }
+
+  /// Creates and configures a Dio HTTP client with authentication
+  Dio setupAuthenticatedDio(String baseUrl) {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
+      ),
+    );
+
+    // Set up token storage
+    const secureStorage = FlutterSecureStorage();
+    const tokenStorage = TokenStorageImpl(secureStorage);
+
+    // Set up token refresh interceptor
+    final tokenRefreshInterceptor = TokenRefreshInterceptor(tokenStorage);
+    final fresh = tokenRefreshInterceptor.fresh;
+
+    // Add the Fresh interceptor to Dio
+    dio.interceptors.add(fresh);
+
+    // Log out listener to handle authentication failures
+    fresh.authenticationStatus.listen((status) {
+      if (status == AuthenticationStatus.unauthenticated) {
+        _isLoggedIn = false;
+      }
+    });
+
+    return dio;
   }
 }

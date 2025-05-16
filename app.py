@@ -213,7 +213,8 @@ def create_user():
 def refresh():
     username = get_jwt_identity()
     new_access_token = create_access_token(identity=username)
-    return jsonify(access_token=new_access_token)
+    new_refresh_token = create_refresh_token(identity=username)
+    return jsonify(access_token=new_access_token, refresh_token=new_refresh_token)
 
 
 @app.route('/user/login', methods=['POST'])

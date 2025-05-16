@@ -39,7 +39,7 @@ class _FriendsPageState extends State<FriendsPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: MyTextButton(
-                  buttonText: "Friends",
+                  buttonText: "Mutuals",
                   textColor: Colors.white,
                   backgroundColor: buttonColor,
                   rectangleShape: true,
