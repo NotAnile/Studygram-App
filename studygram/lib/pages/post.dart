@@ -92,6 +92,13 @@ class _PostPageState extends State<PostPage> {
                           } else {
                             // The comment was succesfully added so the controller's text is resetted
                             commentController.text = "";
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Comment succesfully added"),
+                                ),
+                              );
+                            }
                           }
                         },
                         wrapText: true,
