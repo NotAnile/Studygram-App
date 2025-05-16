@@ -85,7 +85,7 @@ class Feed extends ChangeNotifier {
   Future<dynamic> getComments(int postID, String token) async {
     _status = Status.loading;
     final response = await http.get(
-      Uri.parse("$baseUrl/post/$postID/comments"),
+      Uri.parse("$baseUrl/posts/$postID/comments"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

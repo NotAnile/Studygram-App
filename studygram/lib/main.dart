@@ -23,7 +23,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => CreatePostModel()),
       ChangeNotifierProvider(create: (_) => FriendManager()),
       ChangeNotifierProvider(create: (_) => LikeManager()),
-      ChangeNotifierProvider(create: (_) => PostPageModel()),
+      ChangeNotifierProvider(create: (_) => CommentViewModel()),
       ChangeNotifierProvider(create: (_) => TimerModel()),
       ChangeNotifierProvider(create: (_) => WatchModel()),
     ],

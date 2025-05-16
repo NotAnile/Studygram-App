@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/commentcard.dart';
 import 'package:studygram/components/loading_indicator.dart';
+import 'package:studygram/models/post_page_model.dart';
 import 'postcard.dart';
 import 'package:go_router/go_router.dart';
 import '../structure.dart';
@@ -21,37 +22,44 @@ class CommentView extends StatefulWidget {
 class _CommentViewState extends State<CommentView> {
   @override
   Widget build(BuildContext context) {
-    // Getting the access token
-    String token =
-        Provider.of<Authentication>(context, listen: false).accessToken;
-    Feed feed = Provider.of<Feed>(context, listen: false);
-    // Getting the post including comments from the backend
-    Future<dynamic> request = feed.getComments(widget.postID, token);
-    return FutureBuilder(
-      future: request,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          String errorMessage = feed.errorMessage;
-          return Center(
-              child: Text(errorMessage.isEmpty
-                  ? "An error has occurred. Could not get post."
-                  : errorMessage));
-        }
-        if (snapshot.connectionState == ConnectionState.done) {
-          final comments = snapshot.data!;
-          return ListView.builder(
-            itemCount: comments.length,
-            itemBuilder: (context, index) {
-              Comment comment = comments[index] as Comment;
-              // Getting the right post with the index and returns a PostCard with the body and username
-              return CommentCard(comment: comment);
-            },
-          );
-        } else {
-          return const LoadingIndicator();
-        }
-      },
-    );
+    return Consumer<CommentViewModel>(builder: (context, model, child) {
+      // Getting the access token
+      String token =
+          Provider.of<Authentication>(context, listen: false).accessToken;
+      Feed feed = Provider.of<Feed>(context, listen: false);
+      // Getting the post including comments from the backend
+      Future<dynamic> request = feed.getComments(widget.postID, token);
+      return FutureBuilder(
+        future: request,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            String errorMessage = feed.errorMessage;
+            return Center(
+                child: Text(errorMessage.isEmpty
+                    ? "An error has occurred. Could not get post."
+                    : errorMessage));
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            final comments = snapshot.data!;
+            if (comments.isEmpty) {
+              return const Expanded(child: Text("No comments yet"));
+            }
+            return Expanded(
+              child: ListView.builder(
+                itemCount: comments.length,
+                itemBuilder: (context, index) {
+                  Comment comment = comments[index] as Comment;
+                  // Getting the right post with the index and returns a PostCard with the body and username
+                  return CommentCard(comment: comment);
+                },
+              ),
+            );
+          } else {
+            return const LoadingIndicator();
+          }
+        },
+      );
+    });
   }
 }
 

@@ -3,7 +3,7 @@ import './url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class PostPageModel extends ChangeNotifier {
+class CommentViewModel extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";
   final String baseUrl = BaseUrl().baseUrl;

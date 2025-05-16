@@ -30,81 +30,80 @@ class _PostPageState extends State<PostPage> {
       String username = post.username;
 
       TextEditingController commentController = TextEditingController();
-      return Consumer<PostPageModel>(builder: (context, model, child) {
-        return Scaffold(
-          appBar: getMyAppBar(
-              context,
-              Text(
-                "$username's post",
-                style: const TextStyle(color: Colors.white),
-              )),
-          body: Center(
-            child: Column(
-              children: [
-                PostCard(post: post),
-                const Divider(),
-                (post.comments.isEmpty)
-                    ? const Expanded(child: Text("No comments yet"))
-                    : Expanded(
-                        child: CommentView(
-                          postID: post.id,
-                        ),
-                      ),
-                const Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MyTextField(
-                            labelText: "Comment your thoughts",
-                            controller: commentController,
-                            obscureText: false),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MyTextButton(
-                          buttonText: "Comment",
-                          textColor: Colors.black,
-                          backgroundColor:
-                              const Color.fromARGB(255, 208, 167, 214),
-                          rectangleShape: true,
-                          onPressed: () async {
-                            // Getting token
-                            String token = Provider.of<Authentication>(context,
-                                    listen: false)
-                                .accessToken;
-                            Status status = await model.addComment(
-                                token, post.id, commentController.text);
-                            if (status == Status.error) {
-                              // Show snackbar for error message
-                              String errorMessage = model.errorMessage;
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      (errorMessage.isEmpty
-                                          ? "Unknown error: Could not comment."
-                                          : errorMessage),
-                                    ),
+      CommentViewModel model =
+          Provider.of<CommentViewModel>(context, listen: false);
+      return Scaffold(
+        appBar: getMyAppBar(
+            context,
+            Text(
+              "$username's post",
+              style: const TextStyle(color: Colors.white),
+            )),
+        body: Center(
+          child: Column(
+            children: [
+              PostCard(post: post),
+              const Divider(),
+              CommentView(
+                postID: post.id,
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyTextField(
+                          labelText: "Comment your thoughts",
+                          controller: commentController,
+                          obscureText: false),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyTextButton(
+                        buttonText: "Comment",
+                        textColor: Colors.black,
+                        backgroundColor:
+                            const Color.fromARGB(255, 208, 167, 214),
+                        rectangleShape: true,
+                        onPressed: () async {
+                          // Getting token
+                          String token = Provider.of<Authentication>(context,
+                                  listen: false)
+                              .accessToken;
+                          Status status = await model.addComment(
+                              token, post.id, commentController.text);
+                          if (status == Status.error) {
+                            // Show snackbar for error message
+                            String errorMessage = model.errorMessage;
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    (errorMessage.isEmpty
+                                        ? "Unknown error: Could not comment."
+                                        : errorMessage),
                                   ),
-                                );
-                              }
+                                ),
+                              );
                             }
-                          },
-                          wrapText: true,
-                        ),
-                      )
-                    ],
-                  ),
+                          } else {
+                            // The comment was succesfully added so the controller's text is resetted
+                            commentController.text = "";
+                          }
+                        },
+                        wrapText: true,
+                      ),
+                    )
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-      });
+        ),
+      );
     });
   }
 }
