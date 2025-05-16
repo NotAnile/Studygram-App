@@ -34,8 +34,7 @@ class MyPage extends StatelessWidget {
                   route: '/friends',
                   text: 'Friends',
                   icon: Icons.group,
-                  extra: userModel
-                      .friends, // send the user's list of friends when we go to friends page
+                  extra: userModel.username,
                 ),
               )),
             ],

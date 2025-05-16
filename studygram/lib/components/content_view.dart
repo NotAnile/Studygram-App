@@ -71,22 +71,25 @@ class _PostViewState extends State<PostView> {
                   if (posts.isEmpty) {
                     return const Text("No posts found");
                   }
-
-                  return ListView.builder(
-                    itemCount: posts.length,
-                    itemBuilder: (context, index) {
-                      Post post = posts[index];
-                      // Getting the right post with the index and returns a PostCard with the body and username
-                      return GestureDetector(
-                        child: PostCard(post: post),
-                        onTap: () async {
-                          // Sending the post as the extra parameter when navigating to the specific post page
-                          if (context.mounted) {
-                            context.push('/post', extra: post.id);
-                          }
-                        },
-                      );
-                    },
+                  return Expanded(
+                    child: Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: ListView.builder(
+                          itemCount: posts.length,
+                          itemBuilder: (context, index) {
+                            Post post = posts[index];
+                            // Getting the right post with the index and returns a PostCard with the body and username
+                            return GestureDetector(
+                              child: PostCard(post: post),
+                              onTap: () async {
+                                // Sending the post as the extra parameter when navigating to the specific post page
+                                if (context.mounted) {
+                                  context.push('/post', extra: post.id);
+                                }
+                              },
+                            );
+                          },
+                        )),
                   );
                 } else {
                   return const LoadingIndicator();

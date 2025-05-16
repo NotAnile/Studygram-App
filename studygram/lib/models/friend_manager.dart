@@ -81,4 +81,54 @@ class FriendManager extends ChangeNotifier {
       return Status.error;
     }
   }
+
+  Future<List<dynamic>> getFriends(String username) async {
+    _status = Status.loading;
+    // Creating a JSON to send to the server
+    final response = await http.get(
+      Uri.parse("$baseUrl/friends/all/$username"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    final result = json.decode(response.body);
+    // Handling the result depending on the status code
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      // Setting no error message since everything went well
+      _errorMessage = "";
+      notifyListeners();
+      return result['friends'];
+    } else {
+      // Something went wrong, so error message is updated
+      _status = Status.error;
+      _errorMessage = json.decode(response.body)['message'];
+      throw Exception(_errorMessage);
+    }
+  }
+
+  Future<List<dynamic>> getFollowing(String username) async {
+    _status = Status.loading;
+    // Creating a JSON to send to the server
+    final response = await http.get(
+      Uri.parse("$baseUrl/following/all/$username"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    final result = json.decode(response.body);
+    // Handling the result depending on the status code
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      // Setting no error message since everything went well
+      _errorMessage = "";
+      notifyListeners();
+      return result['following'];
+    } else {
+      // Something went wrong, so error message is updated
+      _status = Status.error;
+      _errorMessage = json.decode(response.body)['message'];
+      throw Exception(_errorMessage);
+    }
+  }
 }

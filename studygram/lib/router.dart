@@ -66,9 +66,8 @@ class MyRouter extends StatelessWidget {
         GoRoute(
           path: '/friends',
           builder: (context, state) {
-            final friends = state.extra!
-                as List<dynamic>; // Gets the post for the post page
-            return FriendsPage(friends: friends);
+            final username = state.extra! as String;
+            return FriendsPage(username: username);
           },
         ),
         ShellRoute(

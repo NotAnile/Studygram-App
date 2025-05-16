@@ -75,16 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ]),
             const Divider(),
             // Creates a list view to display all the posts
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                child: PostView(
-                  posts: const [],
-                  selectedUsers: selectedUsers,
-                  excludedUsers: excludedUsers,
-                ),
-              ),
-            )
+            PostView(
+              posts: const [],
+              selectedUsers: selectedUsers,
+              excludedUsers: excludedUsers,
+            ),
           ],
         );
       });

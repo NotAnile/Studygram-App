@@ -591,6 +591,32 @@ def get_user_profile(UserID):
         return jsonify({'message': "User does not exist"}), 404
 
 
+@app.route('/friends/all/<UserID>', methods=['GET'])
+def get_user_friends(UserID):
+    """Returns a jsonified dict of all the userIDs of the given user's friends."""
+    # Checks if the user exists
+    if user_exists(UserID):
+        user = db.session.get(User, UserID)
+        mutual_friends = user.mutual_friends()
+
+        return jsonify({'friends': mutual_friends})
+    else:
+        return jsonify({'message': "User does not exist"}), 404
+    
+
+@app.route('/following/all/<UserID>', methods=['GET'])
+def get_following(UserID):
+    """Returns a jsonified dict of all the userIDs of the given user's following list."""
+    # Checks if the user exists
+    if user_exists(UserID):
+        user = db.session.get(User, UserID)
+        following = user.get_following()
+
+        return jsonify({'following': following})
+    else:
+        return jsonify({'message': "User does not exist"}), 404
+
+
 @app.route('/posts/all', methods=['POST'])
 @jwt_required()
 def get_all_posts():
