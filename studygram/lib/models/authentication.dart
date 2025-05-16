@@ -5,9 +5,9 @@ import './user.dart';
 import 'package:provider/provider.dart';
 import './url.dart';
 import 'package:studygram/models/settings_model.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:fresh_dio/fresh_dio.dart';
-import 'package:dio/dio.dart';
+// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+// import 'package:fresh_dio/fresh_dio.dart';
+// import 'package:dio/dio.dart';
 import 'package:studygram/token.dart';
 
 class Authentication extends ChangeNotifier {
@@ -17,8 +17,8 @@ class Authentication extends ChangeNotifier {
   String _errorMessage = "";
   String _accessToken = "";
   String _refreshToken = "";
-  final TokenStorageImpl tokenStorage =
-      const TokenStorageImpl(FlutterSecureStorage());
+  // final TokenStorageImpl tokenStorage =
+  //     const TokenStorageImpl(FlutterSecureStorage());
 
   bool get isLoggedIn => _isLoggedIn;
   Status get status => _status;
@@ -46,9 +46,9 @@ class Authentication extends ChangeNotifier {
         _accessToken = result['access_token'];
         _refreshToken = result['refresh_token'];
 
-        await tokenStorage.write(AuthTokenPair(
-            accessToken: result['access_token'],
-            refreshToken: result['refresh_token']));
+        // await tokenStorage.write(AuthTokenPair(
+        //     accessToken: result['access_token'],
+        //     refreshToken: result['refresh_token']));
 
         // Setting up user model and updating isLoggedIn bool
         if (context.mounted) {
@@ -90,31 +90,31 @@ class Authentication extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Creates and configures a Dio HTTP client with authentication
-  Dio setupAuthenticatedDio(String baseUrl) {
-    final dio = Dio(
-      BaseOptions(
-        baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
-        sendTimeout: const Duration(seconds: 30),
-      ),
-    );
+  // /// Creates and configures a Dio HTTP client with authentication
+  // Dio setupAuthenticatedDio(String baseUrl) {
+  //   final dio = Dio(
+  //     BaseOptions(
+  //       baseUrl: baseUrl,
+  //       connectTimeout: const Duration(seconds: 30),
+  //       receiveTimeout: const Duration(seconds: 30),
+  //       sendTimeout: const Duration(seconds: 30),
+  //     ),
+  //   );
 
-    // Set up token refresh interceptor
-    final tokenRefreshInterceptor = TokenRefreshInterceptor(tokenStorage);
-    final fresh = tokenRefreshInterceptor.fresh;
+  //   // Set up token refresh interceptor
+  //   final tokenRefreshInterceptor = TokenRefreshInterceptor(tokenStorage);
+  //   final fresh = tokenRefreshInterceptor.fresh;
 
-    // Add the Fresh interceptor to Dio
-    dio.interceptors.add(fresh);
+  //   // Add the Fresh interceptor to Dio
+  //   dio.interceptors.add(fresh);
 
-    // Log out listener to handle authentication failures
-    fresh.authenticationStatus.listen((status) {
-      if (status == AuthenticationStatus.unauthenticated) {
-        _isLoggedIn = false;
-      }
-    });
+  //   // Log out listener to handle authentication failures
+  //   fresh.authenticationStatus.listen((status) {
+  //     if (status == AuthenticationStatus.unauthenticated) {
+  //       _isLoggedIn = false;
+  //     }
+  //   });
 
-    return dio;
-  }
+  //   return dio;
+  // }
 }

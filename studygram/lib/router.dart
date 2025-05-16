@@ -9,6 +9,7 @@ import 'package:studygram/pages/friend_requests.dart';
 import 'package:studygram/pages/mypage.dart';
 import 'package:studygram/pages/post.dart';
 import 'package:provider/provider.dart';
+import 'package:studygram/pages/timer.dart';
 import 'pages/login.dart';
 import 'package:studygram/pages/userprofile.dart';
 import 'components/navigationbar.dart';
@@ -97,7 +98,7 @@ class MyRouter extends StatelessWidget {
             GoRoute(
               path: '/timer',
               parentNavigatorKey: _shellNavigatorKey,
-              builder: (context, state) => const MyPage(),
+              builder: (context, state) => const TimerPage(),
             ),
             GoRoute(
               path: '/profile',

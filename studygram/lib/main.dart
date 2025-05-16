@@ -3,6 +3,7 @@ import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/create_account_model.dart';
 import 'package:studygram/models/create_post_model.dart';
 import 'package:studygram/models/feed.dart';
+import 'package:studygram/models/timer_model.dart';
 import 'package:studygram/models/user.dart';
 import 'package:provider/provider.dart';
 import './models/settings_model.dart';
@@ -22,7 +23,8 @@ void main() {
       ChangeNotifierProvider(create: (_) => CreatePostModel()),
       ChangeNotifierProvider(create: (_) => FriendManager()),
       ChangeNotifierProvider(create: (_) => LikeManager()),
-      ChangeNotifierProvider(create: (_) => PostPageModel())
+      ChangeNotifierProvider(create: (_) => PostPageModel()),
+      ChangeNotifierProvider(create: (_) => TimerModel())
     ],
     child: const MainApp(),
   ));
