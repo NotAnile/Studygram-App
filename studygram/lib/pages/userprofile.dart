@@ -36,7 +36,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       future: request,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Text("An error has occured");
+          return const Center(child: Text("An error has occured"));
         }
         if (snapshot.connectionState == ConnectionState.done) {
           User user = snapshot.data!;
@@ -81,17 +81,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 onPressed: () {
                                   // Checking if the user is following the person already or not
                                   // to make the right call to backend to either follow or unfollow
-                                  if (userModel.following
+                                  if (!userModel.following
                                       .contains(widget.username)) {
                                     friendManagerModel.addFriend(
                                         context, widget.username);
-
-                                    // Add the person that the user wants to follow to the following list
-                                    userModel.followUser(widget.username);
                                   } else {
                                     friendManagerModel.removeFriend(
                                         context, widget.username);
-                                    userModel.unfollowUser(widget.username);
                                   }
                                 })
                             : const Text("")

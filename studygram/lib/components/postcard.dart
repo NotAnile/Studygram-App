@@ -58,7 +58,7 @@ class _PostCardState extends State<PostCard> {
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 14)),
                       onTap: () {
-                        context.go('/profile');
+                        context.go('/profile', extra: widget.post.username);
                       },
                     ),
                   ]),

@@ -23,8 +23,8 @@ class User {
         sessions: json["sessions"] != null
             ? json["sessions"].map((json) => Session.fromJson(json)).toList()
             : [],
-        friends: json['friends'],
-        friendRequests: json['friend_requests']);
+        friends: json['friends'] ?? [],
+        friendRequests: json['friend_requests'] ?? []);
   }
 
   static Map<String, dynamic> toJson(User user) {

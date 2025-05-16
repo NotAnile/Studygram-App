@@ -96,6 +96,10 @@ class User(db.Model):
     def mutual_friends(self):
         """Returns a list of all usernames of the user's mutual friends"""
         return [user.id for user in self.following if user in self.followers]
+    
+    def get_following(self):
+        """Returns a list of all usernames that the user is following"""
+        return [user.id for user in self.following]
 
 
 class Post(db.Model):
@@ -543,11 +547,11 @@ def get_user_posts(usernames: List[str], limit: int, logged_in_user):
             user_ids.append(username)
     
     if limit is None:
-        post_generator = db.session.execute(db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id))).scalars().all()
+        post_generator = db.session.execute(db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id))).scalars()
     else:
         post_generator = db.session.execute(
             db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id)).limit(limit)
-        ).scalars().all()
+        ).scalars()
     
     for post in post_generator:
         result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes), 'isLiked': (post in logged_in_user.liked_posts)})
@@ -566,17 +570,19 @@ def get_user_profile(UserID):
         logged_in_user = db.session.get(User, username)
         posts = get_user_posts([UserID], None, logged_in_user)
         user = db.session.get(User, UserID)
-        logged_in_user = db.session.get(User, username)
         mutual_friends = user.mutual_friends()
-        following = user.following
+        following = user.get_following()
 
-        friend_requests = db.session.execute(
+        friend_requests_generator = db.session.execute(
             select(User)
             .join(friends, User.id == friends.c.user_id) # Joins each row in User with rows in the friends table 
                                                          # where that user was the one who sent the request.
             .where(friends.c.friend_id == UserID)  # Users that follow the given user
             .where(~User.id.in_(mutual_friends))  # The users that the given user does not follow back
-        ).scalars().all()
+        ).scalars()
+
+        # Gets all the userIDs that have sent a friend request
+        friend_requests = [user.id for user in friend_requests_generator]
 
         return jsonify({'username': UserID, 'posts': posts, 'post_count': len(posts), 
                         'friends': mutual_friends, 'following': following, 'friend_count': len(mutual_friends), 
