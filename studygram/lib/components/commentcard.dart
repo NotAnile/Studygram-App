@@ -34,7 +34,7 @@ class _CommentCardState extends State<CommentCard> {
                             fontWeight: FontWeight.bold,
                             fontSize: textsizes[settings.size])),
                     onTap: () {
-                      context.push('/profile', extra: widget.comment.username);
+                      context.go('/profile', extra: widget.comment.username);
                     },
                   ),
                 ]),
