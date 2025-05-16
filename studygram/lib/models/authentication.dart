@@ -17,6 +17,8 @@ class Authentication extends ChangeNotifier {
   String _errorMessage = "";
   String _accessToken = "";
   String _refreshToken = "";
+  final TokenStorageImpl tokenStorage =
+      const TokenStorageImpl(FlutterSecureStorage());
 
   bool get isLoggedIn => _isLoggedIn;
   Status get status => _status;
@@ -44,13 +46,19 @@ class Authentication extends ChangeNotifier {
         _accessToken = result['access_token'];
         _refreshToken = result['refresh_token'];
 
-        // Setting up user model and updating isLoggedIn bool
-        UserModel userModel = Provider.of<UserModel>(context, listen: false);
-        userModel.setUsername = username;
-        userModel.initialize(username, _accessToken);
+        await tokenStorage.write(AuthTokenPair(
+            accessToken: result['access_token'],
+            refreshToken: result['refresh_token']));
 
-        // Getting the size that the user has chosen
-        Provider.of<Settings>(context, listen: false).getSize(_accessToken);
+        // Setting up user model and updating isLoggedIn bool
+        if (context.mounted) {
+          UserModel userModel = Provider.of<UserModel>(context, listen: false);
+          userModel.setUsername = username;
+          userModel.initialize(username, _accessToken);
+
+          // Getting the size that the user has chosen
+          Provider.of<Settings>(context, listen: false).getSize(_accessToken);
+        }
 
         _isLoggedIn = true;
         _status = Status.success;
@@ -92,10 +100,6 @@ class Authentication extends ChangeNotifier {
         sendTimeout: const Duration(seconds: 30),
       ),
     );
-
-    // Set up token storage
-    const secureStorage = FlutterSecureStorage();
-    const tokenStorage = TokenStorageImpl(secureStorage);
 
     // Set up token refresh interceptor
     final tokenRefreshInterceptor = TokenRefreshInterceptor(tokenStorage);

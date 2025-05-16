@@ -129,9 +129,11 @@ class _CreateButtonState extends State<CreateButton> {
 
                       // Showing snackbar to notify the user that the account has successfully been created
                       if (status == Status.success) {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text(
-                                "Account successfully created! You are now logged in.")));
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text(
+                                  "Account successfully created! You are now logged in.")));
+                        }
                       }
                     } else {
                       // Handle UI when the passwords aren't matching

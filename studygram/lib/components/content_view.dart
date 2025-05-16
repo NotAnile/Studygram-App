@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_dio/fresh_dio.dart';
 import 'package:studygram/components/commentcard.dart';
 import 'package:studygram/components/loading_indicator.dart';
 import 'postcard.dart';
@@ -49,15 +50,17 @@ class _PostViewState extends State<PostView> {
   @override
   Widget build(BuildContext context) {
     if (widget.selectedUsers != null && widget.excludedUsers != null) {
+      Authentication auth = Provider.of<Authentication>(context, listen: false);
       // Getting the posts
-      String token =
-          Provider.of<Authentication>(context, listen: false).accessToken;
+      String token = auth.accessToken;
+
+      Dio dio = auth.setupAuthenticatedDio(auth.baseUrl);
 
       return Consumer<LikeManager>(builder: (context, likeManager, child) {
         return Consumer<Feed>(builder: (context, feed, child) {
           return FutureBuilder(
               future: feed.getPosts(
-                  token, widget.selectedUsers!, widget.excludedUsers!),
+                  token, widget.selectedUsers!, widget.excludedUsers!, dio),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Center(
