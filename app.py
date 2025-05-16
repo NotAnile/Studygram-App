@@ -617,6 +617,31 @@ def get_following(UserID):
         return jsonify({'message': "User does not exist"}), 404
 
 
+@app.route('/friendrequests/all', methods=['GET'])
+@jwt_required()
+def get_friend_requests():
+    """Returns a jsonified dict of all the userIDs of the given user's following list."""
+    # Checks if the user exists
+    userID = get_jwt_identity()
+    if user_exists(userID):
+        user = db.session.get(User, userID)
+        mutual_friends = user.mutual_friends()
+        friend_requests_generator = db.session.execute(
+            select(User)
+            .join(friends, User.id == friends.c.user_id) # Joins each row in User with rows in the friends table 
+                                                         # where that user was the one who sent the request.
+            .where(friends.c.friend_id == userID)  # Users that follow the given user
+            .where(~User.id.in_(mutual_friends))  # The users that the given user does not follow back
+        ).scalars()
+
+        # Gets all the userIDs that have sent a friend request
+        friend_requests = [user.id for user in friend_requests_generator]
+
+        return jsonify({'friend_requests': friend_requests})
+    else:
+        return jsonify({'message': "User does not exist"}), 404
+
+
 @app.route('/posts/all', methods=['POST'])
 @jwt_required()
 def get_all_posts():

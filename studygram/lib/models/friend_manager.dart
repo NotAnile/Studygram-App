@@ -131,4 +131,30 @@ class FriendManager extends ChangeNotifier {
       throw Exception(_errorMessage);
     }
   }
+
+  Future<List<dynamic>> getFriendRequests(String token) async {
+    _status = Status.loading;
+    // Creating a JSON to send to the server
+    final response = await http.get(
+      Uri.parse("$baseUrl/friendrequests/all"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    final result = json.decode(response.body);
+    // Handling the result depending on the status code
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      // Setting no error message since everything went well
+      _errorMessage = "";
+      notifyListeners();
+      return result['friend_requests'];
+    } else {
+      // Something went wrong, so error message is updated
+      _status = Status.error;
+      _errorMessage = json.decode(response.body)['message'];
+      throw Exception(_errorMessage);
+    }
+  }
 }

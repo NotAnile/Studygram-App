@@ -7,8 +7,8 @@ import 'package:studygram/components/loading_indicator.dart';
 //**Listview to display all the users in a column*/
 class UserView extends StatefulWidget {
   final String username;
-  final bool seeMutuals;
-  const UserView({super.key, required this.username, required this.seeMutuals});
+  final bool seeFriends;
+  const UserView({super.key, required this.username, required this.seeFriends});
 
   @override
   State<UserView> createState() => _UserViewState();

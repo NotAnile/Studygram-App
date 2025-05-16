@@ -64,7 +64,7 @@ class _FriendsPageState extends State<FriendsPage> {
           const Divider(),
           UserView(
             username: widget.username,
-            seeMutuals: seeFriends,
+            seeFriends: seeFriends,
           ),
         ]),
       ),
