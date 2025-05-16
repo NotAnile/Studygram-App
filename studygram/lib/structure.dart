@@ -122,12 +122,12 @@ class Session {
 
   factory Session.fromJson(Map<String, dynamic> json) {
     return Session(
-        starttime: json["starttime"],
-        endtime: json["endtime"],
+        starttime: json["starttime"] ?? "",
+        endtime: json["endtime"] ?? "",
         startdate: json["startdate"],
-        username: json["username"],
-        subject: json["subject"],
-        description: json["description"]);
+        username: json["username"] ?? "",
+        subject: json["subject"] ?? "",
+        description: json["description"] ?? "");
   }
 
   static Map<String, dynamic> toJson(Session session) {

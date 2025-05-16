@@ -746,6 +746,25 @@ def update_settings():
     return jsonify({f'message': 'Settings for {username} has succesfully been updated'}), 200
         
 
+@app.route('/sessions/all', methods = ['GET'])
+@jwt_required()
+def get_all_sessions():
+    """Returns a list of all sessions of the logged in user."""
+    user_id = get_jwt_identity()
+
+    if user_exists(user_id):
+        user = db.session.get(User, user_id)
+        result = []
+        for session in user.sessions:
+            startdate = session.startdate.strftime("%d/%m/%y") # Gets the startdate in the format DD/MM/YY
+            result.append({'id': session.id, 'startdate': startdate, 'duration': str(session.duration)})
+
+        return jsonify({'sessions': result})
+
+    else:
+        return jsonify({'message': 'User does not exist'}), 404
+
+
 @app.route('/session/start', methods = ['POST'])
 @jwt_required()
 def startsession():
