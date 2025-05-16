@@ -24,7 +24,8 @@ void main() {
       ChangeNotifierProvider(create: (_) => FriendManager()),
       ChangeNotifierProvider(create: (_) => LikeManager()),
       ChangeNotifierProvider(create: (_) => PostPageModel()),
-      ChangeNotifierProvider(create: (_) => TimerModel())
+      ChangeNotifierProvider(create: (_) => TimerModel()),
+      ChangeNotifierProvider(create: (_) => WatchModel()),
     ],
     child: const MainApp(),
   ));
