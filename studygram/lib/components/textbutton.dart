@@ -34,8 +34,11 @@ class MyTextButton extends StatelessWidget {
       Size.large: {'width': 500.0, 'height': 50.0}
     };
 
+    // Gets the textsize
+    Map textsizes = {Size.small: 12.0, Size.medium: 14.0, Size.large: 16.0};
+
     return Consumer<Settings>(
-      builder: (context, model, state) {
+      builder: (context, settings, state) {
         if (wrapText != null && wrapText!) {
           return TextButton(
             onPressed: onPressed,
@@ -56,8 +59,8 @@ class MyTextButton extends StatelessWidget {
           );
         } else {
           return SizedBox(
-            width: width ?? sizes[model.size]['width'],
-            height: height ?? sizes[model.size]['height'],
+            width: width ?? sizes[settings.size]['width'],
+            height: height ?? sizes[settings.size]['height'],
             child: TextButton(
               onPressed: onPressed,
               style: ButtonStyle(
@@ -72,7 +75,8 @@ class MyTextButton extends StatelessWidget {
               ),
               child: Text(
                 buttonText,
-                style: TextStyle(color: textColor),
+                style: TextStyle(
+                    color: textColor, fontSize: textsizes[settings.size]),
               ),
             ),
           );

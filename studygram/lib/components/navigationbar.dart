@@ -20,7 +20,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
         context.go('/');
         break;
       case 1:
-        context.go('/notifications');
+        context.go('/friendrequests');
         break;
       case 2:
         context.go('/timer');
@@ -67,9 +67,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_sharp), label: "Notifications"),
+              icon: Icon(Icons.notifications_sharp), label: "Friend Requests"),
           BottomNavigationBarItem(icon: Icon(Icons.timer), label: "Timer"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "My page"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "My Page"),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: "Settings"),
         ],

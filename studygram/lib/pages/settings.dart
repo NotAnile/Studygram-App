@@ -11,12 +11,18 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
+
+    Map textSizes = {Size.small: 15.0, Size.medium: 20.0, Size.large: 25.0};
+
     return Consumer<Settings>(builder: (context, model, child) {
       Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
       return Center(
         child: Column(
           children: [
-            const Text("Sizes"),
+            Text(
+              "Sizes",
+              style: TextStyle(fontSize: textSizes[model.size]),
+            ),
             const Divider(),
             Wrap(spacing: 10.0, runSpacing: 10.0, children: [
               MyTextButton(

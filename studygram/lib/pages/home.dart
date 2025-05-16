@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return Column(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            Wrap(children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: MyTextButton(

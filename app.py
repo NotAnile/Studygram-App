@@ -733,6 +733,11 @@ def update_settings():
         if not size in Size.values():
             return jsonify({f'message': 'Invalid size value: {size}'}), 400
         
+    # Removing the old settings if they exist
+    old_settings = select(settings).where(settings.c.user_id == username)
+    if old_settings is not None:
+       db.session.execute(delete(settings).where(settings.c.user_id == username))
+
     # Changing the settings field of the user and updating the database
     new_setting = settings.insert().values(user_id=username, size_setting=size)
     db.session.execute(new_setting)

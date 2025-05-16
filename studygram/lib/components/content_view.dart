@@ -61,15 +61,18 @@ class _PostViewState extends State<PostView> {
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Center(
-                      child:
-                          Text("An error has occurred. Could not get posts."));
+                      child: Text(
+                    "An error has occurred. Could not get posts.",
+                    style: TextStyle(fontSize: 16.0),
+                  ));
                 }
 
                 if (snapshot.connectionState == ConnectionState.done) {
                   final posts = snapshot.data!;
 
                   if (posts.isEmpty) {
-                    return const Text("No posts found");
+                    return const Text("No posts found",
+                        style: TextStyle(fontSize: 16.0));
                   }
                   return Expanded(
                     child: Padding(
@@ -100,7 +103,7 @@ class _PostViewState extends State<PostView> {
     } else {
       // We recieved posts to display
       if (widget.posts.isEmpty) {
-        return const Text("No posts found");
+        return const Text("No posts found", style: TextStyle(fontSize: 16.0));
       } else {
         return ListView.builder(
           itemCount: widget.posts.length,

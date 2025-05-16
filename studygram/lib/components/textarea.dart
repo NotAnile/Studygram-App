@@ -19,7 +19,9 @@ class TextArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Settings>(builder: (context, model, state) {
+    return Consumer<Settings>(builder: (context, settings, state) {
+      // Gets the textsize
+      Map sizes = {Size.small: 12.0, Size.medium: 14.0, Size.large: 16.0};
       return SizedBox(
           width: width,
           child: TextField(
@@ -29,6 +31,7 @@ class TextArea extends StatelessWidget {
               keyboardType: TextInputType.multiline,
               controller: controller,
               obscureText: obscureText,
+              style: TextStyle(fontSize: sizes[settings.size]),
               decoration: InputDecoration(
                   border: const OutlineInputBorder(), labelText: labelText)));
     });

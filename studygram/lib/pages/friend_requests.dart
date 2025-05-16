@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/friend_request_view.dart';
 
-class NotificationScreen extends StatelessWidget {
-  const NotificationScreen({super.key});
+class FriendRequestsPage extends StatelessWidget {
+  const FriendRequestsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

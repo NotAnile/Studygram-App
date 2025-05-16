@@ -19,13 +19,15 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map sizes = {Size.small: 300.0, Size.medium: 400.0, Size.large: 500.0};
+    Map textsizes = {Size.small: 12.0, Size.medium: 14.0, Size.large: 16.0};
 
-    return Consumer<Settings>(builder: (context, model, state) {
+    return Consumer<Settings>(builder: (context, settings, state) {
       return SizedBox(
-          width: sizes[model.size] ?? sizes['medium'],
+          width: sizes[settings.size] ?? sizes['medium'],
           child: TextField(
               controller: controller,
               obscureText: obscureText,
+              style: TextStyle(fontSize: textsizes[settings.size]),
               decoration: InputDecoration(
                   border: const OutlineInputBorder(), labelText: labelText)));
     });

@@ -5,7 +5,7 @@ import 'package:studygram/pages/create_account.dart';
 import 'package:studygram/pages/create_post.dart';
 import 'package:studygram/pages/home.dart';
 import 'package:studygram/pages/liked.dart';
-import 'package:studygram/pages/notifications.dart';
+import 'package:studygram/pages/friend_requests.dart';
 import 'package:studygram/pages/mypage.dart';
 import 'package:studygram/pages/post.dart';
 import 'package:provider/provider.dart';
@@ -80,9 +80,9 @@ class MyRouter extends StatelessWidget {
               builder: (context, state) => const HomeScreen(),
             ),
             GoRoute(
-              path: '/notifications',
+              path: '/friendrequests',
               parentNavigatorKey: _shellNavigatorKey,
-              builder: (context, state) => const NotificationScreen(),
+              builder: (context, state) => const FriendRequestsPage(),
             ),
             GoRoute(
               path: '/mypage',
