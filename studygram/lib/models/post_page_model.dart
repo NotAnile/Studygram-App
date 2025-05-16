@@ -22,7 +22,7 @@ class PostPageModel extends ChangeNotifier {
       },
       body: jsonEncode(
         <String, String>{
-          'body': comment,
+          'message': comment,
         },
       ),
     );

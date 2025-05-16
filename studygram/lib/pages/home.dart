@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/loading_indicator.dart';
 import 'package:studygram/models/like_manager.dart';
+import 'package:studygram/models/url.dart';
 import '../components/content_view.dart';
 import '../models/feed.dart';
 import '../models/user.dart';
@@ -33,11 +34,22 @@ class _HomeScreenState extends State<HomeScreen> {
       Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
       // Checking if the usermodel is initalized before showing the feed
       if (!userModel.isInitialized) {
+        // Tries to initialize if something went wrong with initialization
+        if (userModel.status == Status.error) {
+          String token =
+              Provider.of<Authentication>(context, listen: false).accessToken;
+          userModel.initialize(token);
+        }
         return const LoadingIndicator();
       }
 
       return Consumer<Feed>(builder: (context, feed, child) {
-        UserModel userModel = Provider.of<UserModel>(context, listen: false);
+        // Shows snackbar if anything went wrong
+        if (feed.status == Status.error) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(feed.errorMessage)));
+        }
+
         List<dynamic> selectedUsers = seeFollowing ? userModel.friends : [];
         List<dynamic> excludedUsers = [userModel.username];
         // Excludes the user's following list if the toggleMode is on Explore

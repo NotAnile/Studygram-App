@@ -54,7 +54,7 @@ class Authentication extends ChangeNotifier {
         if (context.mounted) {
           UserModel userModel = Provider.of<UserModel>(context, listen: false);
           userModel.setUsername = username;
-          userModel.initialize(username, _accessToken);
+          userModel.initialize(_accessToken);
 
           // Getting the size that the user has chosen
           Provider.of<Settings>(context, listen: false).getSize(_accessToken);

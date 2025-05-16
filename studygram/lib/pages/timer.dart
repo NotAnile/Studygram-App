@@ -30,6 +30,12 @@ class TimerPage extends StatelessWidget {
 
       return Consumer<TimerModel>(
         builder: (context, timerModel, child) {
+          // Shows error if something went wrong
+          if (timerModel.status == Status.error) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(timerModel.errorMessage)));
+          }
+
           return Center(
             child: Column(
               children: [
