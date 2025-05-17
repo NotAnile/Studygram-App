@@ -8,6 +8,7 @@ import '../models/user.dart';
 import 'package:provider/provider.dart';
 import '../models/authentication.dart';
 import 'package:studygram/components/textbutton.dart';
+import 'package:studygram/components/user_search_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -85,6 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
               )
             ]),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: UserSearchBar(),
+            ),
             const Divider(),
             // Creates a list view to display all the posts
             PostView(

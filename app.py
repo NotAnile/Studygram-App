@@ -743,9 +743,13 @@ def get_all_sessions():
     user_id = get_jwt_identity()
 
     if user_exists(user_id):
-        user = db.session.get(User, user_id)
+        session_generator = db.session.execute(
+            select(Session)
+            .where(Session.user_id==user_id)
+            .order_by(desc(Session.id))
+        ).scalars()
         result = []
-        for session in user.sessions:
+        for session in session_generator:
             starttime = session.starttime.strftime("%Y-%m-%d %H:%M:%S")
             endtime = session.endtime.strftime("%Y-%m-%d %H:%M:%S")
             duration_as_minutes = session.duration.total_seconds() // 60
@@ -753,27 +757,6 @@ def get_all_sessions():
             'subject': session.subject, 'description': session.description, 'id': session.id})
 
         return jsonify({'sessions': result})
-
-    else:
-        return jsonify({'message': 'User does not exist'}), 404
-
-
-@app.route('/session/start', methods = ['POST'])
-@jwt_required()
-def startsession():
-    """Creates a session object by getting the current time and date."""
-    user_id = get_jwt_identity()
-
-    if user_exists(user_id):
-        # Getting the subject and description if the user sent one
-        json_data = request.json
-        subject = get_data('subject', json_data)
-        description = get_data('description', json_data)
-
-        session = Session(starttime=datetime.now(), user_id=user_id, subject=subject, description=description)
-        db.session.add(session)
-        db.session.commit()
-        return jsonify({'message':'Timer has been started', 'id': session.id, 'subject': session.subject})
 
     else:
         return jsonify({'message': 'User does not exist'}), 404
@@ -837,36 +820,19 @@ def delete_session():
     return jsonify({'message': 'Session not found.'}), 404
 
 
-@app.route('/session/end', methods = ['POST'])
-@jwt_required()
-def endsession():
-    """Takes in the id of the session they want to end as a json and ends that session"""
-
-    user_id = get_jwt_identity()
-    if not user_exists(user_id):
-        return jsonify({'message': 'User does not exist'}), 404
-    
+@app.route('/search/users', methods=['POST'])
+def search():
+    """Returns a list of usernames with the given prefix. The maximum list
+    length is determined by the given limit."""
     json_data = request.json
-    if 'id' in json_data:
-        # Getting the session that we want to end
-        sessionid = json_data['id']
-        session = db.session.get(Session, sessionid)
-        
-        if session is not None:
-            # Checks that the owner of the session is the logged in user
-            if session.user.id != user_id:
-                return jsonify({'message': 'Permission denied: User does not own session'}), 400
-            
-            # Updates the endtime and duration of the session
-            session.setendtime(endtime=datetime.now())
-            db.session.commit()
-
-            return jsonify({'message':'Session has ended', 'duration': str(session.duration)})
-        else:
-            return jsonify({'message': 'Session does not exist'}), 404
-
+    if data_exist(['prefix', 'limit'], json_data):
+        prefix = json_data['prefix']
+        limit = json_data['limit']
+        # Gets a list of all usernames with the prefix
+        usernames = db.session.execute(select(User.id).where(User.id.like(f'{prefix}%')).limit(limit)).scalars().all()
+        return jsonify({'users': usernames})
     else:
-        return jsonify({'message': 'Session id missing'}), 404
+        return jsonify({'message': 'Missing prefix and limit.'}), 404
 
 
 @app.route('/user/logout', methods = ['POST'])

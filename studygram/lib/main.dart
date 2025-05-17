@@ -11,6 +11,7 @@ import './models/settings_model.dart';
 import 'package:studygram/models/friend_manager.dart';
 import 'package:studygram/models/like_manager.dart';
 import 'package:studygram/models/post_page_model.dart';
+import 'package:studygram/models/user_search_bar_model.dart';
 import 'router.dart';
 
 void main() {
@@ -28,6 +29,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => TimerModel()),
       ChangeNotifierProvider(create: (_) => WatchModel()),
       ChangeNotifierProvider(create: (_) => SessionViewModel()),
+      ChangeNotifierProvider(create: (_) => UserSearchBarModel()),
     ],
     child: const MainApp(),
   ));
