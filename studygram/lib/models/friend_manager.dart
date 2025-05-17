@@ -33,12 +33,11 @@ class FriendManager extends ChangeNotifier {
       _status = Status.success;
       // Setting no error message since everything went well
       _errorMessage = "";
+      notifyListeners();
       // Updates the UserModel
       if (context.mounted) {
         Provider.of<UserModel>(context, listen: false)
             .followUser(friendUsername);
-        notifyListeners();
-        return Status.success;
       }
     } else {
       // Something went wrong, so error message is updated
@@ -46,7 +45,7 @@ class FriendManager extends ChangeNotifier {
       _errorMessage = json.decode(response.body)['message'];
       notifyListeners();
     }
-    return Status.error;
+    return _status;
   }
 
   Future<Status> removeFriend(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/content_view.dart';
-import 'package:studygram/components/textbutton.dart';
+import 'package:studygram/components/follow_button.dart';
 import 'package:studygram/models/authentication.dart';
 import '../models/feed.dart';
 import 'package:provider/provider.dart';
@@ -11,24 +11,16 @@ import 'package:studygram/models/friend_manager.dart';
 import 'package:go_router/go_router.dart';
 
 //**Page that contains all the posts and followers of a specific user */
-class UserProfilePage extends StatefulWidget {
+class UserProfilePage extends StatelessWidget {
   final String username;
   const UserProfilePage({super.key, required this.username});
 
   @override
-  State<UserProfilePage> createState() => _UserProfilePageState();
-}
-
-class _UserProfilePageState extends State<UserProfilePage> {
-  @override
   Widget build(BuildContext context) {
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
-    Future<dynamic> request = Provider.of<Feed>(context, listen: true)
-        .getProfile(widget.username, token);
-
-    FriendManager friendManagerModel =
-        Provider.of<FriendManager>(context, listen: false);
+    Future<dynamic> request =
+        Provider.of<Feed>(context, listen: true).getProfile(username, token);
 
     UserModel userModel = Provider.of<UserModel>(context, listen: false);
 
@@ -41,64 +33,36 @@ class _UserProfilePageState extends State<UserProfilePage> {
         if (snapshot.connectionState == ConnectionState.done) {
           User user = snapshot.data!;
           List posts = user.posts;
+
           return Center(
             child: Column(
               children: [
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(widget.username,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 25)),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            context.push('/friends', extra: user.friends);
-                          },
-                          child: NumberedBox(
-                              title: "Friends", number: user.friends.length),
-                        ),
-                        NumberedBox(title: "Posts", number: user.posts.length),
-                        // Checking if the person in the profile page is the logged in user
-                        // If yes, then don't display the follow button
-                        (userModel.username != widget.username)
-                            // Follow/unfollow button
-                            ? MyTextButton(
-                                // Changing the buttontext depending on if the user
-                                // has already followed the person in this page or not
-                                buttonText: (!userModel.following
-                                        .contains(widget.username))
-                                    ? 'Follow '
-                                    : 'Unfollow',
-                                textColor: Colors.white,
-                                backgroundColor:
-                                    const Color.fromARGB(255, 191, 152, 197),
-                                rectangleShape: true,
-                                onPressed: () {
-                                  // Checking if the user is following the person already or not
-                                  // to make the right call to backend to either follow or unfollow
-                                  if (!userModel.following
-                                      .contains(widget.username)) {
-                                    friendManagerModel.addFriend(
-                                        context, widget.username);
-                                  } else {
-                                    friendManagerModel.removeFriend(
-                                        context, widget.username);
-                                  }
-                                })
-                            : const Text("")
-                      ],
-                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(username,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 25)),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        context.push('/friends', extra: user.friends);
+                      },
+                      child: NumberedBox(
+                          title: "Friends", number: user.friends.length),
+                    ),
+                    NumberedBox(title: "Posts", number: user.posts.length),
+                    FollowButton(username: username)
+                  ],
+                ),
                 const Divider(),
                 posts.isEmpty
                     ? const Text("This user has no posts")
                     : PostView(
                         posts: const [],
-                        selectedUsers: [widget.username],
+                        selectedUsers: [username],
                         excludedUsers: const [],
                       )
               ],
