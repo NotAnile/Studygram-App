@@ -440,7 +440,7 @@ def delete_post(PostID):
         return jsonify({'message': 'Permission denied: User does not own the post'}), 400
         
 
-@app.route('/posts/delete/<CommentID>', methods=['DELETE'])
+@app.route('/comment/delete/<CommentID>', methods=['DELETE'])
 @jwt_required()
 def delete_comment(CommentID):
     """Deletes the comment if the id exists."""
@@ -750,7 +750,7 @@ def get_all_sessions():
             endtime = session.endtime.strftime("%Y-%m-%d %H:%M:%S")
             duration_as_minutes = session.duration.total_seconds() // 60
             result.append({'id': session.id, 'duration_as_minutes': duration_as_minutes, 'starttime': starttime, 'endtime': endtime, 
-            'subject': session.subject, 'description': session.description})
+            'subject': session.subject, 'description': session.description, 'id': session.id})
 
         return jsonify({'sessions': result})
 

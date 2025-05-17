@@ -33,4 +33,32 @@ class SessionViewModel extends ChangeNotifier {
       throw Exception(_errorMessage);
     }
   }
+
+  /// Removes the given session
+  Future<Status> deleteSession(String token, int sessionId) async {
+    _status = Status.loading;
+    final response = await http.delete(
+      Uri.parse("$baseUrl/session/delete"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'id': sessionId,
+        },
+      ),
+    );
+
+    // Adding all the posts from json to a list
+    final result = json.decode(response.body);
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      _errorMessage = "";
+    } else {
+      _status = Status.error;
+      _errorMessage = result['message'];
+    }
+    return _status;
+  }
 }

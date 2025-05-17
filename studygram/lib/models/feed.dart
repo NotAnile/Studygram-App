@@ -46,6 +46,7 @@ class Feed extends ChangeNotifier {
         'Authorization': 'Bearer $token',
       },
     );
+
     final result = json.decode(response.body);
     if (response.statusCode == 200) {
       _status = Status.success;
@@ -57,6 +58,27 @@ class Feed extends ChangeNotifier {
     }
   }
 
+  Future<Status> removePost(int postID, String token) async {
+    _status = Status.loading;
+    final response = await http.delete(
+      Uri.parse("$baseUrl/posts/delete/$postID"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    final result = json.decode(response.body);
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      notifyListeners();
+    } else {
+      _status = Status.error;
+      _errorMessage = result['message'];
+    }
+    return _status;
+  }
+
   //**Returns a list of comments for the given post id. */
   Future<dynamic> getComments(int postID, String token) async {
     _status = Status.loading;
@@ -66,6 +88,7 @@ class Feed extends ChangeNotifier {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
+
     final result = json.decode(response.body);
     if (response.statusCode == 200) {
       _status = Status.success;

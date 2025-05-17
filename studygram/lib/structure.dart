@@ -108,13 +108,15 @@ class Session {
   final int durationAsMinutes;
   final String subject;
   final String description;
+  final int id;
 
   Session(
       {required this.starttime,
       required this.endtime,
       required this.durationAsMinutes,
       required this.subject,
-      required this.description});
+      required this.description,
+      required this.id});
 
   factory Session.fromJson(Map<String, dynamic> json) {
     return Session(
@@ -123,7 +125,8 @@ class Session {
         endtime: DateTime.parse(json["endtime"]),
         durationAsMinutes: json["duration_as_minutes"].toInt(),
         subject: json["subject"],
-        description: json["description"]);
+        description: json["description"],
+        id: json["id"].toInt());
   }
 
   static Map<String, dynamic> toJson(Session session) {

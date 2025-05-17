@@ -40,4 +40,29 @@ class CommentViewModel extends ChangeNotifier {
       return Status.error;
     }
   }
+
+  Future<Status> removeComment(String token, int commentID) async {
+    _status = Status.loading;
+    // Creating a JSON to send to the server
+    final response = await http.delete(
+      Uri.parse("$baseUrl/comment/delete/$commentID"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+    );
+
+    // Handling the result depending on the status code
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      // Setting no error message since everything went well
+      _errorMessage = "";
+      notifyListeners();
+    } else {
+      // Something went wrong, so error message is updated
+      _status = Status.error;
+      _errorMessage = json.decode(response.body)['message'];
+    }
+    return _status;
+  }
 }

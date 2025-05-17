@@ -81,6 +81,11 @@ class CreateButton extends StatefulWidget {
       required this.auth,
       required this.usernameController});
 
+  bool containsOnlyAlphanumeric(String input) {
+    final RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
+    return regex.hasMatch(input);
+  }
+
   @override
   State<CreateButton> createState() => _CreateButtonState();
 }
@@ -111,9 +116,18 @@ class _CreateButtonState extends State<CreateButton> {
                     setState(() {
                       model.setErrorMessage("Missing username");
                     });
-                  } else if (widget.passwordController.text == "" ||
+                  }
+                  // Handling UI for when the username contains an invalid symbol, for e.g /
+                  else if (!widget.containsOnlyAlphanumeric(
+                      widget.usernameController.text)) {
+                    setState(() {
+                      model.setErrorMessage(
+                          "Username contains invalid characters");
+                    });
+                  }
+                  // Handle UI when one of the password fields are empty
+                  else if (widget.passwordController.text == "" ||
                       widget.passwordController2.text == "") {
-                    // Handle UI when one of the password fields are empty
                     setState(() {
                       model.setErrorMessage("Missing password");
                     });
@@ -123,7 +137,7 @@ class _CreateButtonState extends State<CreateButton> {
                     if (widget.passwordController.text ==
                         widget.passwordController2.text) {
                       final status = await model.createAccount(
-                          widget.usernameController.text,
+                          widget.usernameController.text.toLowerCase(),
                           widget.passwordController.text,
                           context);
 
