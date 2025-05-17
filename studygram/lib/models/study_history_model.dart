@@ -4,7 +4,7 @@ import './url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class StatisticsModel extends ChangeNotifier {
+class StudyHistoryModel extends ChangeNotifier {
   final String baseUrl = BaseUrl().baseUrl;
   Status _status = Status.idle;
   String _errorMessage = "";

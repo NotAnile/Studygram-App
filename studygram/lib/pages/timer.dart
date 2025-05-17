@@ -21,6 +21,9 @@ class TimerPage extends StatelessWidget {
 
     WatchModel watchModel = Provider.of<WatchModel>(context, listen: false);
 
+    TextEditingController subjectController = TextEditingController();
+    TextEditingController descriptionController = TextEditingController();
+
     return Consumer<Settings>(builder: (context, settings, child) {
       Map buttonWidth = {
         Size.small: 150.0,
@@ -80,10 +83,29 @@ class TimerPage extends StatelessWidget {
                         rectangleShape: true,
                         width: buttonWidth[settings.size],
                         onPressed: () {
-                          timerModel.finish(token, watchModel);
+                          timerModel.finish(
+                              token,
+                              watchModel,
+                              subjectController.text,
+                              descriptionController.text);
                         }),
                   )
                 ]),
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyTextField(
+                      labelText: "Subject",
+                      controller: subjectController,
+                      obscureText: false),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyTextField(
+                      labelText: "Description",
+                      controller: descriptionController,
+                      obscureText: false),
+                ),
               ],
             ),
           );

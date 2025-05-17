@@ -125,7 +125,6 @@ class Session(db.Model):
     starttime: Mapped[datetime]
     endtime: Mapped[datetime]
     duration: Mapped[timedelta]
-    startdate: Mapped[date]
     user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
     user: Mapped['User'] = relationship(back_populates = 'sessions')
     subject: Mapped[str]
@@ -134,7 +133,6 @@ class Session(db.Model):
     def __init__(self, starttime, user_id, subject, description):
         self.user_id = user_id
         self.starttime = starttime
-        self.startdate = starttime.date()
         self.subject = subject
         self.description = description
         self.endtime = starttime
@@ -756,8 +754,9 @@ def get_all_sessions():
         user = db.session.get(User, user_id)
         result = []
         for session in user.sessions:
-            startdate = session.startdate.strftime("%d/%m/%y") # Gets the startdate in the format DD/MM/YY
-            result.append({'id': session.id, 'startdate': startdate, 'duration': str(session.duration)})
+            endtime = session.endtime
+            duration_as_minutes = session.duration.total_seconds() // 60
+            result.append({'id': session.id, 'duration_as_minutes': duration_as_minutes})
 
         return jsonify({'sessions': result})
 
@@ -812,10 +811,26 @@ def addsession():
         db.session.add(session)
         db.session.commit()
 
-        return jsonify({'message': 'Session has been added', 'id':session.id})
+        return jsonify({'message': 'Session has been added'})
     
     else:
         return jsonify({'message':'Missing startdate, starttime, enddate, or endtime'}), 400
+    
+
+@app.route('/session/delete', methods = ['DELETE'])
+@jwt_required()
+def deletesession():
+    """Deletes all sessions """
+    user_id = get_jwt_identity()
+    if not user_exists(user_id):
+        return jsonify({'message': "User does not exist"}), 404
+    user = db.session.get(User, user_id)
+    for session in user.sessions:
+        db.session.delete(session)
+
+    db.session.commit()
+
+    return jsonify({'message': 'Sessions have been deleted'})
 
 
 @app.route('/session/end', methods = ['POST'])

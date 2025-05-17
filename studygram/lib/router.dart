@@ -72,6 +72,13 @@ class MyRouter extends StatelessWidget {
             return FriendsPage(username: username);
           },
         ),
+        GoRoute(
+            path: '/studyhistory',
+            builder: (context, state) {
+              final post =
+                  state.extra! as Post; // Gets the post for the post page
+              return PostPage(post: post);
+            }),
         ShellRoute(
           navigatorKey: _shellNavigatorKey,
           builder: (context, state, child) => MyNavigationBar(child: child),

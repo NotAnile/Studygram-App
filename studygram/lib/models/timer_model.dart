@@ -65,7 +65,8 @@ class TimerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void finish(String token, WatchModel watchModel) async {
+  void finish(String token, WatchModel watchModel, String subject,
+      String description) async {
     watchModel.stopwatch.stop();
     // Sends data to server about the finished session
     // Creating a JSON to send to the server
@@ -80,7 +81,9 @@ class TimerModel extends ChangeNotifier {
           'startdate': startDate,
           'starttime': startTime,
           'enddate': getCurrentDate(),
-          'endtime': getCurrentTime()
+          'endtime': getCurrentTime(),
+          'subject': subject,
+          'description': description
         },
       ),
     );

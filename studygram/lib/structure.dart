@@ -105,8 +105,8 @@ class Comment extends Content {
 }
 
 class Session {
-  final String starttime;
-  final String endtime;
+  final DateTime starttime;
+  final DateTime endtime;
   final String startdate;
   final String username;
   final String subject;
