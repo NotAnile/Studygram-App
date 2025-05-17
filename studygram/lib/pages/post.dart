@@ -3,6 +3,7 @@ import 'package:studygram/components/appbar.dart';
 import 'package:studygram/components/loading_indicator.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/models/like_manager.dart';
+import 'package:studygram/structure.dart';
 import '../components/postcard.dart';
 import '../components/content_view.dart';
 import 'package:studygram/components/textfield.dart';
@@ -14,8 +15,8 @@ import 'package:studygram/models/url.dart';
 
 //**The page for viewing a single post, including its comments*/
 class PostPage extends StatefulWidget {
-  final int postID;
-  const PostPage({super.key, required this.postID});
+  final Post post;
+  const PostPage({super.key, required this.post});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -25,109 +26,90 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<LikeManager>(builder: (context, likeManager, child) {
-      // Getting the access token
-      String token =
-          Provider.of<Authentication>(context, listen: false).accessToken;
-      Feed feed = Provider.of<Feed>(context, listen: false);
-      // Getting the post including comments from the backend
-      Future<dynamic> request = feed.getPost(widget.postID, token);
-      return FutureBuilder(
-        future: request,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            String errorMessage = feed.errorMessage;
-            return Center(
-                child: Text(errorMessage.isEmpty
-                    ? "An error has occurred. Could not get post."
-                    : errorMessage));
-          }
+      Post post = widget.post;
+      String username = post.username;
 
-          if (snapshot.connectionState == ConnectionState.done) {
-            final post = snapshot.data!;
-            String username = post.username;
-
-            TextEditingController commentController = TextEditingController();
-            return Consumer<PostPageModel>(builder: (context, model, child) {
-              return Scaffold(
-                appBar: getMyAppBar(
-                    context,
-                    Text(
-                      "$username's post",
-                      style: const TextStyle(color: Colors.white),
-                    )),
-                body: Center(
-                  child: Column(
-                    children: [
-                      PostCard(post: post),
-                      const Divider(),
-                      (post.comments.isEmpty)
-                          ? const Expanded(child: Text("No comments yet"))
-                          : Expanded(
-                              child: CommentView(
-                                comments: post.comments,
-                              ),
-                            ),
-                      const Divider(),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: MyTextField(
-                                  labelText: "Comment your thoughts",
-                                  controller: commentController,
-                                  obscureText: false),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: MyTextButton(
-                                buttonText: "Comment",
-                                textColor: Colors.black,
-                                backgroundColor:
-                                    const Color.fromARGB(255, 208, 167, 214),
-                                rectangleShape: true,
-                                onPressed: () async {
-                                  // Getting token
-                                  String token = Provider.of<Authentication>(
-                                          context,
-                                          listen: false)
-                                      .accessToken;
-                                  Status status = await model.addComment(token,
-                                      widget.postID, commentController.text);
-                                  if (status == Status.error) {
-                                    // Show snackbar for error message
-                                    String errorMessage = model.errorMessage;
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            (errorMessage.isEmpty
-                                                ? "Unknown error: Could not comment."
-                                                : errorMessage),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                },
-                                wrapText: true,
-                              ),
-                            )
-                          ],
-                        ),
+      TextEditingController commentController = TextEditingController();
+      CommentViewModel model =
+          Provider.of<CommentViewModel>(context, listen: false);
+      return Scaffold(
+        appBar: getMyAppBar(
+            context,
+            Text(
+              "$username's post",
+              style: const TextStyle(color: Colors.white),
+            )),
+        body: Center(
+          child: Column(
+            children: [
+              PostCard(post: post),
+              const Divider(),
+              CommentView(
+                postID: post.id,
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyTextField(
+                          labelText: "Comment your thoughts",
+                          controller: commentController,
+                          obscureText: false),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyTextButton(
+                        buttonText: "Comment",
+                        textColor: Colors.black,
+                        backgroundColor:
+                            const Color.fromARGB(255, 208, 167, 214),
+                        rectangleShape: true,
+                        onPressed: () async {
+                          // Getting token
+                          String token = Provider.of<Authentication>(context,
+                                  listen: false)
+                              .accessToken;
+                          Status status = await model.addComment(
+                              token, post.id, commentController.text);
+                          if (status == Status.error) {
+                            // Show snackbar for error message
+                            String errorMessage = model.errorMessage;
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    (errorMessage.isEmpty
+                                        ? "Unknown error: Could not comment."
+                                        : errorMessage),
+                                  ),
+                                ),
+                              );
+                            }
+                          } else {
+                            // The comment was succesfully added so the controller's text is resetted
+                            commentController.text = "";
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Comment succesfully added"),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        wrapText: true,
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              );
-            });
-          } else {
-            return const LoadingIndicator();
-          }
-        },
+              ),
+            ],
+          ),
+        ),
       );
     });
   }

@@ -23,6 +23,8 @@ class UserModel extends ChangeNotifier {
   List<dynamic> get friends => _friends;
   List<dynamic> get friendRequests => _friendRequests;
   bool get isInitialized => _isInitialized;
+  Status get status => _status;
+  String get errorMessage => _errorMessage;
 
   set setUsername(String username) {
     _username = username;
@@ -30,7 +32,7 @@ class UserModel extends ChangeNotifier {
   }
 
   //** Initializes the usermodel and sets all the values by getting the data from backend. */
-  void initialize(String username, String token) async {
+  void initialize(String token) async {
     if (!_isInitialized) {
       _status = Status.loading;
       final String baseUrl = BaseUrl().baseUrl;
@@ -65,9 +67,6 @@ class UserModel extends ChangeNotifier {
         _errorMessage = json.decode(response.body)['message'];
       }
       notifyListeners();
-    } else {
-      // Model already initialized, so it does nothing
-      return;
     }
   }
 

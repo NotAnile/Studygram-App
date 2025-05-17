@@ -3,6 +3,7 @@ import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/models/settings_model.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/authentication.dart';
+import 'package:studygram/models/url.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -15,6 +16,21 @@ class SettingsPage extends StatelessWidget {
     Map textSizes = {Size.small: 15.0, Size.medium: 20.0, Size.large: 25.0};
 
     return Consumer<Settings>(builder: (context, model, child) {
+      // Shows a snackbar if something went wrong
+      if (model.status == Status.error) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(model.errorMessage)));
+      }
+
+      void changeSize(Size size) {
+        try {
+          model.changeSize(size, token);
+        } catch (e) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString())));
+        }
+      }
+
       Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
       return Center(
         child: Column(
@@ -27,7 +43,7 @@ class SettingsPage extends StatelessWidget {
             Wrap(spacing: 10.0, runSpacing: 10.0, children: [
               MyTextButton(
                 onPressed: () {
-                  model.changeSize(Size.small, token);
+                  changeSize(Size.small);
                 },
                 buttonText: "Small",
                 textColor: Colors.white,
@@ -36,7 +52,7 @@ class SettingsPage extends StatelessWidget {
               ),
               MyTextButton(
                 onPressed: () {
-                  model.changeSize(Size.medium, token);
+                  changeSize(Size.medium);
                 },
                 buttonText: "Medium",
                 textColor: Colors.white,
@@ -45,7 +61,7 @@ class SettingsPage extends StatelessWidget {
               ),
               MyTextButton(
                 onPressed: () {
-                  model.changeSize(Size.large, token);
+                  changeSize(Size.large);
                 },
                 buttonText: "Large",
                 textColor: Colors.white,

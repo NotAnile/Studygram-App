@@ -81,6 +81,26 @@ class Feed extends ChangeNotifier {
     }
   }
 
+  //**Returns a list of comments for the given post id. */
+  Future<dynamic> getComments(int postID, String token) async {
+    _status = Status.loading;
+    final response = await http.get(
+      Uri.parse("$baseUrl/posts/$postID/comments"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    final result = json.decode(response.body);
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      return result.map((json) => Comment.fromJson(json)).toList();
+    } else {
+      _status = Status.error;
+      _errorMessage = result['message'];
+      throw Exception(_errorMessage);
+    }
+  }
+
   //**Returns a list with posts for the given post id. */
   Future<List<dynamic>> getPosts(String token, List<dynamic> selectedUsers,
       List<dynamic> excludedUsers) async {

@@ -105,8 +105,8 @@ class Comment extends Content {
 }
 
 class Session {
-  final String starttime;
-  final String endtime;
+  final DateTime starttime;
+  final DateTime endtime;
   final String startdate;
   final String username;
   final String subject;
@@ -122,12 +122,12 @@ class Session {
 
   factory Session.fromJson(Map<String, dynamic> json) {
     return Session(
-        starttime: json["starttime"],
-        endtime: json["endtime"],
+        starttime: json["starttime"] ?? "",
+        endtime: json["endtime"] ?? "",
         startdate: json["startdate"],
-        username: json["username"],
-        subject: json["subject"],
-        description: json["description"]);
+        username: json["username"] ?? "",
+        subject: json["subject"] ?? "",
+        description: json["description"] ?? "");
   }
 
   static Map<String, dynamic> toJson(Session session) {

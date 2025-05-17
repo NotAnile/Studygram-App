@@ -9,6 +9,8 @@ class Settings extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";
   Size get size => _size;
+  Status get status => _status;
+  String get errorMessage => _errorMessage;
 
   void getSize(String token) async {
     final response = await http

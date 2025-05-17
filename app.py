@@ -736,6 +736,26 @@ def update_settings():
     return jsonify({f'message': 'Settings for {username} has succesfully been updated'}), 200
         
 
+@app.route('/sessions/all', methods = ['GET'])
+@jwt_required()
+def get_all_sessions():
+    """Returns a list of all sessions of the logged in user."""
+    user_id = get_jwt_identity()
+
+    if user_exists(user_id):
+        user = db.session.get(User, user_id)
+        result = []
+        for session in user.sessions:
+            endtime = session.endtime
+            duration_as_minutes = session.duration.total_seconds() // 60
+            result.append({'id': session.id, 'duration_as_minutes': duration_as_minutes})
+
+        return jsonify({'sessions': result})
+
+    else:
+        return jsonify({'message': 'User does not exist'}), 404
+
+
 @app.route('/session/start', methods = ['POST'])
 @jwt_required()
 def startsession():
@@ -783,10 +803,26 @@ def addsession():
         db.session.add(session)
         db.session.commit()
 
-        return jsonify({'message': 'Session has been added', 'id':session.id})
+        return jsonify({'message': 'Session has been added'})
     
     else:
         return jsonify({'message':'Missing startdate, starttime, enddate, or endtime'}), 400
+    
+
+@app.route('/session/delete', methods = ['DELETE'])
+@jwt_required()
+def deletesession():
+    """Deletes all sessions """
+    user_id = get_jwt_identity()
+    if not user_exists(user_id):
+        return jsonify({'message': "User does not exist"}), 404
+    user = db.session.get(User, user_id)
+    for session in user.sessions:
+        db.session.delete(session)
+
+    db.session.commit()
+
+    return jsonify({'message': 'Sessions have been deleted'})
 
 
 @app.route('/session/end', methods = ['POST'])

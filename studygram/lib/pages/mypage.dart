@@ -55,8 +55,8 @@ class MyPage extends StatelessWidget {
                   child: Padding(
                 padding: const EdgeInsets.all(5),
                 child: NavigationCard(
-                  route: '/',
-                  text: 'Statistics',
+                  route: '/studyhistory',
+                  text: 'Study History',
                   icon: Icons.bar_chart,
                   extra: userModel.username,
                 ),

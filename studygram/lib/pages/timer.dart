@@ -18,90 +18,123 @@ class TimerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
-    TimerModel timerModel = Provider.of<TimerModel>(context, listen: true);
-    Stopwatch stopwatch = timerModel.stopwatch;
 
-    return Consumer<TimerModel>(
-      builder: (context, timerModel, child) {
-        return Center(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Watch(),
-              ),
-              Wrap(children: [
+    WatchModel watchModel = Provider.of<WatchModel>(context, listen: false);
+
+    TextEditingController subjectController = TextEditingController();
+    TextEditingController descriptionController = TextEditingController();
+
+    return Consumer<Settings>(builder: (context, settings, child) {
+      Map buttonWidth = {
+        Size.small: 150.0,
+        Size.medium: 175.0,
+        Size.large: 200.0
+      };
+
+      return Consumer<TimerModel>(
+        builder: (context, timerModel, child) {
+          // Shows error if something went wrong
+          if (timerModel.status == Status.error) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(timerModel.errorMessage)));
+          }
+
+          return Center(
+            child: Column(
+              children: [
+                const Watch(),
+                Wrap(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyTextButton(
+                        buttonText: "Reset",
+                        textColor: Colors.black,
+                        backgroundColor:
+                            const Color.fromARGB(255, 216, 199, 221),
+                        rectangleShape: true,
+                        width: buttonWidth[settings.size],
+                        onPressed: () {
+                          timerModel.resetTimer(watchModel);
+                        }),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyTextButton(
+                        buttonText: (watchModel.stopwatch.isRunning)
+                            ? "Pause"
+                            : "Start",
+                        textColor: Colors.white,
+                        backgroundColor: (watchModel.stopwatch.isRunning)
+                            ? const Color.fromARGB(255, 218, 116, 109)
+                            : const Color.fromARGB(255, 146, 221, 148),
+                        rectangleShape: true,
+                        width: buttonWidth[settings.size],
+                        onPressed: () {
+                          timerModel.handleStartStop(watchModel);
+                        }),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyTextButton(
+                        buttonText: "Finish",
+                        textColor: Colors.black,
+                        backgroundColor:
+                            const Color.fromARGB(255, 216, 199, 221),
+                        rectangleShape: true,
+                        width: buttonWidth[settings.size],
+                        onPressed: () {
+                          timerModel.finish(
+                              token,
+                              watchModel,
+                              subjectController.text,
+                              descriptionController.text);
+                        }),
+                  )
+                ]),
+                const Divider(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: MyTextButton(
-                      buttonText: "Reset",
-                      textColor: Colors.white,
-                      backgroundColor: (stopwatch.isRunning)
-                          ? const Color.fromARGB(255, 218, 116, 109)
-                          : const Color.fromARGB(255, 146, 221, 148),
-                      rectangleShape: true,
-                      onPressed: () {
-                        timerModel.resetTimer();
-                      }),
+                  child: MyTextField(
+                      labelText: "Subject",
+                      controller: subjectController,
+                      obscureText: false),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: MyTextButton(
-                      buttonText: (stopwatch.isRunning) ? "Pause" : "Start",
-                      textColor: Colors.white,
-                      backgroundColor: (stopwatch.isRunning)
-                          ? const Color.fromARGB(255, 218, 116, 109)
-                          : const Color.fromARGB(255, 146, 221, 148),
-                      rectangleShape: true,
-                      onPressed: () {
-                        timerModel.handleStartStop();
-                      }),
+                  child: MyTextField(
+                      labelText: "Description",
+                      controller: descriptionController,
+                      obscureText: false),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MyTextButton(
-                      buttonText: "Finish",
-                      textColor: Colors.white,
-                      backgroundColor: Colors.indigoAccent,
-                      rectangleShape: true,
-                      onPressed: () {
-                        timerModel.finish(token);
-                      }),
-                )
-              ]),
-            ],
-          ),
-        );
-      },
-    );
+              ],
+            ),
+          );
+        },
+      );
+    });
   }
 }
 
-/// Class for the timer
-class Watch extends StatefulWidget {
+/// Displays the elapsed time of the TimerModel
+class Watch extends StatelessWidget {
   const Watch({super.key});
 
   @override
-  State<Watch> createState() => _WatchState();
-}
-
-class _WatchState extends State<Watch> {
-  @override
   Widget build(BuildContext context) {
     Map sizes = {
-      Size.small: {"width": 500.0, "height": 250.0},
-      Size.medium: {"width": 600.0, "height": 300.0},
-      Size.large: {"width": 700.0, "height": 350.0},
+      Size.small: {"width": 450.0, "height": 225.0},
+      Size.medium: {"width": 500.0, "height": 250.0},
+      Size.large: {"width": 550.0, "height": 275.0},
     };
 
     Map textSizes = {
-      Size.small: 20.0,
-      Size.medium: 25.0,
-      Size.large: 30.0,
+      Size.small: 30.0,
+      Size.medium: 40.0,
+      Size.large: 50.0,
     };
 
-    return Consumer<TimerModel>(
-      builder: (context, timerModel, child) {
+    return Consumer<WatchModel>(
+      builder: (context, watchModel, child) {
         return Consumer<Settings>(
           builder: (context, settings, child) {
             return SizedBox(
@@ -109,7 +142,7 @@ class _WatchState extends State<Watch> {
               height: sizes[settings.size]["height"],
               child: Center(
                 child: Text(
-                  timerModel.returnFormattedText(),
+                  watchModel.returnFormattedText(),
                   style: TextStyle(fontSize: textSizes[settings.size]),
                 ),
               ),
