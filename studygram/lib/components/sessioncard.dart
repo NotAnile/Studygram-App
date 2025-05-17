@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/models/friend_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/settings_model.dart';
-import 'package:studygram/models/user.dart';
-import 'package:studygram/components/textbutton.dart';
-import 'package:go_router/go_router.dart';
-import 'package:studygram/models/url.dart';
 import 'package:studygram/structure.dart';
 
 /// A card that consists of the date that a session was started, start and end time, subject, description and duration.
@@ -58,6 +53,7 @@ class SessionCard extends StatelessWidget {
                           fontSize: sizes[settings.size],
                         ),
                       ),
+                      const Text("")
                     ],
                   ),
                   Row(

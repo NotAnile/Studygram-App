@@ -42,6 +42,7 @@ class TimerPage extends StatelessWidget {
           }
 
           return Center(
+              child: SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
@@ -123,7 +124,7 @@ class TimerPage extends StatelessWidget {
                 ),
               ],
             ),
-          );
+          ));
         },
       );
     });
