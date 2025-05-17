@@ -31,6 +31,8 @@ class TimerPage extends StatelessWidget {
         Size.large: 200.0
       };
 
+      Map textsize = {Size.small: 20.0, Size.medium: 22.5, Size.large: 25.0};
+
       return Consumer<TimerModel>(
         builder: (context, timerModel, child) {
           // Shows error if something went wrong
@@ -42,6 +44,11 @@ class TimerPage extends StatelessWidget {
           return Center(
             child: Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Log your study session",
+                      style: TextStyle(fontSize: textsize[settings.size])),
+                ),
                 const Watch(),
                 Wrap(children: [
                   Padding(
@@ -83,29 +90,43 @@ class TimerPage extends StatelessWidget {
                         rectangleShape: true,
                         width: buttonWidth[settings.size],
                         onPressed: () {
-                          timerModel.finish(
-                              token,
-                              watchModel,
-                              subjectController.text,
-                              descriptionController.text);
+                          // Checking if the time is over 1 minute
+                          if (watchModel.stopwatch.elapsed.inSeconds < 60) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        "Can't save sessions under one minute")));
+                          } else {
+                            timerModel.finish(
+                                token,
+                                watchModel,
+                                subjectController.text,
+                                descriptionController.text);
+                          }
                         }),
                   )
                 ]),
                 const Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MyTextField(
-                      labelText: "Subject",
-                      controller: subjectController,
-                      obscureText: false),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MyTextField(
-                      labelText: "Description",
-                      controller: descriptionController,
-                      obscureText: false),
-                ),
+                SizedBox.expand(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyTextField(
+                          labelText: "Subject",
+                          controller: subjectController,
+                          obscureText: false),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyTextField(
+                          labelText: "Description",
+                          controller: descriptionController,
+                          obscureText: false),
+                    ),
+                  ],
+                ))
               ],
             ),
           );

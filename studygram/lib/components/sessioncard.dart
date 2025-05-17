@@ -29,21 +29,26 @@ class _SessioncardState extends State<Sessioncard> {
         Map sizes = {Size.small: 12.0, Size.medium: 14.0, Size.large: 16.0};
         return Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
                 children: [
-                  Text(
-                    "",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: sizes[settings.size],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: sizes[settings.size],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         );
       },

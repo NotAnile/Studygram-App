@@ -1,14 +1,13 @@
-// Commented out url for the time being
+import 'package:intl/intl.dart';
+
 class User {
   String username;
-  // final String url;
   List posts;
   List sessions;
   List friends;
   List friendRequests;
   User(
       {required this.username,
-      // required this.url,
       required this.posts,
       required this.sessions,
       required this.friends,
@@ -107,7 +106,6 @@ class Comment extends Content {
 class Session {
   final DateTime starttime;
   final DateTime endtime;
-  final String startdate;
   final String username;
   final String subject;
   final String description;
@@ -115,29 +113,42 @@ class Session {
   Session(
       {required this.starttime,
       required this.endtime,
-      required this.startdate,
       required this.username,
       required this.subject,
       required this.description});
 
   factory Session.fromJson(Map<String, dynamic> json) {
     return Session(
-        starttime: json["starttime"] ?? "",
-        endtime: json["endtime"] ?? "",
-        startdate: json["startdate"],
+        starttime: json["starttime"],
+        endtime: json["endtime"],
         username: json["username"] ?? "",
-        subject: json["subject"] ?? "",
-        description: json["description"] ?? "");
+        subject: json["subject"],
+        description: json["description"]);
   }
 
   static Map<String, dynamic> toJson(Session session) {
     return {
       "starttime": session.starttime,
       "endtime": session.endtime,
-      "startdate": session.startdate,
       "username": session.username,
       "subject": session.subject,
       "description": session.description
     };
   }
+
+  String getFormattedDate(DateTime date) {
+    final String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    return formattedDate;
+  }
+
+  String getFormattedTime(DateTime time) {
+    final String formattedDate = DateFormat('yyyy-MM-dd').format(time);
+    return formattedDate;
+  }
+
+  // 2025-05-07
+  // 11:40-12:30
+  // TDDD80
+  // gjorde ....
+  // Duration: 50 minutes
 }
