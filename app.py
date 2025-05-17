@@ -64,12 +64,6 @@ class Size(Enum):
         return [Size.SMALL.value, Size.MEDIUM.value, Size.LARGE.value]
 
 
-settings = db.Table(
-    "Settings",
-    db.Column('user_id', String, ForeignKey('user.id'), primary_key=True),
-    db.Column('size_setting', String)
-)
-
 class User(db.Model):
     id: Mapped[str] = mapped_column(primary_key = True)
     password: Mapped[str] = mapped_column(nullable=False)
@@ -84,10 +78,12 @@ class User(db.Model):
         secondaryjoin=id==friends.c.friend_id, 
         backref='followers'  # Followers are all the users who have you in their following list
     )
+    settings: Mapped[str]
 
     def __init__(self, id, password):
         self.id = id
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.settings = Size.MEDIUM.value
     
     def setPassword(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -125,7 +121,6 @@ class Session(db.Model):
     starttime: Mapped[datetime]
     endtime: Mapped[datetime]
     duration: Mapped[timedelta]
-    startdate: Mapped[date]
     user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
     user: Mapped['User'] = relationship(back_populates = 'sessions')
     subject: Mapped[str]
@@ -134,7 +129,6 @@ class Session(db.Model):
     def __init__(self, starttime, user_id, subject, description):
         self.user_id = user_id
         self.starttime = starttime
-        self.startdate = starttime.date()
         self.subject = subject
         self.description = description
         self.endtime = starttime
@@ -197,7 +191,7 @@ def create_user():
         existing_user = db.session.get(User, username)
         if existing_user is None:
             # Creates a new user
-            user = User(id=username, password=password, settings=Size.MEDIUM.value)
+            user = User(id=username, password=password)
             db.session.add(user)
             db.session.commit()
             return jsonify({'message': 'Welcome'}), 200
@@ -711,7 +705,8 @@ def get_settings():
     if not user_exists(username):
         return jsonify({'message': 'User does not exist'}), 404
     # Getting the data
-    size = db.session.execute(select(settings.c.size_setting).where(settings.c.user_id == username)).scalar_one_or_none()
+    user = db.session.get(User, username)
+    size = user.settings
     # Setting size to medium as default value if no setting for the user is found
     if size is None:
         size = Size.MEDIUM.value
@@ -733,15 +728,10 @@ def update_settings():
         # Checks if the given size is valid
         if not size in Size.values():
             return jsonify({f'message': 'Invalid size value: {size}'}), 400
-        
-    # Removing the old settings if they exist
-    old_settings = select(settings).where(settings.c.user_id == username)
-    if old_settings is not None:
-       db.session.execute(delete(settings).where(settings.c.user_id == username))
 
     # Changing the settings field of the user and updating the database
-    new_setting = settings.insert().values(user_id=username, size_setting=size)
-    db.session.execute(new_setting)
+    user = db.session.get(User, username)
+    user.settings = size
     db.session.commit()
     return jsonify({f'message': 'Settings for {username} has succesfully been updated'}), 200
         
