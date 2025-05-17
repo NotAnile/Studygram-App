@@ -142,8 +142,8 @@ class Session {
   }
 
   String getFormattedTime(DateTime time) {
-    final String formattedDate = DateFormat('yyyy-MM-dd').format(time);
-    return formattedDate;
+    final String formattedTime = DateFormat('HH:mm').format(time);
+    return formattedTime;
   }
 
   // 2025-05-07
