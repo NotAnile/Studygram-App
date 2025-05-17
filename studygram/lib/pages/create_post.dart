@@ -30,41 +30,41 @@ class CreatePostPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                      width: sizes[settings.size]['textarea'],
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(30.0),
-                            child: TextArea(
-                              labelText: "What would you like to say?",
-                              controller: bodyController,
-                              obscureText: false,
-                              width: sizes[settings.size]['textarea'],
-                            ),
+                    width: sizes[settings.size]['textarea'],
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: TextArea(
+                            labelText: "What would you like to say?",
+                            controller: bodyController,
+                            obscureText: false,
+                            width: sizes[settings.size]['textarea'],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
-                            child: Row(
-                              children: [
-                                MyTextButton(
-                                  buttonText: "Create",
-                                  textColor: Colors.white,
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 191, 152, 197),
-                                  rectangleShape: false,
-                                  onPressed: () {
-                                    Provider.of<CreatePostModel>(context,
-                                            listen: false)
-                                        .createPost(
-                                            context, bodyController.text);
-                                  },
-                                  width: sizes[settings.size]['textbutton'],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      )),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30.0),
+                          child: Row(
+                            children: [
+                              MyTextButton(
+                                buttonText: "Create",
+                                textColor: Colors.white,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 191, 152, 197),
+                                rectangleShape: false,
+                                onPressed: () {
+                                  Provider.of<CreatePostModel>(context,
+                                          listen: false)
+                                      .createPost(context, bodyController.text);
+                                },
+                                width: sizes[settings.size]['textbutton'],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                   model.showErrorMessage
                       ? Text(model.errorMessage)
                       : const Text("")

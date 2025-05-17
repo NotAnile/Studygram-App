@@ -107,26 +107,20 @@ class TimerPage extends StatelessWidget {
                   )
                 ]),
                 const Divider(),
-                SizedBox.expand(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MyTextField(
-                          labelText: "Subject",
-                          controller: subjectController,
-                          obscureText: false),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MyTextField(
-                          labelText: "Description",
-                          controller: descriptionController,
-                          obscureText: false),
-                    ),
-                  ],
-                ))
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyTextField(
+                      labelText: "Subject",
+                      controller: subjectController,
+                      obscureText: false),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyTextField(
+                      labelText: "Description",
+                      controller: descriptionController,
+                      obscureText: false),
+                ),
               ],
             ),
           );

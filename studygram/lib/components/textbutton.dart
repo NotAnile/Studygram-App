@@ -12,7 +12,6 @@ class MyTextButton extends StatelessWidget {
   final void Function() onPressed;
   final double? width;
   final double? height;
-  // final String route;
 
   const MyTextButton({
     super.key,

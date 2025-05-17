@@ -16,6 +16,7 @@ import 'package:studygram/pages/userprofile.dart';
 import 'components/navigationbar.dart';
 import 'package:studygram/pages/settings.dart';
 import 'package:studygram/pages/friends.dart';
+import 'package:studygram/pages/study_history.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -75,9 +76,7 @@ class MyRouter extends StatelessWidget {
         GoRoute(
             path: '/studyhistory',
             builder: (context, state) {
-              final post =
-                  state.extra! as Post; // Gets the post for the post page
-              return PostPage(post: post);
+              return const StudyHistoryPage();
             }),
         ShellRoute(
           navigatorKey: _shellNavigatorKey,

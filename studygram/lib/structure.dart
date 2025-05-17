@@ -17,7 +17,6 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
         username: json["username"],
-        // url: json["url"],
         posts: json["posts"].map((json) => Post.fromJson(json)).toList(),
         sessions: json["sessions"] != null
             ? json["sessions"].map((json) => Session.fromJson(json)).toList()
@@ -106,49 +105,53 @@ class Comment extends Content {
 class Session {
   final DateTime starttime;
   final DateTime endtime;
-  final String username;
+  final int durationAsMinutes;
   final String subject;
   final String description;
 
   Session(
       {required this.starttime,
       required this.endtime,
-      required this.username,
+      required this.durationAsMinutes,
       required this.subject,
       required this.description});
 
   factory Session.fromJson(Map<String, dynamic> json) {
     return Session(
-        starttime: json["starttime"],
-        endtime: json["endtime"],
-        username: json["username"] ?? "",
+        // Parses the starttime and endtime strings from "yyyy-mm-dd hh:mm:ss" to DateTime objects
+        starttime: DateTime.parse(json["starttime"]),
+        endtime: DateTime.parse(json["endtime"]),
+        durationAsMinutes: json["duration_as_minutes"].toInt(),
         subject: json["subject"],
         description: json["description"]);
   }
 
   static Map<String, dynamic> toJson(Session session) {
     return {
-      "starttime": session.starttime,
-      "endtime": session.endtime,
-      "username": session.username,
+      "starttime": DateFormat('yyyy-MM-dd HH:mm:ss').format(session.starttime),
+      "endtime": DateFormat('yyyy-MM-dd HH:mm:ss').format(session.endtime),
       "subject": session.subject,
       "description": session.description
     };
   }
 
+  /// Converts the date from the DateTime object into the format yyyy-MM-dd
   String getFormattedDate(DateTime date) {
     final String formattedDate = DateFormat('yyyy-MM-dd').format(date);
     return formattedDate;
   }
 
+  /// Converts the time from the DateTime object into the format HH:mm
   String getFormattedTime(DateTime time) {
     final String formattedTime = DateFormat('HH:mm').format(time);
     return formattedTime;
   }
 
-  // 2025-05-07
-  // 11:40-12:30
-  // TDDD80
-  // gjorde ....
-  // Duration: 50 minutes
+  /// Converts the duration time which is in minutes into both hours and minutes
+  String getFormattedDuration(int durationAsMinutes) {
+    int minutes = durationAsMinutes % 60;
+    int hours = durationAsMinutes ~/ 60;
+
+    return "$hours h $minutes mins";
+  }
 }

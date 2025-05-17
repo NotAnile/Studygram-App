@@ -51,6 +51,7 @@ class FriendManager extends ChangeNotifier {
 
   Future<Status> removeFriend(
       BuildContext context, String friendUsername) async {
+    _status = Status.loading;
     // Getting token
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;

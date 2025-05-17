@@ -31,9 +31,9 @@ class TimerModel extends ChangeNotifier {
 
     String day = now.day.toString().padLeft(2, "0");
     String month = now.month.toString().padLeft(2, "0");
-    int year = now.year % 100;
+    int year = now.year;
 
-    return "$day/$month/$year";
+    return "$year-$month-$day";
   }
 
   /// Gets the current time as hours and minutes in the format HH:MM
@@ -43,7 +43,7 @@ class TimerModel extends ChangeNotifier {
     String hour = now.hour.toString().padLeft(2, "0");
     String minute = now.minute.toString().padLeft(2, "0");
 
-    return "$hour:$minute";
+    return "$hour:$minute:00";
   }
 
   /// Stops or starts the watchmodel, as well as initializes the timermodel

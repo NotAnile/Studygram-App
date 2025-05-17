@@ -13,6 +13,7 @@ class Settings extends ChangeNotifier {
   String get errorMessage => _errorMessage;
 
   void getSize(String token) async {
+    _status = Status.loading;
     final response = await http
         .get(Uri.parse("$baseUrl/settings"), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
@@ -36,7 +37,7 @@ class Settings extends ChangeNotifier {
   /// Updates the size of widgets and text in the app
   void changeSize(Size size, String token) async {
     _size = size;
-
+    _status = Status.loading;
     // Creating a JSON to send to the server
     final response = await http.post(Uri.parse("$baseUrl/update/settings"),
         headers: <String, String>{

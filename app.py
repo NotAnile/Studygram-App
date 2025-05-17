@@ -746,9 +746,11 @@ def get_all_sessions():
         user = db.session.get(User, user_id)
         result = []
         for session in user.sessions:
-            endtime = session.endtime
+            starttime = session.starttime.strftime("%Y-%m-%d %H:%M:%S")
+            endtime = session.endtime.strftime("%Y-%m-%d %H:%M:%S")
             duration_as_minutes = session.duration.total_seconds() // 60
-            result.append({'id': session.id, 'duration_as_minutes': duration_as_minutes})
+            result.append({'id': session.id, 'duration_as_minutes': duration_as_minutes, 'starttime': starttime, 'endtime': endtime, 
+            'subject': session.subject, 'description': session.description})
 
         return jsonify({'sessions': result})
 
@@ -779,21 +781,21 @@ def startsession():
 
 @app.route('/session/add', methods = ['POST'])
 @jwt_required()
-def addsession():
-    """Adds a session manually by setting the start and end time """
+def add_session():
+    """Creates a session object and adds the session"""
     user_id = get_jwt_identity()
     if not user_exists(user_id):
         return jsonify({'message': "User does not exist"}), 404
     
     json_data = request.json
     if data_exist(['startdate', 'starttime', 'enddate', 'endtime'], json_data):
-        startdate = json_data['startdate']
         starttime = json_data['starttime']
+        startdate = json_data['startdate']
         enddate = json_data['enddate']
         endtime = json_data['endtime']
         # Getting the start and endtime as datetime objects
-        starttime = datetime.strptime(startdate + " " + starttime + ":00", '%d/%m/%y %H:%M:%S')
-        endtime = datetime.strptime(enddate + " " + endtime + ":00", '%d/%m/%y %H:%M:%S')
+        starttime = datetime.strptime(startdate + " " + starttime, "%Y-%m-%d %H:%M:%S") 
+        endtime = datetime.strptime(enddate + " " + endtime, "%Y-%m-%d %H:%M:%S") 
         # Getting the subject and description if the user sent one
         subject = get_data('subject', json_data)
         description = get_data('description', json_data)
@@ -807,22 +809,32 @@ def addsession():
     
     else:
         return jsonify({'message':'Missing startdate, starttime, enddate, or endtime'}), 400
-    
+  
 
 @app.route('/session/delete', methods = ['DELETE'])
 @jwt_required()
-def deletesession():
-    """Deletes all sessions """
+def delete_session():
+    """Deletes the given session."""
     user_id = get_jwt_identity()
     if not user_exists(user_id):
         return jsonify({'message': "User does not exist"}), 404
     user = db.session.get(User, user_id)
-    for session in user.sessions:
-        db.session.delete(session)
 
-    db.session.commit()
-
-    return jsonify({'message': 'Sessions have been deleted'})
+    # Getting the session object
+    json_data = request.json
+    if 'id' in json_data:
+        session_id = json_data['id']
+        session = db.session.get(Session, session_id)
+        # Checking if the user owns the session
+        if session in user.sessions:
+            db.session.delete(session)
+            db.session.commit()
+            return jsonify({'message': 'Session has been deleted.'}), 200
+        else:
+            return jsonify({'message': 'User does not own session.'}), 401
+    else:
+        return jsonify({'message': 'Missing session id.'}), 404
+    return jsonify({'message': 'Session not found.'}), 404
 
 
 @app.route('/session/end', methods = ['POST'])

@@ -4,7 +4,7 @@ import './url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class StudyHistoryModel extends ChangeNotifier {
+class SessionViewModel extends ChangeNotifier {
   final String baseUrl = BaseUrl().baseUrl;
   Status _status = Status.idle;
   String _errorMessage = "";
@@ -13,6 +13,7 @@ class StudyHistoryModel extends ChangeNotifier {
 
   /// Gets a list containing all sessions of the user
   Future<List<dynamic>> getSessions(String token) async {
+    _status = Status.loading;
     final response = await http.get(
       Uri.parse("$baseUrl/sessions/all"),
       headers: <String, String>{
@@ -25,7 +26,7 @@ class StudyHistoryModel extends ChangeNotifier {
     final result = json.decode(response.body);
     if (response.statusCode == 200) {
       _status = Status.success;
-      return result.map((json) => Session.fromJson(json)).toList();
+      return result['sessions'].map((json) => Session.fromJson(json)).toList();
     } else {
       _status = Status.error;
       _errorMessage = result['message'];

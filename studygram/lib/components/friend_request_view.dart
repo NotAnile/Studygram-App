@@ -7,16 +7,11 @@ import 'package:studygram/components/loading_indicator.dart';
 import '../models/authentication.dart';
 
 //**Listview to display all the users in a column*/
-class FriendRequestView extends StatefulWidget {
+class FriendRequestView extends StatelessWidget {
   const FriendRequestView({
     super.key,
   });
 
-  @override
-  State<FriendRequestView> createState() => _FriendRequestViewState();
-}
-
-class _FriendRequestViewState extends State<FriendRequestView> {
   @override
   Widget build(BuildContext context) {
     // Getting token for the request
