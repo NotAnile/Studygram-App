@@ -5,6 +5,9 @@ import 'package:studygram/components/textbutton.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/services/create_post_model.dart';
 import '../../services/settings_model.dart';
+import 'package:go_router/go_router.dart';
+import 'package:studygram/services/url.dart';
+import 'package:studygram/services/authentication.dart';
 
 class CreatePostPage extends StatelessWidget {
   const CreatePostPage({super.key});
@@ -52,10 +55,39 @@ class CreatePostPage extends StatelessWidget {
                                 backgroundColor:
                                     const Color.fromARGB(255, 191, 152, 197),
                                 rectangleShape: false,
-                                onPressed: () {
-                                  Provider.of<CreatePostModel>(context,
+                                onPressed: () async {
+                                  CreatePostModel createPostModel =
+                                      Provider.of<CreatePostModel>(context,
+                                          listen: false);
+                                  // Getting token
+                                  String token = Provider.of<Authentication>(
+                                          context,
                                           listen: false)
-                                      .createPost(context, bodyController.text);
+                                      .accessToken;
+                                  Status status = await createPostModel
+                                      .createPost(token, bodyController.text);
+                                  if (context.mounted) {
+                                    if (status == Status.success) {
+                                      // Shows a snackbar that the post was successfully created
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content:
+                                              Text("Post succesfully created"),
+                                        ),
+                                      );
+                                      context.pop();
+                                    } else {
+                                      // Shows a snackbar if something went wrong
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              createPostModel.errorMessage),
+                                        ),
+                                      );
+                                    }
+                                  }
                                 },
                                 width: sizes[settings.size]['textbutton'],
                               ),

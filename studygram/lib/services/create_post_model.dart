@@ -14,11 +14,9 @@ class CreatePostModel extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   bool get showErrorMessage => _showErrorMessage;
 
-  void createPost(BuildContext context, String body) async {
+  Future<Status> createPost(String token, String body) async {
     final String baseUrl = BaseUrl().baseUrl;
-    // Getting token
-    String token =
-        Provider.of<Authentication>(context, listen: false).accessToken;
+
     // Creating a JSON to send to the server
     final response = await http.post(Uri.parse("$baseUrl/posts"),
         headers: <String, String>{
@@ -32,16 +30,14 @@ class CreatePostModel extends ChangeNotifier {
       // Setting no error message since everything went well
       _errorMessage = "";
       _showErrorMessage = false;
-      // Updating the post count of the user and pops the user back to home screen
-      if (context.mounted) {
-        context.pop();
-      }
+      return Status.success;
     } else {
       // Something went wrong, so error message is updated
       _errorMessage = json.decode(response.body)['message'];
       _showErrorMessage = true;
+      notifyListeners();
+      return Status.error;
     }
-    notifyListeners();
   }
 
 // Setting error message for create account page
