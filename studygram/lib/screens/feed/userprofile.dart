@@ -17,6 +17,8 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String ourUsername =
+        Provider.of<UserModel>(context, listen: false).username;
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
     Future<dynamic> request =
@@ -52,7 +54,9 @@ class UserProfilePage extends StatelessWidget {
                           title: "Friends", number: user.friends.length),
                     ),
                     NumberedBox(title: "Posts", number: user.posts.length),
-                    FollowButton(username: username)
+                    (username != ourUsername)
+                        ? FollowButton(username: username)
+                        : const Text(""),
                   ],
                 ),
                 const Divider(),

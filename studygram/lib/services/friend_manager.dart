@@ -68,7 +68,7 @@ class FriendManager extends ChangeNotifier {
       _status = Status.success;
       // Setting no error message since everything went well
       _errorMessage = "";
-      //Updates the FriendModel
+      //Updates the UserModel
       Provider.of<UserModel>(context, listen: false)
           .unfollowUser(friendUsername);
       notifyListeners();

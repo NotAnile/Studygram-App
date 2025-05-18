@@ -9,19 +9,15 @@ class UserModel extends ChangeNotifier {
   bool _isInitialized = false;
   String _username = "";
   List<dynamic> _posts = [];
-  int _amountOfPosts = 0;
   List<dynamic> _following = [];
   List<dynamic> _friends = [];
-  List<dynamic> _friendRequests = [];
   Status _status = Status.idle;
   String _errorMessage = "";
 
   String get username => _username;
   List<dynamic> get posts => _posts;
-  int get amountOfPosts => _amountOfPosts;
   List<dynamic> get following => _following;
   List<dynamic> get friends => _friends;
-  List<dynamic> get friendRequests => _friendRequests;
   bool get isInitialized => _isInitialized;
   Status get status => _status;
   String get errorMessage => _errorMessage;
@@ -53,10 +49,8 @@ class UserModel extends ChangeNotifier {
         _isInitialized = true;
         _username = data['username'];
         _posts = data['posts'].map((json) => Post.fromJson(json)).toList();
-        _amountOfPosts = data['post_count'];
         _following = data['following'];
         _friends = data['friends'];
-        _friendRequests = data['friend_requests'];
 
         _status = Status.success;
         // Setting no error message since everything went well
@@ -68,14 +62,6 @@ class UserModel extends ChangeNotifier {
       }
       notifyListeners();
     }
-  }
-
-  void incrementPostCount() {
-    _amountOfPosts += 1;
-  }
-
-  void decreasePostCount() {
-    _amountOfPosts -= 1;
   }
 
   /// Adds the person that the user wants to follow to the list

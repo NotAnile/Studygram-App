@@ -34,7 +34,6 @@ class CreatePostModel extends ChangeNotifier {
       _showErrorMessage = false;
       // Updating the post count of the user and pops the user back to home screen
       if (context.mounted) {
-        Provider.of<UserModel>(context, listen: false).incrementPostCount();
         context.pop();
       }
     } else {
