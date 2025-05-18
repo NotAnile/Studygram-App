@@ -75,10 +75,11 @@ class _PostPageState extends State<PostPage> {
                               .accessToken;
                           Status status = await model.addComment(
                               token, post.id, commentController.text);
-                          if (status == Status.error) {
-                            // Show snackbar for error message
-                            String errorMessage = model.errorMessage;
-                            if (context.mounted) {
+                          if (context.mounted) {
+                            if (status == Status.error) {
+                              // Show snackbar for error message
+                              String errorMessage = model.errorMessage;
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -88,11 +89,10 @@ class _PostPageState extends State<PostPage> {
                                   ),
                                 ),
                               );
-                            }
-                          } else {
-                            // The comment was succesfully added so the controller's text is resetted
-                            commentController.text = "";
-                            if (context.mounted) {
+                            } else {
+                              // The comment was succesfully added so the controller's text is resetted
+                              commentController.text = "";
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text("Comment succesfully added"),
