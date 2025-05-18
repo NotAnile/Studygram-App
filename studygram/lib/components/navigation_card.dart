@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:studygram/services/settings_model.dart';
+import 'package:studygram/models/settings_model.dart';
 import 'package:provider/provider.dart';
 
 class NavigationCard extends StatelessWidget {

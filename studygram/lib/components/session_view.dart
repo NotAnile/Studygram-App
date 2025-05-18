@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/sessioncard.dart';
 import 'package:studygram/components/loading_indicator.dart';
-import 'package:studygram/models/session.dart';
+import 'package:go_router/go_router.dart';
+import '../structure.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/services/session_view_model.dart';
-import 'package:studygram/services/authentication.dart';
-import 'package:studygram/services/settings_model.dart';
+import 'package:studygram/models/session_view_model.dart';
+import 'package:studygram/models/authentication.dart';
+import 'package:studygram/models/settings_model.dart';
 
 //**Listview to display all the sessions in a column*/
 class SessionView extends StatelessWidget {

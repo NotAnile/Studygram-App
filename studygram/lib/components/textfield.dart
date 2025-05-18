@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/settings_model.dart';
+import '../models/settings_model.dart';
 
 //**Creates a textfield*/
 class MyTextField extends StatelessWidget {

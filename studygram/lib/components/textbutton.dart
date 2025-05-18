@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/settings_model.dart';
+import '../models/settings_model.dart';
 import 'package:provider/provider.dart';
 
 //**Creates a textbutton*/

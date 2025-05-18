@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/services/settings_model.dart';
-import 'package:studygram/services/user_search_bar_model.dart';
+import 'package:studygram/models/settings_model.dart';
+import 'package:studygram/models/user_search_bar_model.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -41,7 +41,7 @@ class _UserSearchBarState extends State<UserSearchBar> {
                     if (input.trim().isNotEmpty) {
                       // Gets the new suggestions
                       List<dynamic> newSuggestions = await userSearchBarModel
-                          .search(input, suggestionsLimit);
+                          .search(input.trim().toLowerCase(), suggestionsLimit);
                       // Updates the suggestions list
                       setState(
                         () {

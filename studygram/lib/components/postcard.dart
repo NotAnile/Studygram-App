@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/providers/post_view_provider.dart';
-import 'package:studygram/services/feed.dart';
-import 'package:studygram/services/settings_model.dart';
-import 'package:studygram/models/content.dart';
+import 'package:studygram/models/feed.dart';
+import 'package:studygram/models/settings_model.dart';
+import '../structure.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/services/like_manager.dart';
-import 'package:studygram/services/authentication.dart';
+import 'package:studygram/models/like_manager.dart';
+import 'package:studygram/models/authentication.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/components/delete_button.dart';
-import 'package:studygram/services/user.dart';
-import 'package:studygram/services/url.dart';
+import 'package:studygram/models/user.dart';
+import 'package:studygram/models/url.dart';
 
 //**A card that consists of a username and a text (body). Each post consists of a card.*/
 class PostCard extends StatefulWidget {
@@ -26,8 +25,7 @@ class _PostCardState extends State<PostCard> {
     String accessToken =
         Provider.of<Authentication>(context, listen: false).accessToken;
     String username = Provider.of<UserModel>(context, listen: false).username;
-    PostViewProvider postViewProvider =
-        Provider.of<PostViewProvider>(context, listen: false);
+    Feed feed = Provider.of<Feed>(context, listen: false);
 
     bool isLiked = widget.post.isLiked;
     int likeCount = widget.post.likeCount;
@@ -84,9 +82,8 @@ class _PostCardState extends State<PostCard> {
                               // Deletes the post if the user clicks on button
                               ? DeleteButton(
                                   onPressed: () async {
-                                    await postViewProvider.removePost(
-                                        accessToken, widget.post.id);
-                                    Status status = postViewProvider.status;
+                                    Status status = await feed.removePost(
+                                        widget.post.id, accessToken);
                                     // Showing a snackbar to notify the user about how the login went
                                     if (context.mounted) {
                                       if (status == Status.success) {
@@ -99,11 +96,9 @@ class _PostCardState extends State<PostCard> {
                                             .showSnackBar(
                                           SnackBar(
                                             content: Text(
-                                              (postViewProvider
-                                                      .errorMessage.isEmpty
+                                              (feed.errorMessage.isEmpty
                                                   ? "Unknown error"
-                                                  : postViewProvider
-                                                      .errorMessage),
+                                                  : feed.errorMessage),
                                             ),
                                           ),
                                         );
