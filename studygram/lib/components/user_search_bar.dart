@@ -41,7 +41,7 @@ class _UserSearchBarState extends State<UserSearchBar> {
                     if (input.trim().isNotEmpty) {
                       // Gets the new suggestions
                       List<dynamic> newSuggestions = await userSearchBarModel
-                          .search(input, suggestionsLimit);
+                          .search(input.trim().toLowerCase(), suggestionsLimit);
                       // Updates the suggestions list
                       setState(
                         () {
