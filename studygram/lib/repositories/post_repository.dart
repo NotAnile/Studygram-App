@@ -5,6 +5,7 @@ import 'package:studygram/services/post_service.dart';
 
 class PostRepository {
   PostService postService;
+  Status get status => postService.status;
 
   PostRepository({required this.postService});
 
@@ -14,5 +15,13 @@ class PostRepository {
 
   Future<Status> removePost(String token, int postID) {
     return postService.removePost(token, postID);
+  }
+
+  Future<List<dynamic>> getPosts(String token, List<dynamic> selectedUsers,
+      List<dynamic> excludedUsers) async {
+    final posts =
+        await postService.getPosts(token, selectedUsers, excludedUsers);
+    await postService.getPosts(token, selectedUsers, excludedUsers);
+    return posts;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/commentcard.dart';
 import 'package:studygram/components/loading_indicator.dart';
+import 'package:studygram/providers/post_view_provider.dart';
 import 'package:studygram/services/post_page_model.dart';
 import 'postcard.dart';
 import 'package:go_router/go_router.dart';
@@ -89,10 +90,11 @@ class PostView extends StatelessWidget {
 
       return Consumer<LikeManager>(
         builder: (context, likeManager, child) {
-          return Consumer<Feed>(
-            builder: (context, feed, child) {
+          return Consumer<PostViewProvider>(
+            builder: (context, postViewModel, child) {
               return FutureBuilder(
-                future: feed.getPosts(token, selectedUsers!, excludedUsers!),
+                future: postViewModel.getPosts(
+                    token, selectedUsers!, excludedUsers!),
                 builder: (context, snapshot) {
                   // Error handling if the request got an error
                   if (snapshot.hasError) {

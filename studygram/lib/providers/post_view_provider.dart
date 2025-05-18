@@ -32,4 +32,16 @@ class PostViewProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<List<dynamic>> getPosts(String token, List<dynamic> selectedUsers,
+      List<dynamic> excludedUsers) async {
+    _status = Status.loading;
+    final posts =
+        await postRepository.getPosts(token, selectedUsers, excludedUsers);
+    _status = postRepository.status;
+    if (_status == Status.error) {
+      _errorMessage = postService.errorMessage;
+    }
+    return posts;
+  }
 }

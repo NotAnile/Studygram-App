@@ -54,34 +54,35 @@ class PostService {
     return _status;
   }
 
-  // //**Returns a list with posts for the given post id. */
-  // Future<List<dynamic>> getPosts(String token, List<dynamic> selectedUsers,
-  //     List<dynamic> excludedUsers) async {
-  //   final response = await http.post(
-  //     Uri.parse("$baseUrl/posts/all"),
-  //     headers: <String, String>{
-  //       'Content-Type':
-  //           'application/json; charset=UTF-8', // application/json means we want to parse it as a json
-  //       'Authorization': 'Bearer $token',
-  //     },
-  //     body: jsonEncode(
-  //       <String, dynamic>{
-  //         'selected_users': selectedUsers,
-  //         'excluded_users': excludedUsers,
-  //         'post_count': postLimit
-  //       },
-  //     ),
-  //   );
+  ///Returns a list with posts for the given post id.
+  Future<List<dynamic>> getPosts(String token, List<dynamic> selectedUsers,
+      List<dynamic> excludedUsers) async {
+    const int postLimit = 20;
+    final response = await http.post(
+      Uri.parse("$baseUrl/posts/all"),
+      headers: <String, String>{
+        'Content-Type':
+            'application/json; charset=UTF-8', // application/json means we want to parse it as a json
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'selected_users': selectedUsers,
+          'excluded_users': excludedUsers,
+          'post_count': postLimit
+        },
+      ),
+    );
 
-  //   // Adding all the posts from json to a list
-  //   final result = json.decode(response.body);
-  //   if (response.statusCode == 200) {
-  //     _status = Status.success;
-  //     return result.map((json) => Post.fromJson(json)).toList();
-  //   } else {
-  //     _status = Status.error;
-  //     _errorMessage = result['message'];
-  //     throw Exception(_errorMessage);
-  //   }
-  // }
+    // Adding all the posts from json to a list
+    final result = json.decode(response.body);
+    if (response.statusCode == 200) {
+      _status = Status.success;
+      return result.map((json) => Post.fromJson(json)).toList();
+    } else {
+      _status = Status.error;
+      _errorMessage = result['message'];
+      throw Exception(_errorMessage);
+    }
+  }
 }
