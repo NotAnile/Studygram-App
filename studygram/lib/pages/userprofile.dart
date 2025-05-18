@@ -17,6 +17,9 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String ourUsername =
+        Provider.of<UserModel>(context, listen: false).username;
+
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
     Future<dynamic> request =
@@ -32,6 +35,7 @@ class UserProfilePage extends StatelessWidget {
         }
         if (snapshot.connectionState == ConnectionState.done) {
           User user = snapshot.data!;
+          String username = user.username;
           List posts = user.posts;
 
           return Center(
@@ -48,13 +52,15 @@ class UserProfilePage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        context.push('/friends', extra: user.friends);
+                        context.push('/friends', extra: username);
                       },
                       child: NumberedBox(
                           title: "Friends", number: user.friends.length),
                     ),
                     NumberedBox(title: "Posts", number: user.posts.length),
-                    FollowButton(username: username)
+                    (username != ourUsername)
+                        ? FollowButton(username: username)
+                        : const Text(""),
                   ],
                 ),
                 const Divider(),

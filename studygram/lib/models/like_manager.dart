@@ -8,22 +8,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class LikeManager extends ChangeNotifier {
-  final List<dynamic> _likedPosts = [];
   Status _status = Status.idle;
   String _errorMessage = "";
 
-  List<dynamic> get likedPosts => _likedPosts;
   String get errorMessage => _errorMessage;
   Status get status => _status;
 
   /// Adds the post that the user has liked to the list
   void likePost(String token, Content post) async {
     _status = Status.loading;
-    // Add post to list
-    if (!_likedPosts.contains(post)) {
-      _likedPosts.add(post);
-    }
-
     final String baseUrl = BaseUrl().baseUrl;
     int postID = post.id;
 
@@ -50,11 +43,6 @@ class LikeManager extends ChangeNotifier {
 
   /// Removes the post that the user wants to unlike from the list
   void unlikePost(String token, Content post) async {
-    // Remove post from list
-    if (_likedPosts.contains(post)) {
-      _likedPosts.remove(post);
-    }
-
     final String baseUrl = BaseUrl().baseUrl;
     int postID = post.id;
 
@@ -79,7 +67,7 @@ class LikeManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getLikedPosts(String token) async {
+  Future<List<dynamic>> getLikedPosts(String token) async {
     final String baseUrl = BaseUrl().baseUrl;
 
     // Creating a JSON to send to the server
@@ -91,15 +79,17 @@ class LikeManager extends ChangeNotifier {
       },
     );
     // Handling the result depending on the status code
+    final result = json.decode(response.body);
     if (response.statusCode == 200) {
       _status = Status.success;
       // Setting no error message since everything went well
       _errorMessage = "";
+      return result['liked_posts'].map((json) => Post.fromJson(json)).toList();
     } else {
       _status = Status.error;
       // Something went wrong, so error message is updated
       _errorMessage = json.decode(response.body)['message'];
+      throw Exception(_errorMessage);
     }
-    notifyListeners();
   }
 }

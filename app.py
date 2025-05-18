@@ -686,7 +686,8 @@ def get_liked_posts():
     # Checks if the user exists
     if user_exists(username):
         result = []
-
+        
+        user = db.session.get(User, username)
         liked_posts = user.liked_posts
         for post in liked_posts:
             result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes), 'isLiked': True})
