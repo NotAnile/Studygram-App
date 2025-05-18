@@ -12,7 +12,7 @@ class UserModel extends ChangeNotifier {
   int _amountOfPosts = 0;
   List<dynamic> _following = [];
   List<dynamic> _friends = [];
-  List _friendRequests = [];
+  List<dynamic> _friendRequests = [];
   Status _status = Status.idle;
   String _errorMessage = "";
 

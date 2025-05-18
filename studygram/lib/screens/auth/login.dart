@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/services/authentication.dart';
-import '../components/textfield.dart';
+import '../../components/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/services/url.dart';
@@ -59,6 +59,7 @@ class LoginPage extends StatelessWidget {
                     // Showing a snackbar to notify the user about how the login went
                     if (context.mounted) {
                       if (status == Status.success) {
+                        // Showing that the login went well
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text("Succesfully logged in")));

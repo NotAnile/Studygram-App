@@ -4,7 +4,7 @@ import 'package:studygram/components/textarea.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/services/create_post_model.dart';
-import '../services/settings_model.dart';
+import '../../services/settings_model.dart';
 
 class CreatePostPage extends StatelessWidget {
   const CreatePostPage({super.key});

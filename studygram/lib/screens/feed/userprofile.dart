@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:studygram/components/content_view.dart';
 import 'package:studygram/components/follow_button.dart';
 import 'package:studygram/services/authentication.dart';
-import '../services/feed.dart';
+import '../../services/feed.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/services/user.dart';
 import 'package:studygram/models/user.dart';
@@ -21,8 +21,6 @@ class UserProfilePage extends StatelessWidget {
         Provider.of<Authentication>(context, listen: false).accessToken;
     Future<dynamic> request =
         Provider.of<Feed>(context, listen: true).getProfile(username, token);
-
-    UserModel userModel = Provider.of<UserModel>(context, listen: false);
 
     return FutureBuilder(
       future: request,
@@ -48,7 +46,7 @@ class UserProfilePage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        context.push('/friends', extra: user.friends);
+                        context.push('/friends', extra: user.username);
                       },
                       child: NumberedBox(
                           title: "Friends", number: user.friends.length),
