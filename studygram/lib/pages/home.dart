@@ -65,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: MyTextButton(
                     buttonText: "Following",
-                    textColor: Colors.white,
                     backgroundColor: buttonColor,
                     rectangleShape: true,
                     onPressed: () {
@@ -77,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: MyTextButton(
                     buttonText: "Explore",
-                    textColor: Colors.white,
                     backgroundColor: buttonColor,
                     rectangleShape: true,
                     onPressed: () {

@@ -63,6 +63,12 @@ class Size(Enum):
     def values():
         return [Size.SMALL.value, Size.MEDIUM.value, Size.LARGE.value]
 
+class Theme(Enum):
+    DARK = "dark"
+    LIGHT = "light"
+
+    def values():
+        return [Theme.DARK.value, Theme.LIGHT.value]
 
 class User(db.Model):
     id: Mapped[str] = mapped_column(primary_key = True)
@@ -78,12 +84,16 @@ class User(db.Model):
         secondaryjoin=id==friends.c.friend_id, 
         backref='followers'  # Followers are all the users who have you in their following list
     )
-    settings: Mapped[str]
+    size: Mapped[str]
+    theme: Mapped[str]
+    contrast: Mapped[bool]
 
     def __init__(self, id, password):
         self.id = id
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
-        self.settings = Size.MEDIUM.value
+        self.size = Size.MEDIUM.value
+        self.theme = Theme.LIGHT.value
+        self.contrast = False
     
     def setPassword(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -707,11 +717,7 @@ def get_settings():
         return jsonify({'message': 'User does not exist'}), 404
     # Getting the data
     user = db.session.get(User, username)
-    size = user.settings
-    # Setting size to medium as default value if no setting for the user is found
-    if size is None:
-        size = Size.MEDIUM.value
-    return jsonify({'size': size}), 200
+    return jsonify({'size': user.size, 'theme': user.theme, 'contrast': user.contrast}), 200
 
 
 @app.route('/update/settings', methods=['POST'])
@@ -724,15 +730,23 @@ def update_settings():
         return jsonify({'message': 'User does not exist'}), 404
     # Getting the data
     data = request.json
-    if 'size' in data:
+    if data_exist(['size', 'theme', 'contrast'], data):
         size = data['size'].lower()
-        # Checks if the given size is valid
+        theme = data['theme'].lower()
+        contrast = data['contrast']
+        # Checks if the given settings are valid
         if not size in Size.values():
             return jsonify({f'message': 'Invalid size value: {size}'}), 400
+        elif not theme in Theme.values():
+            return jsonify({f'message': 'Invalid theme value: {theme}'}), 400
+        elif not isinstance(contrast, bool):
+            return jsonify({f'message': 'Invalid contrast value: {contrast}'}), 400
 
-    # Changing the settings field of the user and updating the database
+    # Changing the settings of the user and updating the database
     user = db.session.get(User, username)
-    user.settings = size
+    user.size = size
+    user.theme = theme
+    user.contrast = contrast
     db.session.commit()
     return jsonify({f'message': 'Settings for {username} has succesfully been updated'}), 200
         

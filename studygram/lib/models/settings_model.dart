@@ -8,11 +8,16 @@ class Settings extends ChangeNotifier {
   final String baseUrl = BaseUrl().baseUrl;
   Status _status = Status.idle;
   String _errorMessage = "";
+  ThemeMode _themeMode = ThemeMode.system;
+  bool _contrast = false;
+
   Size get size => _size;
+  ThemeMode get themeMode => _themeMode;
+  bool get contrast => _contrast;
   Status get status => _status;
   String get errorMessage => _errorMessage;
 
-  void getSize(String token) async {
+  void getSettings(String token) async {
     _status = Status.loading;
     final response = await http
         .get(Uri.parse("$baseUrl/settings"), headers: <String, String>{
@@ -26,6 +31,9 @@ class Settings extends ChangeNotifier {
       // Setting no error message since everything went well
       _errorMessage = "";
       _size = Size.fromString(result['size']);
+      _themeMode =
+          result['theme'] == "light" ? ThemeMode.light : ThemeMode.dark;
+      _contrast = result['contrast'];
     } else {
       // Something went wrong, so error message is updated
       _status = Status.error;
@@ -35,17 +43,31 @@ class Settings extends ChangeNotifier {
   }
 
   /// Updates the size of widgets and text in the app
-  void changeSize(Size size, String token) async {
-    _size = size;
+  void changeSettings(
+      String token, Size? size, ThemeMode? themeMode, bool? contrast) async {
     _status = Status.loading;
+    // Updating settings internally
+    if (size != null) {
+      _size = size;
+    }
+    if (themeMode != null) {
+      _themeMode = themeMode;
+    }
+    if (contrast != null) {
+      _contrast = contrast;
+    }
     // Creating a JSON to send to the server
     final response = await http.post(Uri.parse("$baseUrl/update/settings"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token'
         },
-        body: jsonEncode(<String, String>{
-          'size': Size.asString(size),
+        body: jsonEncode(<String, dynamic>{
+          // Sends the current settings if any of the given parameters for size, theme or
+          // contrast are null
+          'size': Size.asString(_size),
+          'theme': (_themeMode == ThemeMode.light) ? 'light' : 'dark',
+          'contrast': _contrast,
         }));
     final result = json.decode(response.body);
     // Handling the result depending on the status code

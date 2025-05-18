@@ -31,7 +31,9 @@ class _FriendsPageState extends State<FriendsPage> {
           context,
           Text(
             seeFriends ? "Friends" : "Following",
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.inverseSurface,
+            ),
           )),
       body: Center(
         child: Column(children: [
@@ -40,7 +42,6 @@ class _FriendsPageState extends State<FriendsPage> {
               padding: const EdgeInsets.all(8.0),
               child: MyTextButton(
                   buttonText: "Mutuals",
-                  textColor: Colors.white,
                   backgroundColor: buttonColor,
                   rectangleShape: true,
                   onPressed: () {
@@ -52,7 +53,6 @@ class _FriendsPageState extends State<FriendsPage> {
               padding: const EdgeInsets.all(8.0),
               child: MyTextButton(
                   buttonText: "Following",
-                  textColor: Colors.white,
                   backgroundColor: buttonColor,
                   rectangleShape: true,
                   onPressed: () {

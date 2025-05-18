@@ -33,7 +33,9 @@ class SessionView extends StatelessWidget {
                     errorMessage.isEmpty
                         ? "An error has occurred. Could not get sessions."
                         : errorMessage,
-                    style: TextStyle(fontSize: textSize[settings.size])));
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: textSize[settings.size])));
           }
           if (snapshot.connectionState == ConnectionState.done) {
             final sessions = snapshot.data!;
@@ -41,7 +43,9 @@ class SessionView extends StatelessWidget {
               return Expanded(
                   child: Text(
                 "No sessions yet",
-                style: TextStyle(fontSize: textSize[settings.size]),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: textSize[settings.size]),
               ));
             }
             return Expanded(

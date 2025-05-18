@@ -34,6 +34,7 @@ class CommentCard extends StatelessWidget {
                       GestureDetector(
                         child: Text(comment.username,
                             style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.bold,
                                 fontSize: textsizes[settings.size])),
                         onTap: () {
@@ -79,7 +80,9 @@ class CommentCard extends StatelessWidget {
                   children: [
                     Text(
                       comment.body,
-                      style: TextStyle(fontSize: textsizes[settings.size] - 1),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontSize: textsizes[settings.size] - 1),
                     ),
                   ],
                 )

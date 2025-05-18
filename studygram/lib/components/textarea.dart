@@ -31,7 +31,10 @@ class TextArea extends StatelessWidget {
               keyboardType: TextInputType.multiline,
               controller: controller,
               obscureText: obscureText,
-              style: TextStyle(fontSize: sizes[settings.size]),
+              style: TextStyle(
+                fontSize: sizes[settings.size],
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               decoration: InputDecoration(
                   border: const OutlineInputBorder(), labelText: labelText)));
     });

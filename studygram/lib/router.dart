@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/models/authentication.dart';
+import 'package:studygram/models/settings_model.dart';
 import 'package:studygram/pages/create_account.dart';
 import 'package:studygram/pages/create_post.dart';
 import 'package:studygram/pages/home.dart';
@@ -17,6 +18,7 @@ import 'components/navigationbar.dart';
 import 'package:studygram/pages/settings.dart';
 import 'package:studygram/pages/friends.dart';
 import 'package:studygram/pages/study_history.dart';
+import 'package:studygram/themes.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -126,8 +128,15 @@ class MyRouter extends StatelessWidget {
       ],
     );
 
-    return MaterialApp.router(
-      routerConfig: router,
+    return Consumer<Settings>(
+      builder: (context, settings, child) {
+        return MaterialApp.router(
+          theme: settings.contrast ? highContrastLightTheme : lightTheme,
+          darkTheme: settings.contrast ? highContrastDarkTheme : darkTheme,
+          themeMode: settings.themeMode,
+          routerConfig: router,
+        );
+      },
     );
   }
 }

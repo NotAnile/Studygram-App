@@ -37,7 +37,9 @@ class _PostPageState extends State<PostPage> {
             context,
             Text(
               "$username's post",
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.inverseSurface,
+              ),
             )),
         body: Center(
           child: Column(
@@ -64,7 +66,6 @@ class _PostPageState extends State<PostPage> {
                       padding: const EdgeInsets.all(8.0),
                       child: MyTextButton(
                         buttonText: "Comment",
-                        textColor: Colors.black,
                         backgroundColor:
                             const Color.fromARGB(255, 208, 167, 214),
                         rectangleShape: true,

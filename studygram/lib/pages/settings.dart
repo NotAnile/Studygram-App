@@ -13,6 +13,8 @@ class SettingsPage extends StatelessWidget {
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
 
+    Settings settings = Provider.of<Settings>(context, listen: false);
+
     Map textSizes = {Size.small: 15.0, Size.medium: 20.0, Size.large: 25.0};
 
     return Consumer<Settings>(builder: (context, model, child) {
@@ -24,7 +26,7 @@ class SettingsPage extends StatelessWidget {
 
       void changeSize(Size size) {
         try {
-          model.changeSize(size, token);
+          model.changeSettings(token, size, null, null);
         } catch (e) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(e.toString())));
@@ -37,7 +39,10 @@ class SettingsPage extends StatelessWidget {
           children: [
             Text(
               "Sizes",
-              style: TextStyle(fontSize: textSizes[model.size]),
+              style: TextStyle(
+                fontSize: textSizes[model.size],
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
             ),
             const Divider(),
             Wrap(spacing: 10.0, runSpacing: 10.0, children: [
@@ -46,7 +51,6 @@ class SettingsPage extends StatelessWidget {
                   changeSize(Size.small);
                 },
                 buttonText: "Small",
-                textColor: Colors.white,
                 backgroundColor: buttonColor,
                 rectangleShape: false,
               ),
@@ -55,7 +59,6 @@ class SettingsPage extends StatelessWidget {
                   changeSize(Size.medium);
                 },
                 buttonText: "Medium",
-                textColor: Colors.white,
                 backgroundColor: buttonColor,
                 rectangleShape: false,
               ),
@@ -64,14 +67,87 @@ class SettingsPage extends StatelessWidget {
                   changeSize(Size.large);
                 },
                 buttonText: "Large",
-                textColor: Colors.white,
                 backgroundColor: buttonColor,
                 rectangleShape: false,
               ),
-            ])
+            ]),
+            // Switch to activate/deactivate dark mode
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(children: [
+                const Text("Dark Mode"),
+                SwitchButton(
+                    alreadyToggled: (settings.themeMode == ThemeMode.dark),
+                    toggleFunction: () {
+                      settings.changeSettings(
+                          token, null, ThemeMode.dark, null);
+                    },
+                    untoggleFunction: () {
+                      settings.changeSettings(
+                          token, null, ThemeMode.light, null);
+                    }),
+              ]),
+            ),
+            // Switch to activate/deactivate high constrast
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(children: [
+                const Text("High Contrast"),
+                SwitchButton(
+                  alreadyToggled: settings.contrast,
+                  toggleFunction: () {
+                    settings.changeSettings(token, null, null, true);
+                  },
+                  untoggleFunction: () {
+                    settings.changeSettings(token, null, null, false);
+                  },
+                )
+              ]),
+            )
           ],
         ),
       );
     });
+  }
+}
+
+///
+class SwitchButton extends StatefulWidget {
+  final bool alreadyToggled;
+  final void Function() toggleFunction;
+  final void Function() untoggleFunction;
+  const SwitchButton(
+      {super.key,
+      required this.alreadyToggled,
+      required this.toggleFunction,
+      required this.untoggleFunction});
+
+  @override
+  State<SwitchButton> createState() => _SwitchButtonState();
+}
+
+class _SwitchButtonState extends State<SwitchButton> {
+  @override
+  Widget build(BuildContext context) {
+    // Initializing toggled
+    bool toggled = widget.alreadyToggled;
+    return Consumer<Settings>(
+      builder: (context, settings, child) {
+        return Switch(
+          value: toggled, // When the switch is toggled, the value gets changed
+          activeColor: Theme.of(context).colorScheme.onSurfaceVariant,
+          onChanged: (bool value) {
+            // If the switch is toggled it will call the  given toggle function
+            // otherwise it will call the given untoggle function
+            if (!toggled) {
+              setState(widget.toggleFunction);
+            } else {
+              setState(widget.untoggleFunction);
+            }
+            toggled = !toggled;
+          },
+        );
+      },
+    );
   }
 }

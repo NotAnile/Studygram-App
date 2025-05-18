@@ -38,7 +38,9 @@ class CommentView extends StatelessWidget {
                 errorMessage.isEmpty
                     ? "An error has occurred. Could not get post."
                     : errorMessage,
-                style: TextStyle(fontSize: textSize[settings.size]),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: textSize[settings.size]),
               ));
             }
             if (snapshot.connectionState == ConnectionState.done) {
@@ -46,7 +48,9 @@ class CommentView extends StatelessWidget {
               if (comments.isEmpty) {
                 return Expanded(
                     child: Text("No comments yet",
-                        style: TextStyle(fontSize: textSize[settings.size])));
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: textSize[settings.size])));
               }
               return Expanded(
                 child: ListView.builder(
@@ -99,7 +103,9 @@ class PostView extends StatelessWidget {
                     return Center(
                         child: Text(
                       "An error has occurred. Could not get posts.",
-                      style: TextStyle(fontSize: textSize[settings.size]),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontSize: textSize[settings.size]),
                     ));
                   }
 
@@ -108,7 +114,9 @@ class PostView extends StatelessWidget {
                     // Shows a text if no posts are found
                     if (posts.isEmpty) {
                       return Text("No posts found",
-                          style: TextStyle(fontSize: textSize[settings.size]));
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontSize: textSize[settings.size]));
                     }
                     // Listview of all posts
                     return Expanded(

@@ -48,6 +48,7 @@ class SessionCard extends StatelessWidget {
                       Text(
                         formattedDate,
                         style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                           fontSize: sizes[settings.size],
                         ),

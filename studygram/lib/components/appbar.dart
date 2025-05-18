@@ -3,12 +3,13 @@ import 'package:go_router/go_router.dart';
 
 AppBar getMyAppBar(BuildContext context, Text title) {
   return AppBar(
-    backgroundColor: const Color.fromARGB(255, 151, 115, 156),
+    backgroundColor: Theme.of(context).primaryColor,
+    foregroundColor: Theme.of(context).primaryColor,
     leading: GoRouter.of(context).canPop()
         ? IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Theme.of(context).primaryColor,
             ),
             onPressed: () => context.pop(),
           )

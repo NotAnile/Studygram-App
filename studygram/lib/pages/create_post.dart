@@ -26,8 +26,10 @@ class CreatePostPage extends StatelessWidget {
           return Scaffold(
             appBar: getMyAppBar(
                 context,
-                const Text("Create post",
-                    style: TextStyle(color: Colors.white))),
+                Text("Create post",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.inverseSurface,
+                    ))),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -38,6 +40,7 @@ class CreatePostPage extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(30.0),
+                          // Textarea
                           child: TextArea(
                             labelText: "What would you like to say?",
                             controller: bodyController,
@@ -49,11 +52,10 @@ class CreatePostPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 30.0),
                           child: Row(
                             children: [
+                              // Button for creating post
                               MyTextButton(
                                 buttonText: "Create",
-                                textColor: Colors.white,
-                                backgroundColor:
-                                    const Color.fromARGB(255, 191, 152, 197),
+                                backgroundColor: Theme.of(context).primaryColor,
                                 rectangleShape: false,
                                 onPressed: () async {
                                   CreatePostModel createPostModel =

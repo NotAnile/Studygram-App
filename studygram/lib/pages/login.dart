@@ -22,11 +22,14 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Text("Login",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    )),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -48,8 +51,7 @@ class LoginPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: MyTextButton(
                   buttonText: "Log in",
-                  textColor: Colors.white,
-                  backgroundColor: const Color.fromARGB(255, 159, 122, 165),
+                  backgroundColor: Theme.of(context).primaryColor,
                   rectangleShape: true,
                   onPressed: () async {
                     // Making a call to the server to log in by sending up the username and password
@@ -63,10 +65,15 @@ class LoginPage extends StatelessWidget {
                             const SnackBar(
                                 content: Text("Succesfully logged in")));
                       } else if (status == Status.error) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text((auth.errorMessage.isEmpty
-                                ? "Unknown error"
-                                : auth.errorMessage))));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              (auth.errorMessage.isEmpty
+                                  ? "Unknown error"
+                                  : auth.errorMessage),
+                            ),
+                          ),
+                        );
                       }
                     }
                   },
@@ -76,9 +83,12 @@ class LoginPage extends StatelessWidget {
                 onTap: () {
                   context.push('/create/account');
                 },
-                child: const Text(
+                child: Text(
                   "No account? Sign up!",
-                  style: TextStyle(decoration: TextDecoration.underline),
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               )
             ],
@@ -88,17 +98,19 @@ class LoginPage extends StatelessWidget {
         return Center(
           child: Column(
             children: [
-              const Padding(
-                  padding: EdgeInsets.only(top: 250, bottom: 50),
+              Padding(
+                  padding: const EdgeInsets.only(top: 250, bottom: 50),
                   child: Text("Welcome back",
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 25))),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ))),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: MyTextButton(
                   buttonText: "Go to home page",
-                  textColor: Colors.white,
-                  backgroundColor: const Color.fromARGB(255, 159, 122, 165),
+                  backgroundColor: Theme.of(context).primaryColor,
                   rectangleShape: true,
                   onPressed: () {
                     context.go('/');

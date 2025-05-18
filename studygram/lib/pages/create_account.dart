@@ -23,11 +23,14 @@ class CreateAccountPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Text("Create account",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      )),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -107,7 +110,6 @@ class _CreateButtonState extends State<CreateButton> {
               padding: const EdgeInsets.all(8.0),
               child: MyTextButton(
                 buttonText: "Create",
-                textColor: Colors.white,
                 backgroundColor: const Color.fromARGB(255, 159, 122, 165),
                 rectangleShape: true,
                 onPressed: () async {

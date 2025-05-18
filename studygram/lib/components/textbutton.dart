@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 //**Creates a textbutton*/
 class MyTextButton extends StatelessWidget {
   final String buttonText;
-  final Color textColor;
   final Color backgroundColor;
   final bool rectangleShape;
   final bool? wrapText;
@@ -16,7 +15,6 @@ class MyTextButton extends StatelessWidget {
   const MyTextButton({
     super.key,
     required this.buttonText,
-    required this.textColor,
     required this.backgroundColor,
     required this.rectangleShape,
     required this.onPressed,
@@ -53,7 +51,9 @@ class MyTextButton extends StatelessWidget {
             ),
             child: Text(
               buttonText,
-              style: TextStyle(color: textColor),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.surface,
+              ),
             ),
           );
         } else {
@@ -75,7 +75,8 @@ class MyTextButton extends StatelessWidget {
               child: Text(
                 buttonText,
                 style: TextStyle(
-                    color: textColor, fontSize: textsizes[settings.size]),
+                    fontSize: textsizes[settings.size],
+                    color: Theme.of(context).colorScheme.surface),
               ),
             ),
           );

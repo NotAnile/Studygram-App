@@ -47,12 +47,12 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 151, 115, 156),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       floatingActionButton: GoRouterState.of(context).uri.toString() == "/"
           ? Builder(
               builder: (context) => FloatingActionButton.small(
-                backgroundColor: const Color.fromARGB(255, 229, 200, 243),
+                backgroundColor: Theme.of(context).hintColor,
                 child: const Icon(Icons.add),
                 onPressed: () {
                   context.push('/create/post');
@@ -72,9 +72,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               icon: Icon(Icons.settings), label: "Settings"),
         ],
         currentIndex: currentIndex,
-        selectedItemColor: const Color.fromARGB(255, 195, 151, 202),
-        unselectedItemColor: Colors.grey,
-        unselectedLabelStyle: const TextStyle(color: Colors.grey),
+        selectedItemColor: Theme.of(context).hintColor,
+        unselectedItemColor: Theme.of(context).focusColor,
+        unselectedLabelStyle: TextStyle(color: Theme.of(context).focusColor),
         showUnselectedLabels: true,
         onTap: _onItemTapped,
       ),

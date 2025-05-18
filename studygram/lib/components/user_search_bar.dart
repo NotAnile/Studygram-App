@@ -31,10 +31,8 @@ class _UserSearchBarState extends State<UserSearchBar> {
                 return SearchBar(
                   controller: controller,
                   hintText: "Search for users...",
-                  leading: const Icon(Icons.search),
-                  // onTap: () {
-                  //   controller.openView();
-                  // },
+                  leading: Icon(Icons.search,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                   onChanged: (input) async {
                     controller.openView();
                     // Updating the suggestions list if the input isn't empty
@@ -61,7 +59,9 @@ class _UserSearchBarState extends State<UserSearchBar> {
                     return ListTile(
                       title: Text(
                         username,
-                        style: TextStyle(fontSize: textSizes[settings.size]),
+                        style: TextStyle(
+                            fontSize: textSizes[settings.size],
+                            color: Theme.of(context).colorScheme.onSurface),
                       ),
                       onTap: () {
                         context.go('/profile', extra: username);

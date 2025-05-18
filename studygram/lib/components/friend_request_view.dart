@@ -31,7 +31,9 @@ class FriendRequestView extends StatelessWidget {
             return Center(
                 child: Text(
               "An error has occurred. Could not get friend requests.",
-              style: TextStyle(fontSize: sizes[settings.size]),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: sizes[settings.size]),
             ));
           }
 
@@ -40,7 +42,9 @@ class FriendRequestView extends StatelessWidget {
             if (friendRequests.isEmpty) {
               return Text(
                 "No friend requests found.",
-                style: TextStyle(fontSize: sizes[settings.size]),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: sizes[settings.size]),
               );
             }
             return Expanded(

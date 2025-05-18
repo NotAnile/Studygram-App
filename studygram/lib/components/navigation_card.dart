@@ -29,6 +29,8 @@ class NavigationCard extends StatelessWidget {
           child: SizedBox(
             height: 250,
             child: Card(
+              color: Theme.of(context).colorScheme.onSurface,
+              shadowColor: Theme.of(context).colorScheme.shadow,
               child: Column(
                 children: [
                   Padding(
@@ -37,12 +39,12 @@ class NavigationCard extends StatelessWidget {
                       text,
                       style: TextStyle(
                           fontSize: sizes[settings.size]['text'],
-                          color: const Color.fromARGB(255, 51, 42, 53)),
+                          color: Theme.of(context).colorScheme.inverseSurface),
                     ),
                   ),
                   Icon(icon,
                       size: sizes[settings.size]['icon'],
-                      color: const Color.fromARGB(255, 151, 115, 156))
+                      color: Theme.of(context).primaryColor)
                 ],
               ),
             ),

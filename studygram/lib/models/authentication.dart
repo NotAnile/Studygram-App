@@ -57,7 +57,8 @@ class Authentication extends ChangeNotifier {
           userModel.initialize(_accessToken);
 
           // Getting the size that the user has chosen
-          Provider.of<Settings>(context, listen: false).getSize(_accessToken);
+          Provider.of<Settings>(context, listen: false)
+              .getSettings(_accessToken);
         }
 
         _isLoggedIn = true;

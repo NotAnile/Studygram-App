@@ -148,7 +148,7 @@ class _PostCardState extends State<PostCard> {
                             isLiked ? Icons.favorite : Icons.favorite_border,
                             color: isLiked
                                 ? const Color.fromARGB(255, 233, 107, 98)
-                                : Colors.grey,
+                                : Theme.of(context).colorScheme.outline,
                           ),
                         )
                       ],

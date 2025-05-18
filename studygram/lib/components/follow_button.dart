@@ -22,8 +22,7 @@ class FollowButton extends StatelessWidget {
         // has already followed the person in this page or not
         buttonText:
             (!userModel.following.contains(username)) ? 'Follow ' : 'Unfollow',
-        textColor: Colors.white,
-        backgroundColor: const Color.fromARGB(255, 191, 152, 197),
+        backgroundColor: Theme.of(context).primaryColor,
         rectangleShape: true,
         onPressed: () async {
           // Checking if the user is following the person already or not
@@ -43,7 +42,9 @@ class FollowButton extends StatelessWidget {
               SnackBar(
                 content: Text(
                   (errorMessage.isEmpty ? "Unknown error" : errorMessage),
-                  style: TextStyle(fontSize: textSizes[settings.size]),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: textSizes[settings.size]),
                 ),
               ),
             );

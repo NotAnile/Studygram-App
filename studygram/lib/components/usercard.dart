@@ -19,10 +19,6 @@ class UserCard extends StatefulWidget {
 class _UserCardState extends State<UserCard> {
   @override
   Widget build(BuildContext context) {
-    UserModel userModel = Provider.of<UserModel>(context, listen: false);
-    FriendManager friendManagerModel =
-        Provider.of<FriendManager>(context, listen: false);
-
     return Consumer<Settings>(builder: (context, settings, state) {
       Map sizes = {Size.small: 12.0, Size.medium: 14.0, Size.large: 16.0};
       return Padding(
@@ -38,6 +34,7 @@ class _UserCardState extends State<UserCard> {
                     children: [
                       Text(widget.username,
                           style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.bold,
                               fontSize: sizes[settings.size])),
                       // Follow/unfollow button

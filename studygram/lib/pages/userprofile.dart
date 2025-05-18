@@ -25,8 +25,6 @@ class UserProfilePage extends StatelessWidget {
     Future<dynamic> request =
         Provider.of<Feed>(context, listen: true).getProfile(username, token);
 
-    UserModel userModel = Provider.of<UserModel>(context, listen: false);
-
     return FutureBuilder(
       future: request,
       builder: (context, snapshot) {
