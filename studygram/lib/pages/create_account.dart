@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/textbutton.dart';
-import 'package:studygram/models/authentication.dart';
+import 'package:studygram/services/authentication.dart';
 import '../components/textfield.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/create_account_model.dart';
+import 'package:studygram/services/create_account_model.dart';
 import 'package:studygram/components/appbar.dart';
-import 'package:studygram/models/url.dart';
+import 'package:studygram/services/url.dart';
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});

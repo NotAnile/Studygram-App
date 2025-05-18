@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/models/authentication.dart';
-import 'package:studygram/models/create_account_model.dart';
-import 'package:studygram/models/create_post_model.dart';
-import 'package:studygram/models/feed.dart';
-import 'package:studygram/models/session_view_model.dart';
-import 'package:studygram/models/timer_model.dart';
-import 'package:studygram/models/user.dart';
+import 'package:studygram/services/authentication.dart';
+import 'package:studygram/services/create_account_model.dart';
+import 'package:studygram/services/create_post_model.dart';
+import 'package:studygram/services/feed.dart';
+import 'package:studygram/services/session_view_model.dart';
+import 'package:studygram/services/timer_model.dart';
+import 'package:studygram/services/user.dart';
 import 'package:provider/provider.dart';
-import './models/settings_model.dart';
-import 'package:studygram/models/friend_manager.dart';
-import 'package:studygram/models/like_manager.dart';
-import 'package:studygram/models/post_page_model.dart';
-import 'package:studygram/models/user_search_bar_model.dart';
+import 'services/settings_model.dart';
+import 'package:studygram/services/friend_manager.dart';
+import 'package:studygram/services/like_manager.dart';
+import 'package:studygram/services/post_page_model.dart';
+import 'package:studygram/services/user_search_bar_model.dart';
 import 'router.dart';
 
 void main() {

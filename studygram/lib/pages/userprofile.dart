@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/content_view.dart';
 import 'package:studygram/components/follow_button.dart';
-import 'package:studygram/models/authentication.dart';
-import '../models/feed.dart';
+import 'package:studygram/services/authentication.dart';
+import '../services/feed.dart';
 import 'package:provider/provider.dart';
+import 'package:studygram/services/user.dart';
 import 'package:studygram/models/user.dart';
-import 'package:studygram/structure.dart';
-import 'package:studygram/models/settings_model.dart';
-import 'package:studygram/models/friend_manager.dart';
+import 'package:studygram/services/settings_model.dart';
+import 'package:studygram/services/friend_manager.dart';
 import 'package:go_router/go_router.dart';
 
 //**Page that contains all the posts and followers of a specific user */

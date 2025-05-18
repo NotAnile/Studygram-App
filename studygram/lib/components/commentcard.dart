@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/models/authentication.dart';
-import 'package:studygram/models/settings_model.dart';
-import '../structure.dart';
+import 'package:studygram/services/authentication.dart';
+import 'package:studygram/services/settings_model.dart';
+import '../models/content.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:studygram/models/post_page_model.dart';
-import 'package:studygram/models/user.dart';
+import 'package:studygram/services/post_page_model.dart';
+import 'package:studygram/services/user.dart';
 import 'package:studygram/components/delete_button.dart';
-import 'package:studygram/models/url.dart';
+import 'package:studygram/services/url.dart';
 
 //**A card that consists of a username and a text (body). Each post consists of a card.*/
 class CommentCard extends StatelessWidget {

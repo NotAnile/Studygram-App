@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import './authentication.dart';
-import './url.dart';
+import 'authentication.dart';
+import 'url.dart';
 
 class CreateAccountModel extends ChangeNotifier {
   Status _status = Status.idle;

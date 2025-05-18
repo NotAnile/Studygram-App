@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:studygram/models/authentication.dart';
+import 'package:studygram/services/authentication.dart';
 import 'package:studygram/pages/create_account.dart';
 import 'package:studygram/pages/create_post.dart';
 import 'package:studygram/pages/home.dart';
@@ -10,7 +10,7 @@ import 'package:studygram/pages/mypage.dart';
 import 'package:studygram/pages/post.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/pages/timer.dart';
-import 'package:studygram/structure.dart';
+import 'package:studygram/models/content.dart';
 import 'pages/login.dart';
 import 'package:studygram/pages/userprofile.dart';
 import 'components/navigationbar.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/models/settings_model.dart';
+import 'package:studygram/services/settings_model.dart';
 import 'usercard.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/friend_manager.dart';
+import 'package:studygram/services/friend_manager.dart';
 import 'package:studygram/components/loading_indicator.dart';
 
 //**Listview to display all the users in a column*/

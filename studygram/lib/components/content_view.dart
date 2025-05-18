@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/commentcard.dart';
 import 'package:studygram/components/loading_indicator.dart';
-import 'package:studygram/models/post_page_model.dart';
+import 'package:studygram/services/post_page_model.dart';
 import 'postcard.dart';
 import 'package:go_router/go_router.dart';
-import '../structure.dart';
-import '../models/feed.dart';
+import '../models/content.dart';
+import '../services/feed.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/like_manager.dart';
-import 'package:studygram/models/authentication.dart';
-import 'package:studygram/models/settings_model.dart';
+import 'package:studygram/services/like_manager.dart';
+import 'package:studygram/services/authentication.dart';
+import 'package:studygram/services/settings_model.dart';
 
 //**Listview to display all the comments in a column*/
 class CommentView extends StatelessWidget {

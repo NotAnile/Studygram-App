@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/appbar.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/session_view_model.dart';
+import 'package:studygram/services/session_view_model.dart';
 import 'package:studygram/components/session_view.dart';
 
 class StudyHistoryPage extends StatelessWidget {

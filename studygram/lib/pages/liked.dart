@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/content_view.dart';
-import 'package:studygram/models/like_manager.dart';
+import 'package:studygram/services/like_manager.dart';
 import 'package:provider/provider.dart';
 
 class LikedPage extends StatelessWidget {

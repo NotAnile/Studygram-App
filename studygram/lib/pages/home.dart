@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/loading_indicator.dart';
-import 'package:studygram/models/like_manager.dart';
-import 'package:studygram/models/url.dart';
+import 'package:studygram/services/like_manager.dart';
+import 'package:studygram/services/url.dart';
 import '../components/content_view.dart';
-import '../models/feed.dart';
-import '../models/user.dart';
+import '../services/feed.dart';
+import '../services/user.dart';
 import 'package:provider/provider.dart';
-import '../models/authentication.dart';
+import '../services/authentication.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/components/user_search_bar.dart';
 

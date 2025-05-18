@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/navigation_card.dart';
-import 'package:studygram/models/user.dart';
+import 'package:studygram/services/user.dart';
 import 'package:provider/provider.dart';
 
 //**Page for the current user where you can navigate to own posts,

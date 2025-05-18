@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../structure.dart';
-import './url.dart';
+import 'package:studygram/models/user.dart';
+import 'package:studygram/models/content.dart';
+import 'url.dart';
 
 class Feed extends ChangeNotifier {
   final String baseUrl = BaseUrl().baseUrl;

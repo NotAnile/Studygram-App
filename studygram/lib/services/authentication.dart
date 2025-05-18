@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import './user.dart';
+import 'user.dart';
 import 'package:provider/provider.dart';
-import './url.dart';
-import 'package:studygram/models/settings_model.dart';
+import 'url.dart';
+import 'package:studygram/services/settings_model.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:fresh_dio/fresh_dio.dart';
 // import 'package:dio/dio.dart';

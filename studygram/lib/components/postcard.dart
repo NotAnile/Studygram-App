@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/models/feed.dart';
-import 'package:studygram/models/settings_model.dart';
-import '../structure.dart';
+import 'package:studygram/services/feed.dart';
+import 'package:studygram/services/settings_model.dart';
+import 'package:studygram/models/content.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/like_manager.dart';
-import 'package:studygram/models/authentication.dart';
+import 'package:studygram/services/like_manager.dart';
+import 'package:studygram/services/authentication.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/components/delete_button.dart';
-import 'package:studygram/models/user.dart';
-import 'package:studygram/models/url.dart';
+import 'package:studygram/services/user.dart';
+import 'package:studygram/services/url.dart';
 
 //**A card that consists of a username and a text (body). Each post consists of a card.*/
 class PostCard extends StatefulWidget {
