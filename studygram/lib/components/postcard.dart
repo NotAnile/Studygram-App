@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studygram/providers/post_view_provider.dart';
 import 'package:studygram/services/feed.dart';
 import 'package:studygram/services/settings_model.dart';
 import 'package:studygram/models/content.dart';
@@ -25,7 +26,8 @@ class _PostCardState extends State<PostCard> {
     String accessToken =
         Provider.of<Authentication>(context, listen: false).accessToken;
     String username = Provider.of<UserModel>(context, listen: false).username;
-    Feed feed = Provider.of<Feed>(context, listen: false);
+    PostViewProvider postViewProvider =
+        Provider.of<PostViewProvider>(context, listen: false);
 
     bool isLiked = widget.post.isLiked;
     int likeCount = widget.post.likeCount;
@@ -82,8 +84,9 @@ class _PostCardState extends State<PostCard> {
                               // Deletes the post if the user clicks on button
                               ? DeleteButton(
                                   onPressed: () async {
-                                    Status status = await feed.removePost(
-                                        widget.post.id, accessToken);
+                                    await postViewProvider.removePost(
+                                        accessToken, widget.post.id);
+                                    Status status = postViewProvider.status;
                                     // Showing a snackbar to notify the user about how the login went
                                     if (context.mounted) {
                                       if (status == Status.success) {
@@ -96,9 +99,11 @@ class _PostCardState extends State<PostCard> {
                                             .showSnackBar(
                                           SnackBar(
                                             content: Text(
-                                              (feed.errorMessage.isEmpty
+                                              (postViewProvider
+                                                      .errorMessage.isEmpty
                                                   ? "Unknown error"
-                                                  : feed.errorMessage),
+                                                  : postViewProvider
+                                                      .errorMessage),
                                             ),
                                           ),
                                         );

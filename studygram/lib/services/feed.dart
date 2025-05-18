@@ -36,50 +36,6 @@ class Feed extends ChangeNotifier {
     }
   }
 
-  //**Returns a post object for the given post id. */
-  Future<dynamic> getPost(int postID, String token) async {
-    _status = Status.loading;
-    final response = await http.get(
-      Uri.parse("$baseUrl/post/$postID"),
-      headers: <String, String>{
-        'Content-Type':
-            'application/json; charset=UTF-8', // application/json means we want to parse it as a json
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    final result = json.decode(response.body);
-    if (response.statusCode == 200) {
-      _status = Status.success;
-      return Post.fromJson(result);
-    } else {
-      _status = Status.error;
-      _errorMessage = result['message'];
-      throw Exception(_errorMessage);
-    }
-  }
-
-  Future<Status> removePost(int postID, String token) async {
-    _status = Status.loading;
-    final response = await http.delete(
-      Uri.parse("$baseUrl/posts/delete/$postID"),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    final result = json.decode(response.body);
-    if (response.statusCode == 200) {
-      _status = Status.success;
-      notifyListeners();
-    } else {
-      _status = Status.error;
-      _errorMessage = result['message'];
-    }
-    return _status;
-  }
-
   //**Returns a list of comments for the given post id. */
   Future<dynamic> getComments(int postID, String token) async {
     _status = Status.loading;

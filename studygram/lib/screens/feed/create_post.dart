@@ -3,7 +3,7 @@ import 'package:studygram/components/appbar.dart';
 import 'package:studygram/components/textarea.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/services/create_post_model.dart';
+import 'package:studygram/providers/create_post_provider.dart';
 import '../../services/settings_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/services/url.dart';
@@ -20,7 +20,7 @@ class CreatePostPage extends StatelessWidget {
       Size.medium: {'textarea': 600.0, 'textbutton': 120.0},
       Size.large: {'textarea': 700.0, 'textbutton': 170.0},
     };
-    return Consumer<CreatePostModel>(builder: (context, model, state) {
+    return Consumer<CreatePostProvider>(builder: (context, model, state) {
       return Consumer<Settings>(
         builder: (context, settings, state) {
           return Scaffold(
@@ -56,37 +56,31 @@ class CreatePostPage extends StatelessWidget {
                                     const Color.fromARGB(255, 191, 152, 197),
                                 rectangleShape: false,
                                 onPressed: () async {
-                                  CreatePostModel createPostModel =
-                                      Provider.of<CreatePostModel>(context,
-                                          listen: false);
                                   // Getting token
                                   String token = Provider.of<Authentication>(
                                           context,
                                           listen: false)
                                       .accessToken;
-                                  Status status = await createPostModel
-                                      .createPost(token, bodyController.text);
-                                  if (context.mounted) {
-                                    if (status == Status.success) {
-                                      // Shows a snackbar that the post was successfully created
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content:
-                                              Text("Post succesfully created"),
-                                        ),
-                                      );
-                                      context.pop();
-                                    } else {
-                                      // Shows a snackbar if something went wrong
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                              createPostModel.errorMessage),
-                                        ),
-                                      );
-                                    }
+                                  await model.createPost(
+                                      token, bodyController.text);
+                                  Status status = model.status;
+                                  if (status == Status.success) {
+                                    // Shows a snackbar that the post was successfully created
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text("Post succesfully created"),
+                                      ),
+                                    );
+                                    model.status = Status.idle;
+                                    context.pop();
+                                  } else if (status == Status.error) {
+                                    // Shows a snackbar if something went wrong
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(model.errorMessage),
+                                      ),
+                                    );
                                   }
                                 },
                                 width: sizes[settings.size]['textbutton'],
@@ -97,9 +91,6 @@ class CreatePostPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  model.showErrorMessage
-                      ? Text(model.errorMessage)
-                      : const Text("")
                 ],
               ),
             ),
