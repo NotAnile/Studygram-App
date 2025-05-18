@@ -10,6 +10,7 @@ class PostViewProvider extends ChangeNotifier {
   final PostRepository postRepository;
   String _errorMessage = "";
   Status _status = Status.idle;
+  bool refresh = false;
 
   PostViewProvider({
     required this.postService,
@@ -23,6 +24,12 @@ class PostViewProvider extends ChangeNotifier {
     _status = value;
   }
 
+  /// Function to call to refresh the posts for the post view
+  void refresh() {
+    refresh = true;
+    notifyListeners();
+  }
+
   Future<void> removePost(String token, int postID) async {
     _status = Status.loading;
     final newStatus = await postRepository.removePost(token, postID);
@@ -33,11 +40,18 @@ class PostViewProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<dynamic>> getPosts(String token, List<dynamic> selectedUsers,
-      List<dynamic> excludedUsers) async {
+  /// Returns posts from cache of the given category if refresh is false. 
+  /// Otherwise it will return a Future of posts from the server.
+  dynamic getPosts(String token, List<dynamic> selectedUsers,
+      List<dynamic> excludedUsers, String category) async {
     _status = Status.loading;
     final posts =
-        await postRepository.getPosts(token, selectedUsers, excludedUsers);
+        await postRepository.getPosts(token, selectedUsers, excludedUsers, category, refresh);
+    // Updates the refresh bool if it is true
+    if (refresh) {
+      refresh = false;
+    }
+    // Updating the status
     _status = postRepository.status;
     if (_status == Status.error) {
       _errorMessage = postService.errorMessage;

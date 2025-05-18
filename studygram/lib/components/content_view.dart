@@ -75,11 +75,18 @@ class PostView extends StatelessWidget {
   final List<dynamic>? selectedUsers;
   final List<dynamic>? excludedUsers;
   final List<dynamic> posts;
+  final String category;  // Add an enum class Category for Category.liked, Category.strangers, Category.following,  Category.own instead of using string
   const PostView(
-      {super.key, this.selectedUsers, this.excludedUsers, required this.posts});
+      {super.key, this.selectedUsers, this.excludedUsers, required this.posts, required this.category});
+  
 
   @override
   Widget build(BuildContext context) {
+    // Handling refresh 
+    Future<void> _handleRefresh() async {
+      Provider.of<PostViewProvider>(context, listen: false).refresh();
+    }
+
     Map textSize = {Size.small: 14.0, Size.medium: 16.0, Size.large: 18.0};
     // Getting the settings for textsize
     Settings settings = Provider.of<Settings>(context, listen: false);
@@ -92,54 +99,48 @@ class PostView extends StatelessWidget {
         builder: (context, likeManager, child) {
           return Consumer<PostViewProvider>(
             builder: (context, postViewModel, child) {
-              return FutureBuilder(
-                future: postViewModel.getPosts(
-                    token, selectedUsers!, excludedUsers!),
-                builder: (context, snapshot) {
-                  // Error handling if the request got an error
-                  if (snapshot.hasError) {
-                    return Center(
-                        child: Text(
-                      "An error has occurred. Could not get posts.",
-                      style: TextStyle(fontSize: textSize[settings.size]),
-                    ));
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    final posts = snapshot.data!;
-                    // Shows a text if no posts are found
-                    if (posts.isEmpty) {
-                      return Text("No posts found",
-                          style: TextStyle(fontSize: textSize[settings.size]));
+              // Checks if we need to get posts from the backend or cache
+              
+              if (postViewModel.cache[category] == null || postViewModel.refresh) {
+                // Getting posts from server since cache is empty or refresh is true
+                return FutureBuilder(
+                  future: postViewModel.getPosts(
+                      token, selectedUsers!, excludedUsers!, category, true),
+                  builder: (context, snapshot) {
+                    // Error handling if the request got an error
+                    if (snapshot.hasError) {
+                      return Center(
+                          child: Text(
+                        "An error has occurred. Could not get posts.",
+                        style: TextStyle(fontSize: textSize[settings.size]),
+                      ));
                     }
-                    // Listview of all posts
-                    return Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                        child: ListView.builder(
-                          itemCount: posts.length,
-                          itemBuilder: (context, index) {
-                            Post post = posts[index];
-                            // Getting the right post with the index and returns a PostCard with the body and username
-                            return GestureDetector(
-                              child: PostCard(post: post),
-                              onTap: () async {
-                                // Sending the post as the extra parameter when navigating to the specific post page
-                                if (context.mounted) {
-                                  context.push('/post', extra: post);
-                                }
-                              },
-                            );
-                          },
+
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      final posts = snapshot.data!;
+                      // Shows a text if no posts are found
+                      if (posts.isEmpty) {
+                        return Text("No posts found",
+                            style: TextStyle(fontSize: textSize[settings.size]));
+                      }
+                      // Listview of all posts
+                      return Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                          child: PostListView(posts: posts),
                         ),
-                      ),
-                    );
-                  } else {
-                    // The request is still loading
-                    return const LoadingIndicator();
-                  }
-                },
-              );
+                      );
+                    } else {
+                      // The request is still loading
+                      return const LoadingIndicator();
+                    }
+                  },
+                );
+              } else {
+                // Getting posts from cache so no token, selectedUsers or excludedUsers are needed
+                posts = postViewModel.getPosts("", [], [], category, false);
+                return PostListView(posts: posts); 
+              }
             },
           );
         },
@@ -150,7 +151,29 @@ class PostView extends StatelessWidget {
         return Text("No posts found",
             style: TextStyle(fontSize: textSize[settings.size]));
       } else {
-        return ListView.builder(
+        return PostListView(posts: posts);
+      }
+    }
+  }
+}
+
+class PostListView extends StatelessWidget {
+  List<dynamic> posts;
+   const PostListView({super.key, required this.posts});
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollNotification) {
+        if (scrollNotification is OverscrollNotification &&
+            scrollNotification.overscroll < 0) {
+          // User pulled down from top
+          Provider.of<PostViewProvider>(context, listen: false).refresh();
+          return true; // handled
+        }
+        return false;
+      },
+      child:ListView.builder(
           itemCount: posts.length,
           itemBuilder: (context, index) {
             Post post = posts[index];
@@ -165,8 +188,7 @@ class PostView extends StatelessWidget {
               },
             );
           },
-        );
-      }
-    }
+    ),
+    )
   }
 }

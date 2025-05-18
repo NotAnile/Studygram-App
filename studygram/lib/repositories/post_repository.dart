@@ -6,6 +6,12 @@ import 'package:studygram/services/post_service.dart';
 class PostRepository {
   PostService postService;
   Status get status => postService.status;
+  Map<String, List<dynamic>?> cache = {
+            'liked': null,
+            'own': null,
+            'following': null,
+            'strangers': null,
+        }
 
   PostRepository({required this.postService});
 
@@ -17,11 +23,17 @@ class PostRepository {
     return postService.removePost(token, postID);
   }
 
-  Future<List<dynamic>> getPosts(String token, List<dynamic> selectedUsers,
-      List<dynamic> excludedUsers) async {
-    final posts =
+  dynamic getPosts(String token, List<dynamic> selectedUsers,
+      List<dynamic> excludedUsers, String category, bool refresh) async {
+    // Getting posts from cache if refresh is false and the cache isn't empty
+    if (!refresh && cache[category] != null) {
+      return cache[category];
+    } else {
+      final posts =
         await postService.getPosts(token, selectedUsers, excludedUsers);
-    await postService.getPosts(token, selectedUsers, excludedUsers);
-    return posts;
+      // Updating cache
+      cache[category] = posts;
+      return posts;
+    }
   }
 }
