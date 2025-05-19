@@ -6,10 +6,11 @@ final ThemeData lightTheme = ThemeData(
   primaryColor: const Color.fromARGB(255, 151, 115, 156),
   primaryColorLight: const Color.fromARGB(255, 151, 115, 156),
   primaryColorDark: const Color.fromARGB(255, 169, 147, 187),
-  hintColor: const Color.fromARGB(255, 229, 200, 243),
+  hintColor: const Color.fromARGB(255, 162, 133, 177),
   focusColor: Colors.grey,
   highlightColor: const Color.fromARGB(255, 252, 252, 252),
-  cardColor: const Color.fromARGB(222, 255, 255, 255),
+  cardColor: const Color.fromARGB(222, 247, 247, 247),
+  dividerColor: const Color.fromARGB(222, 230, 230, 230),
   colorScheme: const ColorScheme.light(
       primary: Color.fromARGB(255, 151, 115, 156),
       surface: Color.fromARGB(255, 231, 231, 231),

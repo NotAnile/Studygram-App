@@ -38,7 +38,7 @@ class _PostPageState extends State<PostPage> {
             Text(
               "$username's post",
               style: TextStyle(
-                color: Theme.of(context).colorScheme.inverseSurface,
+                color: Theme.of(context).highlightColor,
               ),
             )),
         body: Center(
