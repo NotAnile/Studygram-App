@@ -65,7 +65,7 @@ class TimerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void finish(String token, WatchModel watchModel, String subject,
+  Future<void> finish(String token, WatchModel watchModel, String subject,
       String description) async {
     watchModel.stopwatch.stop();
     // Sends data to server about the finished session

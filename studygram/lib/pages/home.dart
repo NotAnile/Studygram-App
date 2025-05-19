@@ -51,11 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
               .showSnackBar(SnackBar(content: Text(feed.errorMessage)));
         }
 
-        List<dynamic> selectedUsers = seeFollowing ? userModel.friends : [];
-        List<dynamic> excludedUsers = [userModel.username];
+        // Creating a list with the user's friends and their own username
+        List<dynamic> following = userModel.friends;
+        following.add(userModel.username);
+        // Getting the users that we want to display on the feed
+        List<dynamic> selectedUsers = seeFollowing ? following : [];
+        List<dynamic> excludedUsers = [];
         // Excludes the user's following list if the toggleMode is on Explore
         if (!seeFollowing) {
-          excludedUsers.addAll(userModel.following);
+          excludedUsers = following;
         }
 
         return Column(

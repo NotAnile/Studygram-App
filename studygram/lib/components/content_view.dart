@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/commentcard.dart';
 import 'package:studygram/components/loading_indicator.dart';
+import 'package:studygram/models/create_post_model.dart';
 import 'package:studygram/models/post_page_model.dart';
 import 'postcard.dart';
 import 'package:go_router/go_router.dart';
@@ -95,57 +96,61 @@ class PostView extends StatelessWidget {
         builder: (context, likeManager, child) {
           return Consumer<Feed>(
             builder: (context, feed, child) {
-              return FutureBuilder(
-                future: feed.getPosts(token, selectedUsers!, excludedUsers!),
-                builder: (context, snapshot) {
-                  // Error handling if the request got an error
-                  if (snapshot.hasError) {
-                    return Center(
-                        child: Text(
-                      "An error has occurred. Could not get posts.",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontSize: textSize[settings.size]),
-                    ));
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    final posts = snapshot.data!;
-                    // Shows a text if no posts are found
-                    if (posts.isEmpty) {
-                      return Text("No posts found",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontSize: textSize[settings.size]));
+              return Consumer<CreatePostModel>(
+                  builder: (context, model, child) {
+                return FutureBuilder(
+                  future: feed.getPosts(token, selectedUsers!, excludedUsers!),
+                  builder: (context, snapshot) {
+                    // Error handling if the request got an error
+                    if (snapshot.hasError) {
+                      return Center(
+                          child: Text(
+                        "An error has occurred. Could not get posts.",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: textSize[settings.size]),
+                      ));
                     }
-                    // Listview of all posts
-                    return Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                        child: ListView.builder(
-                          itemCount: posts.length,
-                          itemBuilder: (context, index) {
-                            Post post = posts[index];
-                            // Getting the right post with the index and returns a PostCard with the body and username
-                            return GestureDetector(
-                              child: PostCard(post: post),
-                              onTap: () async {
-                                // Sending the post as the extra parameter when navigating to the specific post page
-                                if (context.mounted) {
-                                  context.push('/post', extra: post);
-                                }
-                              },
-                            );
-                          },
+
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      final posts = snapshot.data!;
+                      // Shows a text if no posts are found
+                      if (posts.isEmpty) {
+                        return Text("No posts found",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontSize: textSize[settings.size]));
+                      }
+                      // Listview of all posts
+                      return Expanded(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 15.0, right: 15.0),
+                          child: ListView.builder(
+                            itemCount: posts.length,
+                            itemBuilder: (context, index) {
+                              Post post = posts[index];
+                              // Getting the right post with the index and returns a PostCard with the body and username
+                              return GestureDetector(
+                                child: PostCard(post: post),
+                                onTap: () async {
+                                  // Sending the post as the extra parameter when navigating to the specific post page
+                                  if (context.mounted) {
+                                    context.push('/post', extra: post);
+                                  }
+                                },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  } else {
-                    // The request is still loading
-                    return const LoadingIndicator();
-                  }
-                },
-              );
+                      );
+                    } else {
+                      // The request is still loading
+                      return const LoadingIndicator();
+                    }
+                  },
+                );
+              });
             },
           );
         },

@@ -35,12 +35,6 @@ class TimerPage extends StatelessWidget {
 
       return Consumer<TimerModel>(
         builder: (context, timerModel, child) {
-          // Shows error if something went wrong
-          if (timerModel.status == Status.error) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(timerModel.errorMessage)));
-          }
-
           return Center(
               child: SingleChildScrollView(
             child: Column(
@@ -85,7 +79,7 @@ class TimerPage extends StatelessWidget {
                         backgroundColor: Theme.of(context).primaryColorDark,
                         rectangleShape: true,
                         width: buttonWidth[settings.size],
-                        onPressed: () {
+                        onPressed: () async {
                           // Checking if the time is over 1 minute
                           if (watchModel.stopwatch.elapsed.inSeconds < 60) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -93,11 +87,24 @@ class TimerPage extends StatelessWidget {
                                     content: Text(
                                         "Can't save sessions under one minute")));
                           } else {
-                            timerModel.finish(
+                            await timerModel.finish(
                                 token,
                                 watchModel,
                                 subjectController.text,
                                 descriptionController.text);
+                            if (context.mounted) {
+                              if (timerModel.status == Status.success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text("Session succesfully added")));
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text(timerModel.errorMessage)));
+                              }
+                            }
                           }
                         }),
                   )

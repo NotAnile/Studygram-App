@@ -28,6 +28,7 @@ class CreatePostModel extends ChangeNotifier {
       // Setting no error message since everything went well
       _status = Status.success;
       _errorMessage = "";
+      notifyListeners();
       return _status;
     } else {
       _status = Status.error;
