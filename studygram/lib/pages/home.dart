@@ -53,7 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // Creating a list with the user's friends and their own username
         List<dynamic> following = userModel.friends;
-        following.add(userModel.username);
+        if (!following.contains(userModel.username)) {
+          following.add(userModel.username);
+        }
+
         // Getting the users that we want to display on the feed
         List<dynamic> selectedUsers = seeFollowing ? following : [];
         List<dynamic> excludedUsers = [];

@@ -28,7 +28,7 @@ class CreatePostPage extends StatelessWidget {
                 context,
                 Text("Create post",
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.inverseSurface,
+                      color: Theme.of(context).highlightColor,
                     ))),
             body: Center(
               child: Column(
