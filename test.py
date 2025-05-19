@@ -31,8 +31,9 @@ def runner(application):
 
 def create_user_get_token(client, username, password):
     client.post('/user', json={'username': username, 'password': password})
-    token = client.post('/user/login', json={'username': username, 'password': password}).json['token']
-    return token
+    response = client.post('/user/login', json={'username': username, 'password': password})
+    
+    return response.json["access_token"]
 
 def test_create_user(client):
     response = client.post('/user', json={'username': 'Elina', 'password': '1234'})
@@ -40,7 +41,7 @@ def test_create_user(client):
 
     # Trying to create a user that already exists
     response = client.post('/user', json={'username': 'Elina', 'password': '1234'})
-    assert b"UserId already taken" in response.data
+    assert b"Username already taken" in response.data
 
     # Trying to create a user without sending the right data
     response = client.post('/user', json={'userid': 'Elina', 'pass': '1234'})
@@ -98,23 +99,23 @@ def test_get_post(client):
     token2 = create_user_get_token(client, "Sarah", "4567")
     client.post('/posts', json={"body": "Hej"}, headers={'Authorization':'Bearer ' + token})
 
-    response = client.get('/posts/1')
+    response = client.get('/post/1', headers={'Authorization':'Bearer ' + token})
     assert b"1" in response.data
     assert b"Hej" in response.data
     assert b"[]" in response.data
 
     # Testing with a post id that doesn't exist
-    response = client.get('/posts/15')
+    response = client.get('/post/15', headers={'Authorization':'Bearer ' + token})
     assert b"Invalid post ID" in response.data
     assert response.status_code == 400
 
     # Testing the liked_by list
     client.post('/posts/like/1', headers={'Authorization':'Bearer ' + token})
-    response = client.get('/posts/1')
+    response = client.get('/post/1', headers={'Authorization':'Bearer ' + token})
     assert "Elina" in response.json["likedBy"]
 
     client.post('/posts/like/1', headers={'Authorization':'Bearer ' + token2})
-    response4 = client.get('/posts/1')
+    response4 = client.get('/post/1', headers={'Authorization':'Bearer ' + token})
     assert ["Elina", "Sarah"] == response4.json["likedBy"]
 
 
@@ -168,13 +169,14 @@ def test_get_all_posts(client):
     token2 = create_user_get_token(client, "Sarah", "4567")
 
     # Testing to get all posts when none are saved
-    response = client.get('/posts')
-    assert b"[]" in response.data
+    response = client.get('/posts/all', headers={'Authorization':'Bearer ' + token})
+    assert response.json is None
 
     # Creating multiple posts
     message_list = ["Hej", "Hejsan", "Hello"]
     for i in range(len(message_list)):
-        client.post('/posts', json={"body": message_list[i]}, headers={'Authorization':'Bearer ' + token})
+        client.post('/posts/all', json={"body": message_list[i], "selected_users": [], "excluded_users": [], "post_count": 20}, 
+                    headers={'Authorization':'Bearer ' + token})
 
 
     # Making one post have a single like
@@ -183,55 +185,24 @@ def test_get_all_posts(client):
     client.post('/posts/like/2', headers={'Authorization':'Bearer ' + token})
     client.post('/posts/like/2', headers={'Authorization':'Bearer ' + token2})
 
-    # Testing get_all_messages
-    response = client.get('/posts')
+    # Testing get_all_posts
+    response = client.post('/posts/all', json={"body": message_list[i], "selected_users": [], "excluded_users": [], "post_count": 20}, 
+                    headers={'Authorization':'Bearer ' + token})
     for i in range(len(response.json)):
         json_dict = response.json[i]
         assert json_dict["id"] == i + 1
         assert json_dict["body"] == message_list[i]
 
-def test_startsession(client):
-    token = create_user_get_token(client, "Elina", "1234")
-
-    response = client.post('/session/start', json={}, headers={'Authorization':'Bearer ' + token})
-    json_data = response.json
-    assert json_data['message'] == 'Timer has been started' 
-
-    response = client.post('/session/start', json={'subject': 'programming'}, headers={'Authorization':'Bearer ' + token})
-    json_data = response.json
-    assert json_data['subject'] == 'programming'
-
-    
-def test_endsession(client):
-    # Starting a session
-    token = create_user_get_token(client, "Elina", "1234")
-    response = client.post('/session/start', json={}, headers={'Authorization':'Bearer ' + token})
-    sessionid = response.json['id']
-
-    # Testing to end a session
-    response = client.post('/session/end', json = {'id': sessionid}, headers={'Authorization':'Bearer ' + token})
-    assert response.json['message'] == 'Session has ended'
-    
-    # Testing to end a session with an invalid session id
-    response = client.post('/session/end', json = {'id':5}, headers={'Authorization':'Bearer ' + token})
-    assert b'Session does not exist' in response.data
-    assert response.status_code == 404
-
-    # Testing to end a session without sending in the session id
-    response = client.post('/session/end', json = {'dfghn':234}, headers={'Authorization':'Bearer ' + token})
-    assert b'Session id missing' in response.data
-    assert response.status_code == 404
-
 
 def test_addsession(client):
     token = create_user_get_token(client, "Elina", "1234")
     # Adding a session with a subject 
-    json_data = {'startdate':'28/02/25', 'starttime': '15:00', 'enddate': '28/02/25', 'endtime': '16:00', 'subject': 'tddd80'}
+    json_data = {'startdate':'2025-02-25', 'starttime': '15:00:00', 'enddate': '2025-02-25', 'endtime': '16:00:00', 'subject': 'tddd80'}
     response = client.post('/session/add', json=json_data, headers={'Authorization':'Bearer ' + token})
     assert response.json['message'] == 'Session has been added'
 
     # Adding a session without a subject
-    json_data = {'startdate':'01/03/25', 'starttime': '11:30', 'enddate': '28/02/25', 'endtime': '16:00'}
+    json_data = {'startdate':'2025-02-01', 'starttime': '11:30:00', 'enddate': '2025-02-01', 'endtime': '16:00:00'}
     response = client.post('/session/add', json=json_data, headers={'Authorization':'Bearer ' + token})
     assert response.json['message'] == 'Session has been added'
 

@@ -46,10 +46,6 @@ class Authentication extends ChangeNotifier {
         _accessToken = result['access_token'];
         _refreshToken = result['refresh_token'];
 
-        // await tokenStorage.write(AuthTokenPair(
-        //     accessToken: result['access_token'],
-        //     refreshToken: result['refresh_token']));
-
         // Setting up user model and updating isLoggedIn bool
         if (context.mounted) {
           UserModel userModel = Provider.of<UserModel>(context, listen: false);

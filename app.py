@@ -17,7 +17,7 @@ bcrypt = Bcrypt(app)
 app.config['JWT_SECRET_KEY'] = dotenv_values(".env")["SECRET_KEY"]
 
 #Making the token valid for 15 minutes before it expires
-ACCESS_EXPIRES = timedelta(minutes = 15)
+ACCESS_EXPIRES = timedelta(minutes = 60)
 REFRESH_EXPIRES = timedelta(days=7)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRES
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = REFRESH_EXPIRES
@@ -832,7 +832,6 @@ def delete_session():
             return jsonify({'message': 'User does not own session.'}), 401
     else:
         return jsonify({'message': 'Missing session id.'}), 404
-    return jsonify({'message': 'Session not found.'}), 404
 
 
 @app.route('/search/users', methods=['POST'])
