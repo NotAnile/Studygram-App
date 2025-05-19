@@ -9,7 +9,7 @@ AppBar getMyAppBar(BuildContext context, Text title) {
         ? IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             onPressed: () => context.pop(),
           )

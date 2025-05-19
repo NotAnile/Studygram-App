@@ -15,24 +15,26 @@ import 'package:studygram/models/user_search_bar_model.dart';
 import 'router.dart';
 
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => UserModel()),
-      ChangeNotifierProvider(create: (_) => Authentication()),
-      ChangeNotifierProvider(create: (_) => Settings()),
-      ChangeNotifierProvider(create: (_) => CreateAccountModel()),
-      ChangeNotifierProvider(create: (_) => Feed()),
-      ChangeNotifierProvider(create: (_) => CreatePostModel()),
-      ChangeNotifierProvider(create: (_) => FriendManager()),
-      ChangeNotifierProvider(create: (_) => LikeManager()),
-      ChangeNotifierProvider(create: (_) => CommentViewModel()),
-      ChangeNotifierProvider(create: (_) => TimerModel()),
-      ChangeNotifierProvider(create: (_) => WatchModel()),
-      ChangeNotifierProvider(create: (_) => SessionViewModel()),
-      ChangeNotifierProvider(create: (_) => UserSearchBarModel()),
-    ],
-    child: const MainApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserModel()),
+        ChangeNotifierProvider(create: (_) => Authentication()),
+        ChangeNotifierProvider(create: (_) => Settings()),
+        ChangeNotifierProvider(create: (_) => CreateAccountModel()),
+        ChangeNotifierProvider(create: (_) => Feed()),
+        ChangeNotifierProvider(create: (_) => CreatePostModel()),
+        ChangeNotifierProvider(create: (_) => FriendManager()),
+        ChangeNotifierProvider(create: (_) => LikeManager()),
+        ChangeNotifierProvider(create: (_) => CommentViewModel()),
+        ChangeNotifierProvider(create: (_) => TimerModel()),
+        ChangeNotifierProvider(create: (_) => WatchModel()),
+        ChangeNotifierProvider(create: (_) => SessionViewModel()),
+        ChangeNotifierProvider(create: (_) => UserSearchBarModel()),
+      ],
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {

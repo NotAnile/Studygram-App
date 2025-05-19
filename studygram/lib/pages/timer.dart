@@ -56,8 +56,7 @@ class TimerPage extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: MyTextButton(
                         buttonText: "Reset",
-                        backgroundColor:
-                            const Color.fromARGB(255, 216, 199, 221),
+                        backgroundColor: Theme.of(context).primaryColorDark,
                         rectangleShape: true,
                         width: buttonWidth[settings.size],
                         onPressed: () {
@@ -72,7 +71,7 @@ class TimerPage extends StatelessWidget {
                             : "Start",
                         backgroundColor: (watchModel.stopwatch.isRunning)
                             ? const Color.fromARGB(255, 218, 116, 109)
-                            : const Color.fromARGB(255, 146, 221, 148),
+                            : Theme.of(context).primaryColor,
                         rectangleShape: true,
                         width: buttonWidth[settings.size],
                         onPressed: () {
@@ -83,8 +82,7 @@ class TimerPage extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: MyTextButton(
                         buttonText: "Finish",
-                        backgroundColor:
-                            const Color.fromARGB(255, 216, 199, 221),
+                        backgroundColor: Theme.of(context).primaryColorDark,
                         rectangleShape: true,
                         width: buttonWidth[settings.size],
                         onPressed: () {

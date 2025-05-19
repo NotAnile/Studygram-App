@@ -59,6 +59,7 @@ class _PostCardState extends State<PostCard> {
               }
             },
             child: Card(
+              color: Theme.of(context).cardColor,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(

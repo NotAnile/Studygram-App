@@ -48,11 +48,12 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.primary,
       ),
       floatingActionButton: GoRouterState.of(context).uri.toString() == "/"
           ? Builder(
               builder: (context) => FloatingActionButton.small(
-                backgroundColor: Theme.of(context).hintColor,
+                backgroundColor: Theme.of(context).primaryColor,
                 child: const Icon(Icons.add),
                 onPressed: () {
                   context.push('/create/post');

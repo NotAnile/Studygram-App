@@ -33,7 +33,7 @@ class SettingsPage extends StatelessWidget {
         }
       }
 
-      Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
+      Color buttonColor = Theme.of(context).primaryColor;
       return Center(
         child: Column(
           children: [

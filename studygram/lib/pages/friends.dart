@@ -25,7 +25,7 @@ class _FriendsPageState extends State<FriendsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
+    Color buttonColor = Theme.of(context).primaryColor;
     return Scaffold(
       appBar: getMyAppBar(
           context,
@@ -37,7 +37,7 @@ class _FriendsPageState extends State<FriendsPage> {
           )),
       body: Center(
         child: Column(children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Wrap(children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: MyTextButton(

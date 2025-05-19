@@ -37,6 +37,7 @@ class SessionCard extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(12.0),
           child: Card(
+            color: Theme.of(context).cardColor,
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Column(

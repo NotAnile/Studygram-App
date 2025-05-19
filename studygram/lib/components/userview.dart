@@ -39,7 +39,7 @@ class UserView extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.done) {
                   final friends = snapshot.data!;
                   if (friends.isEmpty) {
-                    return Text("No friends found. Go touch some grass.",
+                    return Text("No friends found :(",
                         style: TextStyle(fontSize: sizes[settings.size]));
                   }
                   return Expanded(

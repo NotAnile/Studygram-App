@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<UserModel>(builder: (context, userModel, child) {
-      Color buttonColor = const Color.fromARGB(255, 151, 115, 156);
+      Color buttonColor = Theme.of(context).primaryColor;
       // Checking if the usermodel is initalized before showing the feed
       if (!userModel.isInitialized) {
         // Tries to initialize if something went wrong with initialization
