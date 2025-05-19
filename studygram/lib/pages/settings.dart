@@ -10,8 +10,8 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String token =
-        Provider.of<Authentication>(context, listen: false).accessToken;
+    Authentication auth = Provider.of<Authentication>(context, listen: false);
+    String token = auth.accessToken;
 
     Settings settings = Provider.of<Settings>(context, listen: false);
 
@@ -44,7 +44,6 @@ class SettingsPage extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            const Divider(),
             Wrap(spacing: 10.0, runSpacing: 10.0, children: [
               MyTextButton(
                 onPressed: () {
@@ -71,10 +70,22 @@ class SettingsPage extends StatelessWidget {
                 rectangleShape: false,
               ),
             ]),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Themes",
+                style: TextStyle(
+                  fontSize: textSizes[model.size],
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ),
             // Switch to activate/deactivate dark mode
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Row(children: [
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 const Text("Dark Mode"),
                 SwitchButton(
                     alreadyToggled: (settings.themeMode == ThemeMode.dark),
@@ -91,7 +102,8 @@ class SettingsPage extends StatelessWidget {
             // Switch to activate/deactivate high constrast
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Row(children: [
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 const Text("High Contrast"),
                 SwitchButton(
                   alreadyToggled: settings.contrast,
@@ -103,7 +115,37 @@ class SettingsPage extends StatelessWidget {
                   },
                 )
               ]),
-            )
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: MyTextButton(
+                onPressed: () async {
+                  await auth.logout();
+                  // Shows snackbar if user got logged out
+                  if (context.mounted) {
+                    if (auth.status == Status.success) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Succesfully logged out")));
+                    } else if (auth.status == Status.error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            (auth.errorMessage.isEmpty
+                                ? "Unknown error"
+                                : auth.errorMessage),
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                },
+                buttonText: "Log out",
+                backgroundColor: buttonColor,
+                rectangleShape: true,
+                wrapText: true,
+              ),
+            ),
           ],
         ),
       );

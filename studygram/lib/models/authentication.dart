@@ -72,7 +72,7 @@ class Authentication extends ChangeNotifier {
     return _status;
   }
 
-  void logout() async {
+  Future<void> logout() async {
     final String token = _accessToken;
     final response = await http.post(
       Uri.parse("$baseUrl/user/logout"),

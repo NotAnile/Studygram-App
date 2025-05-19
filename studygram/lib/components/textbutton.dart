@@ -52,7 +52,7 @@ class MyTextButton extends StatelessWidget {
             child: Text(
               buttonText,
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
+                color: Theme.of(context).highlightColor,
               ),
             ),
           );
