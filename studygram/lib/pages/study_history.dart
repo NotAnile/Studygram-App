@@ -9,9 +9,7 @@ class StudyHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SessionViewModel>(
-      builder: (context, studyHistoryModel, child) {
-        return Scaffold(
+    return Scaffold(
           appBar: getMyAppBar(
             context,
             const Text(
@@ -27,7 +25,5 @@ class StudyHistoryPage extends StatelessWidget {
             ),
           ),
         );
-      },
-    );
   }
 }
