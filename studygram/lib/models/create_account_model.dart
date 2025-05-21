@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 import './authentication.dart';
 import './url.dart';
+import 'package:studygram/structure.dart';
 
 class CreateAccountModel extends ChangeNotifier {
   Status _status = Status.idle;

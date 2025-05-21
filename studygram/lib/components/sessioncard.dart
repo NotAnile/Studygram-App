@@ -5,7 +5,6 @@ import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/session_view_model.dart';
 import 'package:studygram/structure.dart';
 import 'package:studygram/components/delete_button.dart';
-import 'package:studygram/models/url.dart';
 
 /// A card that consists of the date that a session was started, start and end time, subject, description and duration.
 class SessionCard extends StatelessWidget {

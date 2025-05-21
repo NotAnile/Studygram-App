@@ -5,7 +5,7 @@ import '../components/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/create_account_model.dart';
 import 'package:studygram/components/appbar.dart';
-import 'package:studygram/models/url.dart';
+import 'package:studygram/structure.dart';
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});

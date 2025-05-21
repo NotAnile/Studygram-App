@@ -5,6 +5,7 @@ import './url.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/user.dart';
+import 'package:studygram/structure.dart';
 
 class FriendManager extends ChangeNotifier {
   Status _status = Status.idle;

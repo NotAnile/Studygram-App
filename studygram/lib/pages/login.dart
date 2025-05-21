@@ -4,7 +4,7 @@ import 'package:studygram/models/authentication.dart';
 import '../components/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:studygram/models/url.dart';
+import 'package:studygram/structure.dart';
 
 //**The page for loggin in*/
 class LoginPage extends StatelessWidget {

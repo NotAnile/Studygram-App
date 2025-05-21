@@ -5,7 +5,7 @@ import 'package:studygram/components/textbutton.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/create_post_model.dart';
-import 'package:studygram/models/url.dart';
+import 'package:studygram/structure.dart';
 import '../models/settings_model.dart';
 import 'package:go_router/go_router.dart';
 

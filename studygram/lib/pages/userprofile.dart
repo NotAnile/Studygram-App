@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:studygram/models/user.dart';
 import 'package:studygram/structure.dart';
 import 'package:studygram/models/settings_model.dart';
-import 'package:studygram/models/friend_manager.dart';
 import 'package:go_router/go_router.dart';
 
 //**Page that contains all the posts and followers of a specific user */

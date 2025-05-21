@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/appbar.dart';
-import 'package:studygram/components/loading_indicator.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/models/like_manager.dart';
 import 'package:studygram/structure.dart';
@@ -8,10 +7,8 @@ import '../components/postcard.dart';
 import '../components/content_view.dart';
 import 'package:studygram/components/textfield.dart';
 import 'package:studygram/models/authentication.dart';
-import 'package:studygram/models/feed.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/post_page_model.dart';
-import 'package:studygram/models/url.dart';
 
 //**The page for viewing a single post, including its comments*/
 class PostPage extends StatefulWidget {

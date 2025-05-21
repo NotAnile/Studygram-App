@@ -1,5 +1,13 @@
 import 'package:intl/intl.dart';
 
+/// Enum class with statuses for async operations
+enum Status {
+  idle,
+  loading,
+  success,
+  error,
+}
+
 class User {
   String username;
   List posts;

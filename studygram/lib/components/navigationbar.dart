@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:studygram/models/create_post_model.dart';
-import 'package:provider/provider.dart';
 
 class MyNavigationBar extends StatefulWidget {
   final Widget child;

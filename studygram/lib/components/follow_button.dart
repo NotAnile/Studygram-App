@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/models/friend_manager.dart';
 import 'package:studygram/models/user.dart';
-import 'package:studygram/models/url.dart';
 import 'package:studygram/models/settings_model.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/components/textbutton.dart';
+import 'package:studygram/structure.dart';
 
 class FollowButton extends StatelessWidget {
   final String username;

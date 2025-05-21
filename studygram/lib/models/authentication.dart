@@ -5,10 +5,7 @@ import './user.dart';
 import 'package:provider/provider.dart';
 import './url.dart';
 import 'package:studygram/models/settings_model.dart';
-// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:fresh_dio/fresh_dio.dart';
-// import 'package:dio/dio.dart';
-// import 'package:studygram/token.dart';
+import 'package:studygram/structure.dart';
 
 class Authentication extends ChangeNotifier {
   bool _isLoggedIn = false;
@@ -17,8 +14,6 @@ class Authentication extends ChangeNotifier {
   String _errorMessage = "";
   String _accessToken = "";
   String _refreshToken = "";
-  // final TokenStorageImpl tokenStorage =
-  //     const TokenStorageImpl(FlutterSecureStorage());
 
   bool get isLoggedIn => _isLoggedIn;
   Status get status => _status;
