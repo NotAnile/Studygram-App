@@ -55,6 +55,7 @@ class SessionViewModel extends ChangeNotifier {
     if (response.statusCode == 200) {
       _status = Status.success;
       _errorMessage = "";
+      notifyListeners();
     } else {
       _status = Status.error;
       _errorMessage = result['message'];
