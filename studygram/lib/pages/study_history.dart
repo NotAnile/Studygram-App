@@ -14,21 +14,21 @@ class StudyHistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: getMyAppBar(
-            context,
-            const Text(
-              "Study History",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          body: const Center(
-            child: Column(
-              children: [
-                SessionView(),
-              ],
-            ),
-          ),
-        );
+      appBar: getMyAppBar(
+        context,
+        const Text(
+          "Study History",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: const Center(
+        child: Column(
+          children: [
+            SessionView(),
+          ],
+        ),
+      ),
+    );
   }
 }
 

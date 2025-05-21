@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/loading_indicator.dart';
-import 'package:studygram/models/like_manager.dart';
-import 'package:studygram/models/url.dart';
+import 'package:studygram/structure.dart';
 import '../components/content_view.dart';
 import '../models/feed.dart';
 import '../models/user.dart';

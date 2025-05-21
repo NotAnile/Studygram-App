@@ -1,15 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/timer_model.dart';
 import '../components/textfield.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import 'package:studygram/models/url.dart';
 import 'package:studygram/models/settings_model.dart';
-import 'package:studygram/components/textbutton.dart';
+import 'package:studygram/structure.dart';
 
 class TimerPage extends StatelessWidget {
   const TimerPage({super.key});
@@ -98,9 +94,9 @@ class TimerPage extends StatelessWidget {
                                     const SnackBar(
                                         content:
                                             Text("Session succesfully added")));
-                                // Resetting the textfields
+                                // Clearing the textfields
                                 subjectController.text = "";
-                                descriptionController.text = ""; 
+                                descriptionController.text = "";
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
