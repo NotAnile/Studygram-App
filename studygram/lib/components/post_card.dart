@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:studygram/components/delete_button.dart';
 import 'package:studygram/models/user.dart';
 
-//**A card that consists of a username and a text (body). Each post consists of a card.*/
+/// A card to display a post. It consists of a username and a text (body).
 class PostCard extends StatefulWidget {
   final Post post;
   const PostCard({super.key, required this.post});

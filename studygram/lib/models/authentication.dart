@@ -3,10 +3,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './user.dart';
 import 'package:provider/provider.dart';
-import './url.dart';
+import '../url.dart';
 import 'package:studygram/models/settings_model.dart';
 import 'package:studygram/structure.dart';
 
+/// Provider for authentication.
+/// Handles logging in, logging out, and the tokens.
 class Authentication extends ChangeNotifier {
   bool _isLoggedIn = false;
   final String baseUrl = BaseUrl().baseUrl;
@@ -21,6 +23,10 @@ class Authentication extends ChangeNotifier {
   String get refreshToken => _refreshToken;
   String get errorMessage => _errorMessage;
 
+  /// Handles logging in.
+  /// If the login succeeds, it will initialize the UserModel and
+  /// SettingsModel to get the right settings and data for the
+  /// rest of the app.
   Future<Status> login(
       String username, String password, BuildContext context) async {
     _status = Status.loading;
@@ -63,6 +69,7 @@ class Authentication extends ChangeNotifier {
     return _status;
   }
 
+  /// Handles logging out
   Future<void> logout() async {
     final String token = _accessToken;
     final response = await http.post(
@@ -81,32 +88,4 @@ class Authentication extends ChangeNotifier {
     }
     notifyListeners();
   }
-
-  // /// Creates and configures a Dio HTTP client with authentication
-  // Dio setupAuthenticatedDio(String baseUrl) {
-  //   final dio = Dio(
-  //     BaseOptions(
-  //       baseUrl: baseUrl,
-  //       connectTimeout: const Duration(seconds: 30),
-  //       receiveTimeout: const Duration(seconds: 30),
-  //       sendTimeout: const Duration(seconds: 30),
-  //     ),
-  //   );
-
-  //   // Set up token refresh interceptor
-  //   final tokenRefreshInterceptor = TokenRefreshInterceptor(tokenStorage);
-  //   final fresh = tokenRefreshInterceptor.fresh;
-
-  //   // Add the Fresh interceptor to Dio
-  //   dio.interceptors.add(fresh);
-
-  //   // Log out listener to handle authentication failures
-  //   fresh.authenticationStatus.listen((status) {
-  //     if (status == AuthenticationStatus.unauthenticated) {
-  //       _isLoggedIn = false;
-  //     }
-  //   });
-
-  //   return dio;
-  // }
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import './url.dart';
+import '../url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:studygram/structure.dart';
 
+/// Provider for the user search bar that handles the
+/// network call to get all the usernames in the suggestions
+/// of the search bar.
 class UserSearchBarModel extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";

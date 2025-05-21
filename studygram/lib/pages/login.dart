@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/structure.dart';
 
-//**The page for loggin in*/
+/// The page for logging in
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -14,6 +14,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController usernameController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: Consumer<Authentication>(builder: (context, auth, child) {
@@ -32,6 +33,7 @@ class LoginPage extends StatelessWidget {
                           color: Theme.of(context).colorScheme.onSurface,
                         )),
                   ),
+                  // Textfield for username
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: MyTextField(
@@ -40,6 +42,7 @@ class LoginPage extends StatelessWidget {
                       obscureText: false,
                     ),
                   ),
+                  // Textfield for password
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: MyTextField(
@@ -48,6 +51,7 @@ class LoginPage extends StatelessWidget {
                       obscureText: true,
                     ),
                   ),
+                  // Log in button
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: MyTextButton(
@@ -80,6 +84,7 @@ class LoginPage extends StatelessWidget {
                       },
                     ),
                   ),
+                  // Sign up button
                   GestureDetector(
                     onTap: () {
                       context.push('/create/account');
@@ -95,7 +100,9 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
             );
-          } else {
+          }
+          // If the user is already logged, then display "Welcome back"
+          else {
             return Center(
               child: Column(
                 children: [

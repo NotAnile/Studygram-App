@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import '../models/settings_model.dart';
 import 'package:provider/provider.dart';
 
-//**Creates a textbutton*/
+/// Creates a textbutton that does the given function.
+/// If wrapText is true, the button's size will adjust to the
+/// text, otherwise the size of the button is decided by the
+/// size settings unless a width and/or height is given.
 class MyTextButton extends StatelessWidget {
   final String buttonText;
   final Color backgroundColor;

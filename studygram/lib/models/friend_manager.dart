@@ -7,6 +7,8 @@ import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/user.dart';
 import 'package:studygram/structure.dart';
 
+/// Provider handling the following and unfollowing users,
+/// as well as getting followers, friends and friend requests.
 class FriendManager extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";
@@ -15,6 +17,8 @@ class FriendManager extends ChangeNotifier {
   Status get status => _status;
   String get errorMessage => _errorMessage;
 
+  /// Tries to follow the given username and returns a status
+  /// depending on how the operation goes.
   Future<Status> addFriend(BuildContext context, String friendUsername) async {
     _status = Status.loading;
     // Getting token
@@ -49,6 +53,8 @@ class FriendManager extends ChangeNotifier {
     return _status;
   }
 
+  /// Tries to unfollow the given username and returns
+  /// a status depending on how the operation goes.
   Future<Status> removeFriend(
       BuildContext context, String friendUsername) async {
     _status = Status.loading;
@@ -69,9 +75,11 @@ class FriendManager extends ChangeNotifier {
       _status = Status.success;
       // Setting no error message since everything went well
       _errorMessage = "";
-      //Updates the FriendModel
-      Provider.of<UserModel>(context, listen: false)
-          .unfollowUser(friendUsername);
+      //Updates the UserModel
+      if (context.mounted) {
+        Provider.of<UserModel>(context, listen: false)
+            .unfollowUser(friendUsername);
+      }
       notifyListeners();
       return Status.success;
     } else {
@@ -83,6 +91,7 @@ class FriendManager extends ChangeNotifier {
     }
   }
 
+  /// Returns a list with all the friends/mutuals of the given follower.
   Future<List<dynamic>> getFriends(String username) async {
     _status = Status.loading;
     // Creating a JSON to send to the server
@@ -108,6 +117,7 @@ class FriendManager extends ChangeNotifier {
     }
   }
 
+  /// Gets a list with all users that the given username is following.
   Future<List<dynamic>> getFollowing(String username) async {
     _status = Status.loading;
     // Creating a JSON to send to the server
@@ -133,6 +143,9 @@ class FriendManager extends ChangeNotifier {
     }
   }
 
+  /// Returns a list with all the friend requests (users that have
+  /// followed but is not followed back) that has been sent
+  /// to the logged in user.
   Future<List<dynamic>> getFriendRequests(String token) async {
     _status = Status.loading;
     // Creating a JSON to send to the server

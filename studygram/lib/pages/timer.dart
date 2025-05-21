@@ -40,10 +40,11 @@ class TimerPage extends StatelessWidget {
                   child: Text("Log your study session",
                       style: TextStyle(fontSize: textsize[settings.size])),
                 ),
-                const Watch(),
+                const Watch(), // Display the actual timer UI
                 Wrap(children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
+                    // Reset button
                     child: MyTextButton(
                         buttonText: "Reset",
                         backgroundColor: Theme.of(context).primaryColorDark,
@@ -55,6 +56,7 @@ class TimerPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
+                    // Start/pause button
                     child: MyTextButton(
                         buttonText: (watchModel.stopwatch.isRunning)
                             ? "Pause"
@@ -70,13 +72,15 @@ class TimerPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
+                    // Finish button
                     child: MyTextButton(
                         buttonText: "Finish",
                         backgroundColor: Theme.of(context).primaryColorDark,
                         rectangleShape: true,
                         width: buttonWidth[settings.size],
                         onPressed: () async {
-                          // Checking if the time is over 1 minute
+                          // Checking if the time is over 1 minute because
+                          // we only display hours and mins in sessions in study history
                           if (watchModel.stopwatch.elapsed.inSeconds < 60) {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -94,7 +98,7 @@ class TimerPage extends StatelessWidget {
                                     const SnackBar(
                                         content:
                                             Text("Session succesfully added")));
-                                // Clearing the textfields
+                                // Clearing the textfields after finishing the session
                                 subjectController.text = "";
                                 descriptionController.text = "";
                               } else {
@@ -109,6 +113,7 @@ class TimerPage extends StatelessWidget {
                   )
                 ]),
                 const Divider(),
+                // Textfields for subject and description
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MyTextField(

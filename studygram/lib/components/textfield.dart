@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/settings_model.dart';
 
-//**Creates a textfield*/
+/// A textfield that adjusts it's width according to the size settings.
 class MyTextField extends StatelessWidget {
   final String labelText;
   // Takes in a text controller to use it to retrieve the current value of a textfield

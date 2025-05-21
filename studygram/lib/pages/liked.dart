@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/components/content_view.dart';
+import 'package:studygram/components/post_view.dart';
 import 'package:studygram/models/like_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/authentication.dart';
@@ -14,6 +14,8 @@ class LikedPage extends StatelessWidget {
       builder: (context, model, child) {
         String token =
             Provider.of<Authentication>(context, listen: false).accessToken;
+
+        // Getting the users liked posts
         final request = model.getLikedPosts(token);
         return FutureBuilder(
           future: request,
@@ -29,6 +31,7 @@ class LikedPage extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
+                        // Displaying the posts with a PostView
                         child: PostView(posts: likedPosts),
                       ),
                     ),

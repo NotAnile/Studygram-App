@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:studygram/structure.dart';
 
+/// Provider for adding and removing comments.
 class CommentViewModel extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";
@@ -12,6 +13,8 @@ class CommentViewModel extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   Status get status => _status;
 
+  /// Tries to add the given comment under the post with the given postID
+  /// and returns a status depending on how the operation went.
   Future<Status> addComment(String token, int postID, String comment) async {
     _status = Status.loading;
     // Creating a JSON to send to the server
@@ -42,6 +45,8 @@ class CommentViewModel extends ChangeNotifier {
     }
   }
 
+  /// Tries to remove the given comment and returns a status
+  /// depending on how the operation went.
   Future<Status> removeComment(String token, int commentID) async {
     _status = Status.loading;
     // Creating a JSON to send to the server

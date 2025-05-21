@@ -32,7 +32,7 @@ class MyRouter extends StatelessWidget {
 
     final router = GoRouter(
       navigatorKey: _rootNavigatorKey,
-      refreshListenable: auth,
+      refreshListenable: auth, // Refreshes the page when the user logs in
       redirect: (context, state) {
         // Checking if the user is logged in
         if (!auth.isLoggedIn) {
@@ -128,6 +128,7 @@ class MyRouter extends StatelessWidget {
       ],
     );
 
+    // Setting the right mode depending on the settings
     return Consumer<Settings>(
       builder: (context, settings, child) {
         return MaterialApp.router(

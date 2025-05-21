@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import './url.dart';
+import '../url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:studygram/structure.dart';
 
+/// Provider for the settings of the app, which includes
+/// the sizes of texts and widgets and the apptheme.
 class Settings extends ChangeNotifier {
   Size _size = Size.medium;
   final String baseUrl = BaseUrl().baseUrl;
@@ -85,11 +87,15 @@ class Settings extends ChangeNotifier {
   }
 }
 
+/// Enum for the different sizes of the text and widgets in the app.
 enum Size {
   small,
   medium,
   large;
 
+  /// Converts a String to a Size enum make the
+  /// data conversions easier when getting data
+  /// from the server.
   static Size fromString(String string) {
     switch (string.toLowerCase()) {
       case 'small':
@@ -103,6 +109,8 @@ enum Size {
     }
   }
 
+  /// Converts a Size enum to a String to make the
+  /// data conversions easier for the network calls.
   static String asString(Size size) {
     switch (size) {
       case small:

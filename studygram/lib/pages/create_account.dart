@@ -7,6 +7,7 @@ import 'package:studygram/models/create_account_model.dart';
 import 'package:studygram/components/appbar.dart';
 import 'package:studygram/structure.dart';
 
+/// Page for creating a new account
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
 
@@ -34,6 +35,7 @@ class CreateAccountPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
+                  // Textfield for username
                   child: MyTextField(
                     labelText: "Username",
                     controller: usernameController,
@@ -42,6 +44,7 @@ class CreateAccountPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
+                  // Textfield for password
                   child: MyTextField(
                     labelText: "Password",
                     controller: passwordController,
@@ -50,6 +53,7 @@ class CreateAccountPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
+                  // Textfield to confirm password
                   child: MyTextField(
                     labelText: "Confirm password",
                     controller: passwordController2,
@@ -84,6 +88,9 @@ class CreateButton extends StatefulWidget {
       required this.auth,
       required this.usernameController});
 
+  // Returns true iff the input only contains letters of the
+  // alphabet from A-Z, both lower-case and upper-case letters are
+  // valid.
   bool containsOnlyAlphanumeric(String input) {
     final RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
     return regex.hasMatch(input);
@@ -100,6 +107,7 @@ class _CreateButtonState extends State<CreateButton> {
       builder: (context, model, child) {
         return Column(
           children: [
+            // Displaying error message
             (model.status == Status.error)
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),

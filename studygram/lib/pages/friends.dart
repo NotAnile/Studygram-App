@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/appbar.dart';
-import 'package:studygram/components/userview.dart';
+import 'package:studygram/components/user_view.dart';
 import 'package:studygram/components/textbutton.dart';
 
 class FriendsPage extends StatefulWidget {
@@ -14,7 +14,7 @@ class FriendsPage extends StatefulWidget {
 class _FriendsPageState extends State<FriendsPage> {
   bool seeFriends = false;
 
-  // The user can choose to see the posts of the people they follow or explore
+  // The user can choose to see the posts of the people they follow or are friends with (mutuals)
   void toggleMode(bool following) {
     if (seeFriends != following) {
       setState(() {
@@ -29,6 +29,7 @@ class _FriendsPageState extends State<FriendsPage> {
     return Scaffold(
       appBar: getMyAppBar(
           context,
+          // If seeFriends is true, display text for friends
           Text(
             seeFriends ? "Friends" : "Following",
             style: TextStyle(
@@ -62,6 +63,7 @@ class _FriendsPageState extends State<FriendsPage> {
             )
           ]),
           const Divider(),
+          // Displays the users
           UserView(
             username: widget.username,
             seeFriends: seeFriends,

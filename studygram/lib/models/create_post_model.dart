@@ -4,6 +4,8 @@ import 'dart:convert';
 import './url.dart';
 import 'package:studygram/structure.dart';
 
+/// Provider for the create post page.
+/// Handles the server calls to create posts.
 class CreatePostModel extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";
@@ -11,6 +13,8 @@ class CreatePostModel extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   Status get status => _status;
 
+  /// Tries to create a post with the given body and returns a
+  /// status depending on how the operation went.
   Future<Status> createPost(String token, String body) async {
     final String baseUrl = BaseUrl().baseUrl;
     // Creating a JSON to send to the server

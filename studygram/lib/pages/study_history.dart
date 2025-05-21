@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:studygram/components/appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:studygram/models/session_view_model.dart';
-import 'package:studygram/components/sessioncard.dart';
+import 'package:studygram/components/session_card.dart';
 import 'package:studygram/components/loading_indicator.dart';
 import '../structure.dart';
 import 'package:studygram/models/authentication.dart';
@@ -32,7 +32,7 @@ class StudyHistoryPage extends StatelessWidget {
   }
 }
 
-//**Listview to display all the sessions in a column*/
+///Listview to display all the sessions in a column
 class SessionView extends StatelessWidget {
   const SessionView({super.key});
 
@@ -50,6 +50,7 @@ class SessionView extends StatelessWidget {
       return FutureBuilder(
         future: request,
         builder: (context, snapshot) {
+          // Checking for errors
           if (snapshot.hasError) {
             String errorMessage = model.errorMessage;
             return Center(
@@ -61,6 +62,7 @@ class SessionView extends StatelessWidget {
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: textSize[settings.size])));
           }
+          // Everything went well
           if (snapshot.connectionState == ConnectionState.done) {
             final sessions = snapshot.data!;
             if (sessions.isEmpty) {
@@ -76,8 +78,8 @@ class SessionView extends StatelessWidget {
               child: ListView.builder(
                 itemCount: sessions.length,
                 itemBuilder: (context, index) {
+                  // Getting the right session with the index and returns a SessionCard with the body and username
                   Session session = sessions[index] as Session;
-                  // Getting the right post with the index and returns a PostCard with the body and username
                   return SessionCard(session: session);
                 },
               ),

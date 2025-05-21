@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/structure.dart';
 
+/// Button for following/unfollowing people that shows the text
+/// "Following" or "Unfollowing" depending on whether the logged in
+/// user is following the given username or not.
 class FollowButton extends StatelessWidget {
   final String username;
   const FollowButton({super.key, required this.username});

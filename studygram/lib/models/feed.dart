@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../structure.dart';
-import './url.dart';
+import '../url.dart';
 
+/// Provider for handling anything that has to do with posts
+/// for example when displaying posts for homepage and profile page
 class Feed extends ChangeNotifier {
   final String baseUrl = BaseUrl().baseUrl;
   final int postLimit = 20;
@@ -13,7 +15,7 @@ class Feed extends ChangeNotifier {
   Status get status => _status;
   String get errorMessage => _errorMessage;
 
-  //**Returns a list of the posts for a given username.*/
+  /// Returns a list of the posts for a given username.
   Future<dynamic> getProfile(String username, String token) async {
     _status = Status.loading;
     final response = await http.get(
@@ -35,7 +37,7 @@ class Feed extends ChangeNotifier {
     }
   }
 
-  //**Returns a post object for the given post id. */
+  /// Returns a post object for the given post id.
   Future<dynamic> getPost(int postID, String token) async {
     _status = Status.loading;
     final response = await http.get(
@@ -58,6 +60,8 @@ class Feed extends ChangeNotifier {
     }
   }
 
+  /// Tries to remove the post with the given post id and returns
+  /// a status depending on how the operation went.
   Future<Status> removePost(int postID, String token) async {
     _status = Status.loading;
     final response = await http.delete(
@@ -79,7 +83,7 @@ class Feed extends ChangeNotifier {
     return _status;
   }
 
-  //**Returns a list of comments for the given post id. */
+  /// Returns a list of comments for the given post id.
   Future<dynamic> getComments(int postID, String token) async {
     _status = Status.loading;
     final response = await http.get(
@@ -100,7 +104,7 @@ class Feed extends ChangeNotifier {
     }
   }
 
-  //**Returns a list with posts for the given post id. */
+  /// Returns a list with posts of the selected users.
   Future<List<dynamic>> getPosts(String token, List<dynamic> selectedUsers,
       List<dynamic> excludedUsers) async {
     final response = await http.post(

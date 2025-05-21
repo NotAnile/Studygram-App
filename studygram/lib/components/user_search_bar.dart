@@ -4,6 +4,9 @@ import 'package:studygram/models/user_search_bar_model.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
+/// Search bar for the users in the server.
+/// When searching, it will give suggestions of usernames
+/// with the prefix of the input.
 class UserSearchBar extends StatefulWidget {
   const UserSearchBar({super.key});
 
@@ -50,6 +53,8 @@ class _UserSearchBarState extends State<UserSearchBar> {
                   },
                 );
               },
+              // Builds a ListTile for every suggestion that will navigate
+              // the user to their profile when clicked on
               suggestionsBuilder:
                   (BuildContext context, SearchController controller) {
                 return List<ListTile>.generate(

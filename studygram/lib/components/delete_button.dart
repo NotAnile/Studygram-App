@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:studygram/models/settings_model.dart';
 import 'package:provider/provider.dart';
 
+/// Button widget with a trash can icon
+/// that does the given function onPressed when pressed
 class DeleteButton extends StatelessWidget {
   final void Function() onPressed;
   const DeleteButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
+    // Sizes for the icon depending on the settings for sizes
     Map<Size, dynamic> iconSize = {
       Size.small: 12.0,
       Size.medium: 14.0,

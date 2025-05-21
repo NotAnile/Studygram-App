@@ -4,6 +4,8 @@ import './url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+/// Provider for handling liking and unliking posts, as well
+/// as getting the liked posts.
 class LikeManager extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";
@@ -64,6 +66,7 @@ class LikeManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Returns a list of all the liked posts of the logged in user.
   Future<List<dynamic>> getLikedPosts(String token) async {
     final String baseUrl = BaseUrl().baseUrl;
 

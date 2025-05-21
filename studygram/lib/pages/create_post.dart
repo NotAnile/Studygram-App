@@ -9,6 +9,7 @@ import 'package:studygram/structure.dart';
 import '../models/settings_model.dart';
 import 'package:go_router/go_router.dart';
 
+/// Page for creating posts
 class CreatePostPage extends StatelessWidget {
   const CreatePostPage({super.key});
 
@@ -40,7 +41,7 @@ class CreatePostPage extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(30.0),
-                          // Textarea
+                          // Textarea to write post
                           child: TextArea(
                             labelText: "What would you like to say?",
                             controller: bodyController,
@@ -67,6 +68,7 @@ class CreatePostPage extends StatelessWidget {
                                           listen: false)
                                       .accessToken;
 
+                                  // Making a call to the server
                                   Status status = await createPostModel
                                       .createPost(token, bodyController.text);
                                   if (context.mounted) {

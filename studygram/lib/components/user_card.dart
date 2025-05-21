@@ -4,7 +4,8 @@ import 'package:studygram/models/settings_model.dart';
 import 'package:studygram/components/follow_button.dart';
 import 'package:go_router/go_router.dart';
 
-/// A card that consists of a username and a follow/unfollow button which takes you to their profile page when clicked.
+/// A card that consists of a username and a follow/unfollow button
+/// which takes you to their profile page when clicked.
 class UserCard extends StatefulWidget {
   final String username;
   const UserCard({super.key, required this.username});

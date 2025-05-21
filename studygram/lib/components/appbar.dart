@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// Function to get the app bar used for the app
 AppBar getMyAppBar(BuildContext context, Text title) {
   return AppBar(
     backgroundColor: Theme.of(context).primaryColor,

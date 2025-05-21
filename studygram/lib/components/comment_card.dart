@@ -8,7 +8,10 @@ import 'package:studygram/models/post_page_model.dart';
 import 'package:studygram/models/user.dart';
 import 'package:studygram/components/delete_button.dart';
 
-//**A card that consists of a username and a text (body). Each post consists of a card.*/
+/// A card that displays a comment. Clicking on the username of this card
+/// will navigate one to their profile page.
+/// If the comment is made by the logged in user, a trash can symbol will
+/// be displayed at the top left corner. Clicking on that icon will remove the comment.
 class CommentCard extends StatelessWidget {
   final Comment comment;
   const CommentCard({super.key, required this.comment});
@@ -44,11 +47,12 @@ class CommentCard extends StatelessWidget {
                       // Checking if we own the comment, and if so display a delete button
                       (username == comment.username)
                           ? DeleteButton(onPressed: () async {
+                              // Getting the token
                               String token = Provider.of<Authentication>(
                                       context,
                                       listen: false)
                                   .accessToken;
-
+                              // Calling the remove comment method from the CommentViewModel
                               CommentViewModel commentViewModel =
                                   Provider.of<CommentViewModel>(context,
                                       listen: false);
@@ -74,15 +78,21 @@ class CommentCard extends StatelessWidget {
                                 }
                               }
                             })
-                          : const Text(""),
+                          : // The user does not own this comment, so display an empty text instead of
+                          // a delete button
+                          const Text(""),
                     ]),
+                // Row displaying the body of the comment
                 Row(
                   children: [
-                    Text(
-                      comment.body,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontSize: textsizes[settings.size] - 1),
+                    Flexible(
+                      child: Text(
+                        comment.body,
+                        softWrap: true,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: textsizes[settings.size] - 1),
+                      ),
                     ),
                   ],
                 )

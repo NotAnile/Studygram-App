@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/components/loading_indicator.dart';
 import 'package:studygram/structure.dart';
-import '../components/content_view.dart';
+import '../components/post_view.dart';
 import '../models/feed.dart';
 import '../models/user.dart';
 import 'package:provider/provider.dart';
@@ -50,13 +50,16 @@ class _HomeScreenState extends State<HomeScreen> {
               .showSnackBar(SnackBar(content: Text(feed.errorMessage)));
         }
 
-        // Creating a list with the user's friends and their own username
+        // Creating a list including the user's friends and their own username
+        // so that they also can see their own posts when "Friends" is selected
         List<dynamic> following = userModel.friends;
         if (!following.contains(userModel.username)) {
           following.add(userModel.username);
         }
 
         // Getting the users that we want to display on the feed
+        // If "see following" is true we want to select the user's we're following
+        // Otherwise, set selectedUsers to empty list and excludedUsers to our following list
         List<dynamic> selectedUsers = seeFollowing ? following : [];
         List<dynamic> excludedUsers = [];
         // Excludes the user's following list if the toggleMode is on Explore

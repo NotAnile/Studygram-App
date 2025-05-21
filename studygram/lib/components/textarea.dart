@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/settings_model.dart';
 
-//**Creates a textfield*/
+/// Creates a textfield with at most 8 lines.
 class TextArea extends StatelessWidget {
   final String labelText;
   // Takes in a text controller to use it to retrieve the current value of a textfield

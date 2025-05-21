@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// Bottom navigation bar used in the app.
 class MyNavigationBar extends StatefulWidget {
   final Widget child;
   const MyNavigationBar({super.key, required this.child});

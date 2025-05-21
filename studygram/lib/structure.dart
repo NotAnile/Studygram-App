@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+/// This file contains datamodels used in the app.
+
 /// Enum class with statuses for async operations
 enum Status {
   idle,
@@ -28,7 +30,7 @@ class User {
         posts: json["posts"].map((json) => Post.fromJson(json)).toList(),
         sessions: json["sessions"] != null
             ? json["sessions"].map((json) => Session.fromJson(json)).toList()
-            : [],
+            : [], // If the user has no sessions, then use an empty list
         friends: json['friends'] ?? [],
         friendRequests: json['friend_requests'] ?? []);
   }
@@ -43,6 +45,7 @@ class User {
   }
 }
 
+// The content class has the basics fields for a post and comment
 abstract class Content {
   final String body;
   final String username;
@@ -54,7 +57,7 @@ class Post extends Content {
   final List comments;
   bool isLiked;
   int likeCount;
-  // Inherits the body and username from the Tile class
+  // Inherits the body, username and id from the Content class
   Post(
       {required super.body,
       required super.username,
@@ -64,6 +67,7 @@ class Post extends Content {
       required this.likeCount});
 
   factory Post.fromJson(Map<String, dynamic> json) {
+    // If the id is a string, then we want to parse it to an int
     bool parseToInt = json['id'] is String;
 
     return Post(
@@ -92,6 +96,7 @@ class Post extends Content {
 }
 
 class Comment extends Content {
+  // Inherits the body, username and id from the Content class
   Comment({required super.body, required super.username, required super.id});
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
@@ -110,6 +115,7 @@ class Comment extends Content {
   }
 }
 
+/// Datamodel for study sessions.
 class Session {
   final DateTime starttime;
   final DateTime endtime;

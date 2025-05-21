@@ -6,6 +6,7 @@ import './authentication.dart';
 import './url.dart';
 import 'package:studygram/structure.dart';
 
+/// Provider for the create account page.
 class CreateAccountModel extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";
@@ -13,6 +14,10 @@ class CreateAccountModel extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   Status get status => _status;
 
+  /// Tries to create an account with the given username and password.
+  /// If it succeeds, it will try to log the user in.
+  /// Depending on how the operation goes, it will return a
+  /// success status or an error status.
   Future<Status> createAccount(
       String username, String password, BuildContext context) async {
     _status = Status.loading;
@@ -24,7 +29,7 @@ class CreateAccountModel extends ChangeNotifier {
         body: jsonEncode(
             <String, String>{'username': username, 'password': password}));
     // Checks if context is mounted to ensure that the widget associated with the context
-    // has not been disposed or removed
+    // has not been disposed or removed.
     if (context.mounted) {
       if (response.statusCode == 200) {
         // Logging in since the user was succesfully created
@@ -35,6 +40,7 @@ class CreateAccountModel extends ChangeNotifier {
         if (loginStatus == Status.success) {
           _status = Status.success;
         } else {
+          // Handling error if the account was created but the user could not log in
           _errorMessage = "Account created but could not log in";
           _status = Status.error;
         }
@@ -50,7 +56,7 @@ class CreateAccountModel extends ChangeNotifier {
     return _status;
   }
 
-// Setting error message for create account page
+  /// Setting error message for create account page.
   void setErrorMessage(String message) {
     _errorMessage = message;
     _status = Status.error;

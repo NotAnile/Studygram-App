@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/components/commentcard.dart';
 import 'package:studygram/components/loading_indicator.dart';
 import 'package:studygram/models/create_post_model.dart';
-import 'package:studygram/models/post_page_model.dart';
-import 'postcard.dart';
+import 'post_card.dart';
 import 'package:go_router/go_router.dart';
 import '../structure.dart';
 import '../models/feed.dart';
@@ -11,67 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:studygram/models/like_manager.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:studygram/models/settings_model.dart';
-
-//**Listview to display all the comments in a column*/
-class CommentView extends StatelessWidget {
-  final int postID;
-  const CommentView({super.key, required this.postID});
-
-  @override
-  Widget build(BuildContext context) {
-    Map textSize = {Size.small: 14.0, Size.medium: 16.0, Size.large: 18.0};
-    Settings settings = Provider.of<Settings>(context, listen: false);
-    return Consumer<CommentViewModel>(
-      builder: (context, model, child) {
-        // Getting the access token
-        String token =
-            Provider.of<Authentication>(context, listen: false).accessToken;
-        Feed feed = Provider.of<Feed>(context, listen: false);
-        // Getting the post including comments from the backend
-        Future<dynamic> request = feed.getComments(postID, token);
-        return FutureBuilder(
-          future: request,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              String errorMessage = feed.errorMessage;
-              return Center(
-                  child: Text(
-                errorMessage.isEmpty
-                    ? "An error has occurred. Could not get post."
-                    : errorMessage,
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: textSize[settings.size]),
-              ));
-            }
-            if (snapshot.connectionState == ConnectionState.done) {
-              final comments = snapshot.data!;
-              if (comments.isEmpty) {
-                return Expanded(
-                    child: Text("No comments yet",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            fontSize: textSize[settings.size])));
-              }
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: comments.length,
-                  itemBuilder: (context, index) {
-                    Comment comment = comments[index] as Comment;
-                    // Getting the right post with the index and returns a PostCard with the body and username
-                    return CommentCard(comment: comment);
-                  },
-                ),
-              );
-            } else {
-              return const LoadingIndicator();
-            }
-          },
-        );
-      },
-    );
-  }
-}
 
 /// ListView of posts. If given selectedUsers and excludedUsers, it will get
 /// posts from the backend with these parameters. Otherwise it will show the given posts.
@@ -98,7 +35,9 @@ class PostView extends StatelessWidget {
             builder: (context, feed, child) {
               return Consumer<CreatePostModel>(
                   builder: (context, model, child) {
+                // FutureBuilder to handle to UI when fetching posts from the server
                 return FutureBuilder(
+                  // Selected users are the users we want to get the posts from
                   future: feed.getPosts(token, selectedUsers!, excludedUsers!),
                   builder: (context, snapshot) {
                     // Error handling if the request got an error
@@ -156,7 +95,7 @@ class PostView extends StatelessWidget {
         },
       );
     } else {
-      // We recieved posts to display
+      // The wiget recieved posts to display so no call to the server is needed
       if (posts.isEmpty) {
         return Text("No posts found",
             style: TextStyle(fontSize: textSize[settings.size]));

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/structure.dart';
-import './url.dart';
+import '../url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-//**To be implemented*/
+/// Provider for information of the logged in user.
+/// Contains the username, posts, following, and friends of
+/// the logged in user.
 class UserModel extends ChangeNotifier {
   bool _isInitialized = false;
   String _username = "";
@@ -22,12 +24,14 @@ class UserModel extends ChangeNotifier {
   Status get status => _status;
   String get errorMessage => _errorMessage;
 
+  /// Setter for the username so it can be set the moment
+  /// the user succeeds with logging in.
   set setUsername(String username) {
     _username = username;
     notifyListeners();
   }
 
-  //** Initializes the usermodel and sets all the values by getting the data from backend. */
+  /// Initializes the usermodel and sets all the values by getting the data from backend.
   void initialize(String token) async {
     if (!_isInitialized) {
       _status = Status.loading;

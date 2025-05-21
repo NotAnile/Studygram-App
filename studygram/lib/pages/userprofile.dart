@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:studygram/components/content_view.dart';
+import 'package:studygram/components/post_view.dart';
 import 'package:studygram/components/follow_button.dart';
 import 'package:studygram/models/authentication.dart';
 import '../models/feed.dart';
@@ -43,10 +43,12 @@ class UserProfilePage extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
+                      // Displaying the given username
                       child: Text(username,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 25)),
                     ),
+                    // If the text "Friends" is clicked a list of all the user's friends will show up
                     GestureDetector(
                       onTap: () {
                         context.push('/friends', extra: username);
@@ -54,6 +56,7 @@ class UserProfilePage extends StatelessWidget {
                       child: NumberedBox(
                           title: "Friends", number: user.friends.length),
                     ),
+                    // Displaying the amount of posts
                     NumberedBox(title: "Posts", number: user.posts.length),
                     (username != ourUsername)
                         ? FollowButton(username: username)
@@ -61,11 +64,15 @@ class UserProfilePage extends StatelessWidget {
                   ],
                 ),
                 const Divider(),
+                // If the user does have posts, then use postview
+                //
                 posts.isEmpty
                     ? const Text("This user has no posts")
                     : PostView(
-                        posts: const [],
-                        selectedUsers: [username],
+                        posts: const [], // The posts argument will not be used when we have selected users
+                        selectedUsers: [
+                          username
+                        ], // Choosing the user as selected user as we only want to display the posts for this specific person
                         excludedUsers: const [],
                       )
               ],
@@ -79,6 +86,8 @@ class UserProfilePage extends StatelessWidget {
   }
 }
 
+/// A box to display each part/block in the top part of the page
+/// and takes in a title and a number
 class NumberedBox extends StatelessWidget {
   final String title;
   final int number;

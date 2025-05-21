@@ -24,6 +24,7 @@ class SettingsPage extends StatelessWidget {
             .showSnackBar(SnackBar(content: Text(model.errorMessage)));
       }
 
+      // Changes the size for settings
       void changeSize(Size size) {
         try {
           model.changeSettings(token, size, null, null);
@@ -37,6 +38,7 @@ class SettingsPage extends StatelessWidget {
       return Center(
         child: Column(
           children: [
+            // Title
             Text(
               "Sizes",
               style: TextStyle(
@@ -44,6 +46,7 @@ class SettingsPage extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
+            // Wrapping the buttons so overflow doesn't occur
             Wrap(spacing: 10.0, runSpacing: 10.0, children: [
               MyTextButton(
                 onPressed: () {
@@ -73,6 +76,7 @@ class SettingsPage extends StatelessWidget {
             const Divider(),
             Padding(
               padding: const EdgeInsets.all(8.0),
+              // Title
               child: Text(
                 "Themes",
                 style: TextStyle(
@@ -81,18 +85,23 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
             ),
-            // Switch to activate/deactivate dark mode
+
             Padding(
               padding: const EdgeInsets.all(10.0),
               child:
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                // Switch to activate/deactivate dark mode
                 const Text("Dark Mode"),
                 SwitchButton(
+                    // Checking if darkmode is already activated from before
                     alreadyToggled: (settings.themeMode == ThemeMode.dark),
+                    // Sending up a function for changing settings to darkmode
+                    // when the switch gets toggled
                     toggleFunction: () {
                       settings.changeSettings(
                           token, null, ThemeMode.dark, null);
                     },
+                    // Function for changing settings back to lightmode
                     untoggleFunction: () {
                       settings.changeSettings(
                           token, null, ThemeMode.light, null);
@@ -106,6 +115,7 @@ class SettingsPage extends StatelessWidget {
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 const Text("High Contrast"),
                 SwitchButton(
+                  // Checking if high contrast is already activated from before
                   alreadyToggled: settings.contrast,
                   toggleFunction: () {
                     settings.changeSettings(token, null, null, true);
@@ -119,6 +129,7 @@ class SettingsPage extends StatelessWidget {
             const Divider(),
             Padding(
               padding: const EdgeInsets.all(8.0),
+              // Log out button
               child: MyTextButton(
                 onPressed: () async {
                   await auth.logout();
@@ -153,7 +164,10 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-///
+/// Switch for toggling dark/light mode and contrast
+/// The class takes in two functions which are used when the modes
+/// are toggled/untoggled and a bool to know if the switch was already toggled
+/// so that the switch is in the correct state
 class SwitchButton extends StatefulWidget {
   final bool alreadyToggled;
   final void Function() toggleFunction;
@@ -171,7 +185,7 @@ class SwitchButton extends StatefulWidget {
 class _SwitchButtonState extends State<SwitchButton> {
   @override
   Widget build(BuildContext context) {
-    // Initializing toggled
+    // Initializing toggled so it's in the correct state
     bool toggled = widget.alreadyToggled;
     return Consumer<Settings>(
       builder: (context, settings, child) {

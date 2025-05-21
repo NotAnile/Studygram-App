@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import './url.dart';
+import '../url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:studygram/structure.dart';
 
+/// Provider for the timer page that handles the
+/// everything related to the timer from initialization and
+/// resetting of the timer,
+/// to the network call for finishing a study session.
 class TimerModel extends ChangeNotifier {
   String baseUrl = BaseUrl().baseUrl;
   bool _initialized = false;
@@ -18,6 +22,8 @@ class TimerModel extends ChangeNotifier {
   Status get status => _status;
 
   /// Sets the start date and start time for the study session
+  /// so it can be used for the network call when finishing
+  /// the study session.
   void initialize() {
     if (!_initialized) {
       _initialized = true;
@@ -105,10 +111,14 @@ class TimerModel extends ChangeNotifier {
   }
 }
 
+/// Provider for the Timer widget used in the
+/// timer page.
 class WatchModel extends ChangeNotifier {
   Stopwatch stopwatch = Stopwatch();
   late Timer timer;
 
+  /// Notifies listeners every second to update
+  /// the elapsed time.
   void startTimer() {
     timer = Timer.periodic(
       const Duration(seconds: 1),

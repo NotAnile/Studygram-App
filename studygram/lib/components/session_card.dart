@@ -6,24 +6,24 @@ import 'package:studygram/models/session_view_model.dart';
 import 'package:studygram/structure.dart';
 import 'package:studygram/components/delete_button.dart';
 
-/// A card that consists of the date that a session was started, start and end time, subject, description and duration.
+/// A card that consists of the date that a session was started,
+/// start and end time, subject, description and duration.
 class SessionCard extends StatelessWidget {
   final Session session;
   const SessionCard({super.key, required this.session});
 
   @override
   Widget build(BuildContext context) {
-    final DateTime starttime = session.starttime;
-    final DateTime endtime = session.endtime;
     final String subject = session.subject;
     final String description = session.description;
-    final int durationAsMinutes = session.durationAsMinutes;
 
     // Transforming the date, start and end times into the correct format that we want to display it in
-    final String formattedDate = session.getFormattedDate(starttime);
-    final String formattedStartTime = session.getFormattedTime(starttime);
-    final String formattedEndTime = session.getFormattedTime(endtime);
-    final String duration = session.getFormattedDuration(durationAsMinutes);
+    final String formattedDate = session.getFormattedDate(session.starttime);
+    final String formattedStartTime =
+        session.getFormattedTime(session.starttime);
+    final String formattedEndTime = session.getFormattedTime(session.endtime);
+    final String duration =
+        session.getFormattedDuration(session.durationAsMinutes);
 
     String token =
         Provider.of<Authentication>(context, listen: false).accessToken;

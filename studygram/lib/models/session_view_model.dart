@@ -4,6 +4,8 @@ import './url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+/// Provider for the session view widget in the study history page.
+/// This class handles getting study sessions and deleting them.
 class SessionViewModel extends ChangeNotifier {
   final String baseUrl = BaseUrl().baseUrl;
   Status _status = Status.idle;
@@ -34,7 +36,7 @@ class SessionViewModel extends ChangeNotifier {
     }
   }
 
-  /// Removes the given session
+  /// Removes the given session from the user's study sessions
   Future<Status> deleteSession(String token, int sessionId) async {
     _status = Status.loading;
     final response = await http.delete(
