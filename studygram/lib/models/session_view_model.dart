@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/structure.dart';
-import './url.dart';
+import '../url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

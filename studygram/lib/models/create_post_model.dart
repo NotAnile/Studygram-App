@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import './url.dart';
+import '../url.dart';
 import 'package:studygram/structure.dart';
 
 /// Provider for the create post page.

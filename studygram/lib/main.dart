@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import './models/settings_model.dart';
 import 'package:studygram/models/friend_manager.dart';
 import 'package:studygram/models/like_manager.dart';
-import 'package:studygram/models/post_page_model.dart';
+import 'package:studygram/models/comment_view_model.dart';
 import 'package:studygram/models/user_search_bar_model.dart';
 import 'router.dart';
 

@@ -10,15 +10,17 @@ from datetime import timedelta, datetime, date
 from dotenv import dotenv_values
 from enum import Enum
 
-app = Flask(__name__)
+# ----- Initialization -----
 
+app = Flask(__name__)
 bcrypt = Bcrypt(app)
 # Configuring the jwt secret key by getting the secret key from the .env file
 app.config['JWT_SECRET_KEY'] = dotenv_values(".env")["SECRET_KEY"]
 
-#Making the token valid for 15 minutes before it expires
+# Making the token valid for 1 hour before it expires
 ACCESS_EXPIRES = timedelta(minutes = 60)
 REFRESH_EXPIRES = timedelta(days=7)
+# Configuring the expiration of the access and refresh tokens
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRES
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = REFRESH_EXPIRES
 jwt = JWTManager(app)
@@ -43,19 +45,11 @@ else:
 db = SQLAlchemy()
 db.init_app(app)
 
-# Association table for friends
-friends = db.Table("Friends", 
-    db.Column('user_id', String, ForeignKey('user.id'), primary_key=True), 
-    db.Column('friend_id', String, ForeignKey('user.id'), primary_key=True))
-
-liked_by = db.Table(
-    "LikedBy",
-    db.Column('post_id', Integer, ForeignKey('post.id'), primary_key=True),
-    db.Column('user_id', String, ForeignKey('user.id'), primary_key=True)
-)
+# ----- Helper classes for the size and theme property of the user model -----
 
 
 class Size(Enum):
+    """Enum class for the sizes in settings of the app"""
     SMALL = "small"
     MEDIUM = "medium"
     LARGE = "large"
@@ -64,11 +58,30 @@ class Size(Enum):
         return [Size.SMALL.value, Size.MEDIUM.value, Size.LARGE.value]
 
 class Theme(Enum):
+    """Eunm class for dark and light mode in settings"""
     DARK = "dark"
     LIGHT = "light"
 
     def values():
         return [Theme.DARK.value, Theme.LIGHT.value]
+
+
+# ----- Association tables -----
+
+# Association table for friends
+friends = db.Table("Friends", 
+    db.Column('user_id', String, ForeignKey('user.id'), primary_key=True), 
+    db.Column('friend_id', String, ForeignKey('user.id'), primary_key=True))
+
+# Association table for likes 
+liked_by = db.Table(
+    "LikedBy",
+    db.Column('post_id', Integer, ForeignKey('post.id'), primary_key=True),
+    db.Column('user_id', String, ForeignKey('user.id'), primary_key=True)
+)
+
+# ----- Database models -----
+
 
 class User(db.Model):
     id: Mapped[str] = mapped_column(primary_key = True)
@@ -80,14 +93,16 @@ class User(db.Model):
     sessions: Mapped[List['Session']] = relationship(back_populates = 'user')
     following: Mapped[List['User']] = relationship(
         secondary=friends, 
-        primaryjoin=id==friends.c.user_id, 
-        secondaryjoin=id==friends.c.friend_id, 
+        # Primary/secondary join becomes the user_id's of the corresponding columns
+        primaryjoin=id==friends.c.user_id, # refers to the first column in the friends table
+        secondaryjoin=id==friends.c.friend_id, # refers to the second column in the friends table
         backref='followers'  # Followers are all the users who have you in their following list
     )
     size: Mapped[str]
     theme: Mapped[str]
     contrast: Mapped[bool]
 
+    # Initializing the values
     def __init__(self, id, password):
         self.id = id
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -98,7 +113,6 @@ class User(db.Model):
     def setPassword(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-    
     def mutual_friends(self):
         """Returns a list of all usernames of the user's mutual friends"""
         return [user.id for user in self.following if user in self.followers]
@@ -160,6 +174,9 @@ with app.app_context():
     db.create_all()
 
 
+# ----- Helper functions -----
+
+
 def user_exists(user_id) -> bool:
     """Checks if the given user id exists in the database"""
     user = db.session.execute(db.select(User).filter_by(id=user_id)).scalar_one_or_none()
@@ -186,10 +203,12 @@ def get_data(key: str, dict: dict) -> str:
         return dict[key]
     return ''
 
+# ----- Functions for the app -----
+
 
 @app.route('/user', methods=['POST'])
 def create_user():
-    """Creates a user with the given UserId if the given id is unique"""
+    """Creates a user with the given UserId if the given id is unique."""
     # Checks if the user exists in the User column with filter  
     json_data = request.json
 
@@ -212,17 +231,9 @@ def create_user():
         return jsonify({'message':'No username or password received!'}), 400
 
 
-@app.route('/refresh', methods=['POST'])
-@jwt_required(refresh=True)
-def refresh():
-    username = get_jwt_identity()
-    new_access_token = create_access_token(identity=username)
-    new_refresh_token = create_refresh_token(identity=username)
-    return jsonify(access_token=new_access_token, refresh_token=new_refresh_token)
-
-
 @app.route('/user/login', methods=['POST'])
 def do_login():
+    """Logs in the user and returns the access and refresh tokens if it succeeds."""
     json_data = request.json
     if data_exist(['username', 'password'], json_data):
         username = json_data['username']
@@ -239,25 +250,6 @@ def do_login():
             return jsonify(access_token=access_token, refresh_token=refresh_token), 200
         
     return jsonify({'message':'No such user or wrong password'}), 400
-
-
-@app.route('/user/change/password', methods=['POST'])
-@jwt_required()
-def change_password():
-    username = get_jwt_identity()
-    json_data = request.json
-    if data_exist(['password'], json_data):
-        password = json_data['password']
-
-        user = db.session.get(User, username)
-        if user is None:
-            return jsonify({'message':'No such user'}), 400
-
-        # Setting the new password
-        user.setPassword(password)
-        return jsonify({'message': 'Password has been updated'}), 200
-        
-    return jsonify({'message':'No password given'}), 400
 
 
 @app.route('/friend/add', methods=['POST'])
@@ -278,9 +270,10 @@ def add_friend():
         
         user = db.session.get(User, username)
         friend = db.session.get(User, friend_username)
-        # Adds the friend to the following list of the user
-        user.following.append(friend)
-        db.session.commit()
+        if (not friend in user.following):
+            # Adds the friend to the following list of the user
+            user.following.append(friend)
+            db.session.commit()
 
         return jsonify({'message': 'Friend added'}), 200
     else:
@@ -366,6 +359,7 @@ def save_comment(PostID):
         return jsonify({'message': 'Post does not exist'}), 404
     
     json_data = request.json
+    # Getting the post with the postID
     post = db.session.get(Post, PostID)
 
     # Gets all the data for storing the message
@@ -389,8 +383,8 @@ def save_comment(PostID):
 @app.route('/post/<PostID>', methods=['GET'])
 @jwt_required()
 def get_post(PostID):
-    """Returns a json with the given postID, body, and a list of
-    users that has liked the message and the amount of likes."""
+    """Returns a json with the given postID, body, a list of users that has liked 
+    the message, the amount of likes, its comments, the owner of the post."""
     username = get_jwt_identity()
     if (not user_exists(username)):
         return jsonify({'message': 'User does not exist'}), 404
@@ -424,9 +418,12 @@ def delete_post(PostID):
     if not user_exists(user_id):
         return jsonify({'message': "User does not exist"}), 404
 
+    # Getting the post and user
     post = db.session.get(Post, PostID)
     user = db.session.get(User, user_id)
 
+    # Checks that the post exists and that the owner of 
+    # the post is the same as the user trying to delete it
     if post is not None and post.user_id == user.id:
         # Removes the comments
         comments = post.comments
@@ -438,7 +435,7 @@ def delete_post(PostID):
         # Removes the post
         db.session.delete(post)
         # Deletes the likes given to the deleted post
-        db.session.execute(delete(liked_by).where(liked_by.c.post_id == PostID))    # Fråga: Behövs detta eller tas likes-raderna bort automatiskt när man tar bort Post?
+        db.session.execute(delete(liked_by).where(liked_by.c.post_id == PostID))
         db.session.commit()
         
         return jsonify({'message': 'Post deleted'}), 200
@@ -461,6 +458,8 @@ def delete_comment(CommentID):
 
     comment = db.session.get(Comment, CommentID)
 
+    # Checks that the comment exists and that the owner of 
+    # the comment is the same as the user trying to delete it
     if comment is not None and comment.user_id == user_id:
         # Removes the comment
         db.session.delete(comment)
@@ -489,7 +488,7 @@ def like_post(PostID):
         if user in post.likes:
             return jsonify({'message': "Post already liked"}), 200
 
-        # Adds the user and post to the likes list 
+        # Adds the user to the likes list 
         post.likes.append(user)
         db.session.commit()
         return jsonify({'message': "Post liked"}), 200
@@ -516,7 +515,7 @@ def unlike_post(PostID):
         if user not in post.likes:
             return jsonify({'message': "Post already not liked"}), 200
 
-        # Removes the user and post from the likes list 
+        # Removes the user from the likes list 
         post.likes.remove(user)
         db.session.commit()
         return jsonify({'message': "Removed like from post" }), 200
@@ -541,9 +540,11 @@ def get_all_comments(PostID):
     else:
         return jsonify({'message':"Post does not exist"}), 404
 
+
 def get_user_posts(usernames: List[str], limit: int, logged_in_user):
     """Helper function that returns a list of posts created by the given users. The amount of posts selected is 
-    determined by the given limit. If limit is None then all posts will be selected."""
+    determined by the given limit. If limit is None then all posts will be selected. The order of the posts
+    will be from the newest first to the oldest."""
     result = []
     # Creates a new list of user_ids containing all existing users
     user_ids = []
@@ -551,17 +552,24 @@ def get_user_posts(usernames: List[str], limit: int, logged_in_user):
         if user_exists(username):
             user_ids.append(username)
     
+    # Getting the posts as a generator depending on the limit.
+    # The posts will be in the order of newest to oldest.
     if limit is None:
+        # Getting all the posts 
         post_generator = db.session.execute(db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id))).scalars()
+        
     else:
+        # Getting as many posts as the given limit
         post_generator = db.session.execute(
             db.select(Post).where(Post.user_id.in_(user_ids)).order_by(desc(Post.id)).limit(limit)
         ).scalars()
     
+    # Adding the posts to the result list
     for post in post_generator:
         result.append({'id': post.id, 'body': post.body, 'username': post.user_id, 'like_count': len(post.likes), 'isLiked': (post in logged_in_user.liked_posts)})
     
     return result
+
 
 @app.route('/profile/<UserID>', methods=['GET'])
 @jwt_required()
@@ -572,26 +580,19 @@ def get_user_profile(UserID):
     username = get_jwt_identity()
     # Checks if the user exists
     if user_exists(UserID) and user_exists(username):
-        logged_in_user = db.session.get(User, username)
+        # Getting the logged in user to send as input to get_user_posts
+        # since the get_user_posts function needs it to determine if a post
+        # is liked by the user or not (every post contains the key isLiked, which
+        # is true if the logged in user has liked it)
+        logged_in_user = db.session.get(User, username) 
         posts = get_user_posts([UserID], None, logged_in_user)
+        # Getting the friends and following list of the given user
         user = db.session.get(User, UserID)
         mutual_friends = user.mutual_friends()
         following = user.get_following()
 
-        friend_requests_generator = db.session.execute(
-            select(User)
-            .join(friends, User.id == friends.c.user_id) # Joins each row in User with rows in the friends table 
-                                                         # where that user was the one who sent the request.
-            .where(friends.c.friend_id == UserID)  # Users that follow the given user
-            .where(~User.id.in_(mutual_friends))  # The users that the given user does not follow back
-        ).scalars()
-
-        # Gets all the userIDs that have sent a friend request
-        friend_requests = [user.id for user in friend_requests_generator]
-
         return jsonify({'username': UserID, 'posts': posts, 'post_count': len(posts), 
-                        'friends': mutual_friends, 'following': following, 'friend_count': len(mutual_friends), 
-                        'friend_requests': friend_requests})
+                        'friends': mutual_friends, 'following': following, 'friend_count': len(mutual_friends)})
     else:
         return jsonify({'message': "User does not exist"}), 404
 
@@ -659,6 +660,7 @@ def get_all_posts():
  
     user = db.session.get(User, username)
     data = request.json
+    # Getting the data
     if data_exist(['selected_users', 'excluded_users', 'post_count'], data):
         selected_users = data['selected_users']
         excluded_users = data['excluded_users']
@@ -754,16 +756,19 @@ def update_settings():
 @app.route('/sessions/all', methods = ['GET'])
 @jwt_required()
 def get_all_sessions():
-    """Returns a list of all sessions of the logged in user."""
+    """Returns a list of all sessions of the logged in user from the newest to oldest sessions."""
     user_id = get_jwt_identity()
 
     if user_exists(user_id):
+        # Getting a session generator that will give sessions
+        # from the newest to oldest.
         session_generator = db.session.execute(
             select(Session)
             .where(Session.user_id==user_id)
             .order_by(desc(Session.id))
         ).scalars()
         result = []
+        # Adding every session to the result with the correct format
         for session in session_generator:
             starttime = session.starttime.strftime("%Y-%m-%d %H:%M:%S")
             endtime = session.endtime.strftime("%Y-%m-%d %H:%M:%S")
@@ -780,7 +785,7 @@ def get_all_sessions():
 @app.route('/session/add', methods = ['POST'])
 @jwt_required()
 def add_session():
-    """Creates a session object and adds the session"""
+    """Creates a session object and adds the session."""
     user_id = get_jwt_identity()
     if not user_exists(user_id):
         return jsonify({'message': "User does not exist"}), 404
@@ -852,6 +857,7 @@ def search():
 @app.route('/user/logout', methods = ['POST'])
 @jwt_required()
 def logout():
+    """Blocks the access token of the logged in user."""
     jti = get_jwt()['jti']
     db.session.add(BlockedToken(jti=jti))
     db.session.commit()
@@ -866,7 +872,6 @@ def is_token_in_blocklist(jwt_header, jwt_payload: dict) -> bool:
     jti = jwt_payload['jti']
     token = db.session.execute(db.select(BlockedToken.jti).filter_by(jti=jti)).scalar()
     return token is not None
-
 
 
 if __name__ == "__main__":

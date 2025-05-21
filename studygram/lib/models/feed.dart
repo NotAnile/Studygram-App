@@ -104,7 +104,7 @@ class Feed extends ChangeNotifier {
     }
   }
 
-  /// Returns a list with posts of the selected users.
+  /// Returns a list with posts (maximum of 20 of the most recent posts) of the selected users.
   Future<List<dynamic>> getPosts(String token, List<dynamic> selectedUsers,
       List<dynamic> excludedUsers) async {
     final response = await http.post(

@@ -4,7 +4,7 @@ import 'package:studygram/models/settings_model.dart';
 import '../structure.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:studygram/models/post_page_model.dart';
+import 'package:studygram/models/comment_view_model.dart';
 import 'package:studygram/models/user.dart';
 import 'package:studygram/components/delete_button.dart';
 

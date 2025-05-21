@@ -7,7 +7,7 @@ import '../components/post_card.dart';
 import 'package:studygram/components/textfield.dart';
 import 'package:studygram/models/authentication.dart';
 import 'package:provider/provider.dart';
-import 'package:studygram/models/post_page_model.dart';
+import 'package:studygram/models/comment_view_model.dart';
 import 'package:studygram/components/comment_card.dart';
 import 'package:studygram/components/loading_indicator.dart';
 import '../models/feed.dart';
