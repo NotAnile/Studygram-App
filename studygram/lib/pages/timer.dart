@@ -98,6 +98,9 @@ class TimerPage extends StatelessWidget {
                                     const SnackBar(
                                         content:
                                             Text("Session succesfully added")));
+                                // Resetting the textfields
+                                subjectController.text = "";
+                                descriptionController.text = ""; 
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
