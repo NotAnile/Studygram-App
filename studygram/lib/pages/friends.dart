@@ -5,15 +5,10 @@ import 'package:studygram/components/user_view.dart';
 import 'package:studygram/components/textbutton.dart';
 import 'package:studygram/models/friends_page_model.dart';
 
-class FriendsPage extends StatefulWidget {
+class FriendsPage extends StatelessWidget {
   final String username;
   const FriendsPage({super.key, required this.username});
 
-  @override
-  State<FriendsPage> createState() => _FriendsPageState();
-}
-
-class _FriendsPageState extends State<FriendsPage> {
   @override
   Widget build(BuildContext context) {
     Color buttonColor = Theme.of(context).primaryColor;
@@ -70,7 +65,7 @@ class _FriendsPageState extends State<FriendsPage> {
             const Divider(),
             // Displays the users
             UserView(
-              username: widget.username,
+              username: username,
               seeFriends: seeFriends,
             ),
           ]),
