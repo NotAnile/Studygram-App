@@ -6,15 +6,10 @@ import 'package:go_router/go_router.dart';
 
 /// A card that consists of a username and a follow/unfollow button
 /// which takes you to their profile page when clicked.
-class UserCard extends StatefulWidget {
+class UserCard extends StatelessWidget {
   final String username;
   const UserCard({super.key, required this.username});
 
-  @override
-  State<UserCard> createState() => _UserCardState();
-}
-
-class _UserCardState extends State<UserCard> {
   @override
   Widget build(BuildContext context) {
     return Consumer<Settings>(builder: (context, settings, state) {
@@ -30,13 +25,13 @@ class _UserCardState extends State<UserCard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(widget.username,
+                      Text(username,
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.bold,
                               fontSize: sizes[settings.size])),
                       // Follow/unfollow button
-                      FollowButton(username: widget.username)
+                      FollowButton(username: username)
                     ],
                   ),
                 ],
@@ -45,7 +40,7 @@ class _UserCardState extends State<UserCard> {
           ),
           // Go to the user's profile when clicking on it
           onTap: () {
-            context.go('/profile', extra: widget.username);
+            context.go('/profile', extra: username);
           },
         ),
       );
