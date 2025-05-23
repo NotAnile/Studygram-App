@@ -36,128 +36,131 @@ class SettingsPage extends StatelessWidget {
 
       Color buttonColor = Theme.of(context).primaryColor;
       return Center(
-        child: Column(
-          children: [
-            // Title
-            Text(
-              "Sizes",
-              style: TextStyle(
-                fontSize: textSizes[model.size],
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            // Wrapping the buttons so overflow doesn't occur
-            Wrap(spacing: 10.0, runSpacing: 10.0, children: [
-              MyTextButton(
-                onPressed: () {
-                  changeSize(Size.small);
-                },
-                buttonText: "Small",
-                backgroundColor: buttonColor,
-                rectangleShape: false,
-              ),
-              MyTextButton(
-                onPressed: () {
-                  changeSize(Size.medium);
-                },
-                buttonText: "Medium",
-                backgroundColor: buttonColor,
-                rectangleShape: false,
-              ),
-              MyTextButton(
-                onPressed: () {
-                  changeSize(Size.large);
-                },
-                buttonText: "Large",
-                backgroundColor: buttonColor,
-                rectangleShape: false,
-              ),
-            ]),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
               // Title
-              child: Text(
-                "Themes",
+              Text(
+                "Sizes",
                 style: TextStyle(
                   fontSize: textSizes[model.size],
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                // Switch to activate/deactivate dark mode
-                const Text("Dark Mode"),
-                SwitchButton(
-                    // Checking if darkmode is already activated from before
-                    alreadyToggled: (settings.themeMode == ThemeMode.dark),
-                    // Sending up a function for changing settings to darkmode
-                    // when the switch gets toggled
-                    toggleFunction: () {
-                      settings.changeSettings(
-                          token, null, ThemeMode.dark, null);
-                    },
-                    // Function for changing settings back to lightmode
-                    untoggleFunction: () {
-                      settings.changeSettings(
-                          token, null, ThemeMode.light, null);
-                    }),
-              ]),
-            ),
-            // Switch to activate/deactivate high constrast
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const Text("High Contrast"),
-                SwitchButton(
-                  // Checking if high contrast is already activated from before
-                  alreadyToggled: settings.contrast,
-                  toggleFunction: () {
-                    settings.changeSettings(token, null, null, true);
+              // Wrapping the buttons so overflow doesn't occur
+              Wrap(spacing: 10.0, runSpacing: 10.0, children: [
+                MyTextButton(
+                  onPressed: () {
+                    changeSize(Size.small);
                   },
-                  untoggleFunction: () {
-                    settings.changeSettings(token, null, null, false);
+                  buttonText: "Small",
+                  backgroundColor: buttonColor,
+                  rectangleShape: false,
+                ),
+                MyTextButton(
+                  onPressed: () {
+                    changeSize(Size.medium);
                   },
-                )
+                  buttonText: "Medium",
+                  backgroundColor: buttonColor,
+                  rectangleShape: false,
+                ),
+                MyTextButton(
+                  onPressed: () {
+                    changeSize(Size.large);
+                  },
+                  buttonText: "Large",
+                  backgroundColor: buttonColor,
+                  rectangleShape: false,
+                ),
               ]),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              // Log out button
-              child: MyTextButton(
-                onPressed: () async {
-                  await auth.logout();
-                  // Shows snackbar if user got logged out
-                  if (context.mounted) {
-                    if (auth.status == Status.success) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Succesfully logged out")));
-                    } else if (auth.status == Status.error) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            (auth.errorMessage.isEmpty
-                                ? "Unknown error"
-                                : auth.errorMessage),
-                          ),
-                        ),
-                      );
-                    }
-                  }
-                },
-                buttonText: "Log out",
-                backgroundColor: buttonColor,
-                rectangleShape: true,
-                wrapText: true,
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                // Title
+                child: Text(
+                  "Themes",
+                  style: TextStyle(
+                    fontSize: textSizes[model.size],
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
               ),
-            ),
-          ],
+
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  // Switch to activate/deactivate dark mode
+                  const Text("Dark Mode"),
+                  SwitchButton(
+                      // Checking if darkmode is already activated from before
+                      alreadyToggled: (settings.themeMode == ThemeMode.dark),
+                      // Sending up a function for changing settings to darkmode
+                      // when the switch gets toggled
+                      toggleFunction: () {
+                        settings.changeSettings(
+                            token, null, ThemeMode.dark, null);
+                      },
+                      // Function for changing settings back to lightmode
+                      untoggleFunction: () {
+                        settings.changeSettings(
+                            token, null, ThemeMode.light, null);
+                      }),
+                ]),
+              ),
+              // Switch to activate/deactivate high constrast
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  const Text("High Contrast"),
+                  SwitchButton(
+                    // Checking if high contrast is already activated from before
+                    alreadyToggled: settings.contrast,
+                    toggleFunction: () {
+                      settings.changeSettings(token, null, null, true);
+                    },
+                    untoggleFunction: () {
+                      settings.changeSettings(token, null, null, false);
+                    },
+                  )
+                ]),
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                // Log out button
+                child: MyTextButton(
+                  onPressed: () async {
+                    await auth.logout();
+                    // Shows snackbar if user got logged out
+                    if (context.mounted) {
+                      if (auth.status == Status.success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Succesfully logged out")));
+                      } else if (auth.status == Status.error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              (auth.errorMessage.isEmpty
+                                  ? "Unknown error"
+                                  : auth.errorMessage),
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  buttonText: "Log out",
+                  backgroundColor: buttonColor,
+                  rectangleShape: true,
+                  wrapText: true,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     });

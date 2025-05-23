@@ -14,59 +14,61 @@ class MyPage extends StatelessWidget {
     final UserModel userModel = Provider.of<UserModel>(context, listen: false);
 
     return Center(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: NavigationCard(
-                    route: '/profile',
-                    text: 'My posts',
-                    icon: Icons.person,
-                    // Sending up the username to get the profile for the this user
-                    extra: userModel.username,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: NavigationCard(
+                      route: '/profile',
+                      text: 'My posts',
+                      icon: Icons.person,
+                      // Sending up the username to get the profile for the this user
+                      extra: userModel.username,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: NavigationCard(
-                  route: '/friends',
-                  text: 'Friends',
-                  icon: Icons.group,
-                  extra: userModel.username,
-                ),
-              )),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: NavigationCard(
-                  route: '/liked',
-                  text: 'Liked',
-                  icon: Icons.favorite,
-                  extra: userModel.username,
-                ),
-              )),
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: NavigationCard(
-                  route: '/studyhistory',
-                  text: 'Study History',
-                  icon: Icons.bar_chart,
-                  extra: userModel.username,
-                ),
-              )),
-            ],
-          ),
-        ],
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: NavigationCard(
+                    route: '/friends',
+                    text: 'Friends',
+                    icon: Icons.group,
+                    extra: userModel.username,
+                  ),
+                )),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: NavigationCard(
+                    route: '/liked',
+                    text: 'Liked',
+                    icon: Icons.favorite,
+                    extra: userModel.username,
+                  ),
+                )),
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: NavigationCard(
+                    route: '/studyhistory',
+                    text: 'Study History',
+                    icon: Icons.bar_chart,
+                    extra: userModel.username,
+                  ),
+                )),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
