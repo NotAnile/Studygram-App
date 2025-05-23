@@ -108,6 +108,7 @@ class User(db.Model):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
         self.size = Size.MEDIUM.value
         self.theme = Theme.LIGHT.value
+        self.following = []
         self.contrast = False
     
     def setPassword(self, password):
