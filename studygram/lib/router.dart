@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:studygram/models/authentication.dart';
-import 'package:studygram/models/bottom_navigation_bar_model.dart';
 import 'package:studygram/models/settings_model.dart';
 import 'package:studygram/pages/create_account.dart';
 import 'package:studygram/pages/create_post.dart';
@@ -128,18 +127,14 @@ class MyRouter extends StatelessWidget {
       ],
     );
 
-    return Consumer<BottomNavigationBarModel>(
-      builder: (context, model, child) {
-        // Setting the right mode depending on the settings
-        return Consumer<Settings>(
-          builder: (context, settings, child) {
-            return MaterialApp.router(
-              theme: settings.contrast ? highContrastLightTheme : lightTheme,
-              darkTheme: settings.contrast ? highContrastDarkTheme : darkTheme,
-              themeMode: settings.themeMode,
-              routerConfig: router,
-            );
-          },
+    // Setting the right mode depending on the settings
+    return Consumer<Settings>(
+      builder: (context, settings, child) {
+        return MaterialApp.router(
+          theme: settings.contrast ? highContrastLightTheme : lightTheme,
+          darkTheme: settings.contrast ? highContrastDarkTheme : darkTheme,
+          themeMode: settings.themeMode,
+          routerConfig: router,
         );
       },
     );

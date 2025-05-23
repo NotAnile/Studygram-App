@@ -28,8 +28,8 @@ class HomeScreen extends StatelessWidget {
           return const LoadingIndicator();
         }
 
-        Color buttonColor = Theme.of(context).primaryColor;
-        Color selectedButtonColor = Theme.of(context).primaryColorDark;
+        Color buttonColor = Theme.of(context).primaryColorLight;
+        Color selectedButtonColor = Theme.of(context).primaryColor;
         return Consumer<HomePageModel>(
           builder: (context, model, child) {
             bool seeFollowing = model.seeFollowing;
@@ -90,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                         child: MyTextButton(
                           buttonText: "Explore",
                           backgroundColor:
-                              seeFollowing ? selectedButtonColor : buttonColor,
+                              seeFollowing ? buttonColor : selectedButtonColor,
                           rectangleShape: true,
                           onPressed: () {
                             // Sets seeFollowing to false if it is true

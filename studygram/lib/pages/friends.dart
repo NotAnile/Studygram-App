@@ -11,8 +11,8 @@ class FriendsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color buttonColor = Theme.of(context).primaryColor;
-    Color selectedButtonColor = Theme.of(context).primaryColorDark;
+    Color buttonColor = Theme.of(context).primaryColorLight;
+    Color selectedButtonColor = Theme.of(context).primaryColor;
     return Consumer<FriendsPageModel>(builder: (context, model, child) {
       bool seeFriends = model.seeFriends;
       // The user can choose to see the posts of the people they follow or are friends with (mutuals)
@@ -54,7 +54,7 @@ class FriendsPage extends StatelessWidget {
                 child: MyTextButton(
                     buttonText: "Following",
                     backgroundColor:
-                        seeFriends ? selectedButtonColor : buttonColor,
+                        seeFriends ? buttonColor : selectedButtonColor,
                     rectangleShape: true,
                     onPressed: () {
                       // Sets seeFriends to false if it is true
