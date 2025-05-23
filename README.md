@@ -1,3 +1,6 @@
+Om appen Studygram:
+   En social app som Instagram där man kan logga sina studiepass.
+
 För att starta appen följ följande steg:
   1. Öppna mappen tddd80-2025-projekt i VS Code
   2. Skapa en .env-fil i mappen tddd80-2025-projekt om den inte existerar. Filen ska innehålla en rad 
