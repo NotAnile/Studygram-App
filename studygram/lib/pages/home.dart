@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // Creating a list including the user's friends and their own username
         // so that they also can see their own posts when "Friends" is selected
-        List<dynamic> following = userModel.friends;
+        List<dynamic> following = userModel.following;
         if (!following.contains(userModel.username)) {
           following.add(userModel.username);
         }

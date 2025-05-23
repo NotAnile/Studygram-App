@@ -54,8 +54,7 @@ class _PostPageState extends State<PostPage> {
               const Divider(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Wrap(
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
