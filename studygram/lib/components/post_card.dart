@@ -17,7 +17,7 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String accessToken =
+    String token =
         Provider.of<Authentication>(context, listen: false).accessToken;
     String username = Provider.of<UserModel>(context, listen: false).username;
 
@@ -28,8 +28,6 @@ class PostCard extends StatelessWidget {
       return Consumer<LikeManager>(builder: (context, likeManager, child) {
         // Getting the post from the server
         Feed feed = Provider.of<Feed>(context, listen: false);
-        String token =
-            Provider.of<Authentication>(context, listen: false).accessToken;
         final request = feed.getPost(postID, token);
 
         return FutureBuilder(
@@ -37,13 +35,6 @@ class PostCard extends StatelessWidget {
           builder: (context, snapshot) {
             // Showing the user that something went wrong if the request got an error
             if (snapshot.hasError) {
-              // Getting the correct text sizes for the error text
-              Map sizes = {
-                Size.small: 12.0,
-                Size.medium: 14.0,
-                Size.large: 16.0
-              };
-              Settings settings = Provider.of<Settings>(context, listen: false);
               return Center(
                   child: Text(
                 "An error has occurred. Could not get friends.",
@@ -62,7 +53,7 @@ class PostCard extends StatelessWidget {
                 child: GestureDetector(
                   onDoubleTap: () async {
                     if (!isLiked) {
-                      await likeManager.likePost(accessToken, post);
+                      await likeManager.likePost(token, post);
                     }
                   },
                   child: Card(
@@ -91,7 +82,7 @@ class PostCard extends StatelessWidget {
                                     ? DeleteButton(
                                         onPressed: () async {
                                           Status status = await feed.removePost(
-                                              post.id, accessToken);
+                                              post.id, token);
                                           // Showing a snackbar to notify the user about how the login went
                                           if (context.mounted) {
                                             if (status == Status.success) {
@@ -147,11 +138,9 @@ class PostCard extends StatelessWidget {
                               GestureDetector(
                                 onTap: () async {
                                   if (!isLiked) {
-                                    await likeManager.likePost(
-                                        accessToken, post);
+                                    await likeManager.likePost(token, post);
                                   } else {
-                                    await likeManager.unlikePost(
-                                        accessToken, post);
+                                    await likeManager.unlikePost(token, post);
                                   }
                                 },
                                 child: Icon(
