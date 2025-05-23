@@ -14,7 +14,7 @@ class LikeManager extends ChangeNotifier {
   Status get status => _status;
 
   /// Adds the post that the user has liked to the list
-  void likePost(String token, Content post) async {
+  Future<void> likePost(String token, Content post) async {
     _status = Status.loading;
     final String baseUrl = BaseUrl().baseUrl;
     int postID = post.id;
@@ -41,7 +41,7 @@ class LikeManager extends ChangeNotifier {
   }
 
   /// Removes the post that the user wants to unlike from the list
-  void unlikePost(String token, Content post) async {
+  Future<void> unlikePost(String token, Content post) async {
     final String baseUrl = BaseUrl().baseUrl;
     int postID = post.id;
 

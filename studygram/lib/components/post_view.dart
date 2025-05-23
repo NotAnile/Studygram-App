@@ -71,7 +71,7 @@ class PostView extends StatelessWidget {
                               Post post = posts[index];
                               // Getting the right post with the index and returns a PostCard with the body and username
                               return GestureDetector(
-                                child: PostCard(post: post),
+                                child: PostCard(postID: post.id),
                                 onTap: () async {
                                   // Sending the post as the extra parameter when navigating to the specific post page
                                   if (context.mounted) {
@@ -106,7 +106,7 @@ class PostView extends StatelessWidget {
             Post post = posts[index];
             // Getting the right post with the index and returns a PostCard with the body and username
             return GestureDetector(
-              child: PostCard(post: post),
+              child: PostCard(postID: post.id),
               onTap: () async {
                 // Sending the post as the extra parameter when navigating to the specific post page
                 if (context.mounted) {
