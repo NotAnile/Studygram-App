@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygram/models/authentication.dart';
+import 'package:studygram/models/bottom_navigation_bar_model.dart';
 import 'package:studygram/models/create_account_model.dart';
 import 'package:studygram/models/create_post_model.dart';
 import 'package:studygram/models/feed.dart';
@@ -31,6 +32,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => WatchModel()),
         ChangeNotifierProvider(create: (_) => SessionViewModel()),
         ChangeNotifierProvider(create: (_) => UserSearchBarModel()),
+        ChangeNotifierProvider(create: (_) => BottomNavigationBarModel()),
       ],
       child: const MainApp(),
     ),
