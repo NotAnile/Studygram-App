@@ -4,6 +4,8 @@ import 'package:studygram/models/bottom_navigation_bar_model.dart';
 import 'package:studygram/models/create_account_model.dart';
 import 'package:studygram/models/create_post_model.dart';
 import 'package:studygram/models/feed.dart';
+import 'package:studygram/models/friends_page_model.dart';
+import 'package:studygram/models/home_page_model.dart';
 import 'package:studygram/models/session_view_model.dart';
 import 'package:studygram/models/timer_model.dart';
 import 'package:studygram/models/user.dart';
@@ -33,6 +35,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => SessionViewModel()),
         ChangeNotifierProvider(create: (_) => UserSearchBarModel()),
         ChangeNotifierProvider(create: (_) => BottomNavigationBarModel()),
+        ChangeNotifierProvider(create: (_) => FriendsPageModel()),
+        ChangeNotifierProvider(create: (_) => HomePageModel()),
       ],
       child: const MainApp(),
     ),

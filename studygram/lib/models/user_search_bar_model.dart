@@ -10,10 +10,18 @@ import 'package:studygram/structure.dart';
 class UserSearchBarModel extends ChangeNotifier {
   Status _status = Status.idle;
   String _errorMessage = "";
+  List<dynamic> _suggestions = [];
   final String baseUrl = BaseUrl().baseUrl;
 
   String get errorMessage => _errorMessage;
   Status get status => _status;
+
+  List<dynamic> get suggestions => _suggestions;
+
+  void setSuggestions(List<dynamic> suggestions) {
+    _suggestions = suggestions;
+    notifyListeners();
+  }
 
   /// Gets a list of usernames with the given prefix. The given limit determines the
   /// maximum length of the list.

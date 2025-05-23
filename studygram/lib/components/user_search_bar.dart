@@ -7,25 +7,21 @@ import 'package:go_router/go_router.dart';
 /// Search bar for the users in the server.
 /// When searching, it will give suggestions of usernames
 /// with the prefix of the input.
-class UserSearchBar extends StatefulWidget {
+class UserSearchBar extends StatelessWidget {
   const UserSearchBar({super.key});
 
   @override
-  State<UserSearchBar> createState() => _UserSearchBarState();
-}
-
-class _UserSearchBarState extends State<UserSearchBar> {
-  List<dynamic> suggestions = [];
-  final SearchController controller = SearchController();
-  final int suggestionsLimit = 5;
-  final Map textSizes = {Size.small: 12.0, Size.medium: 14.0, Size.large: 16.0};
-
-  @override
   Widget build(BuildContext context) {
-    final UserSearchBarModel userSearchBarModel =
-        Provider.of<UserSearchBarModel>(context, listen: false);
+    final SearchController controller = SearchController();
+    const int suggestionsLimit = 5;
+    final Map textSizes = {
+      Size.small: 12.0,
+      Size.medium: 14.0,
+      Size.large: 16.0
+    };
     return Consumer<UserSearchBarModel>(
       builder: (context, searchBarModel, child) {
+        List<dynamic> suggestions = searchBarModel.suggestions;
         return Consumer<Settings>(
           builder: (context, settings, child) {
             return SearchAnchor(
@@ -41,14 +37,10 @@ class _UserSearchBarState extends State<UserSearchBar> {
                     // Updating the suggestions list if the input isn't empty
                     if (input.trim().isNotEmpty) {
                       // Gets the new suggestions
-                      List<dynamic> newSuggestions = await userSearchBarModel
+                      List<dynamic> newSuggestions = await searchBarModel
                           .search(input.trim().toLowerCase(), suggestionsLimit);
                       // Updates the suggestions list
-                      setState(
-                        () {
-                          suggestions = newSuggestions;
-                        },
-                      );
+                      searchBarModel.setSuggestions(newSuggestions);
                     }
                   },
                 );
