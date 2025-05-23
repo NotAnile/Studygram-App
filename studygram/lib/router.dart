@@ -80,6 +80,10 @@ class MyRouter extends StatelessWidget {
             builder: (context, state) {
               return const StudyHistoryPage();
             }),
+        GoRoute(
+          path: '/liked',
+          builder: (context, state) => const LikedPage(),
+        ),
         ShellRoute(
           navigatorKey: _shellNavigatorKey,
           builder: (context, state, child) => MyNavigationBar(child: child),
@@ -117,11 +121,6 @@ class MyRouter extends StatelessWidget {
                     as String; // Getting the username for the userprofile page
                 return UserProfilePage(username: username);
               },
-            ),
-            GoRoute(
-              path: '/liked',
-              parentNavigatorKey: _shellNavigatorKey,
-              builder: (context, state) => const LikedPage(),
             ),
           ],
         )

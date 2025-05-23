@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studygram/components/appbar.dart';
 import 'package:studygram/components/post_view.dart';
 import 'package:studygram/models/like_manager.dart';
 import 'package:provider/provider.dart';
@@ -20,26 +21,39 @@ class LikedPage extends StatelessWidget {
         return FutureBuilder(
           future: request,
           builder: (context, snapshot) {
+            AppBar myAppBar = getMyAppBar(
+                context,
+                Text("Liked posts",
+                    style: TextStyle(
+                      color: Theme.of(context).highlightColor,
+                    )));
             if (snapshot.hasError) {
-              return const Center(child: Text("An error has occured"));
+              return Scaffold(
+                  appBar: myAppBar,
+                  body: const Center(child: Text("An error has occured")));
             }
             if (snapshot.connectionState == ConnectionState.done) {
               List likedPosts = snapshot.data!;
-              return Center(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        // Displaying the posts with a PostView
-                        child: PostView(posts: likedPosts),
-                      ),
+              return Scaffold(
+                  appBar: myAppBar,
+                  body: Center(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            // Displaying the posts with a PostView
+                            child: PostView(posts: likedPosts),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
+                  ));
             } else {
-              return const LoadingIndicator();
+              return Scaffold(
+                appBar: myAppBar,
+                body: const LoadingIndicator(),
+              );
             }
           },
         );
