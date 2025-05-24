@@ -26,4 +26,4 @@ Poäng:
    en kolumn som beskriver problemets påverkan på användbarupplevelsen, en kolumn som beskriver antalet användare som upplevt problemet. (1p)
 12. Rapporten om användbarhetstestet utökas med 1 A4-sidas beskrivning och motivering 
    av åtgärdsförslag för de allvarligaste användbarhetsproblemen som identifierats. (1p) 
-13. Användning av provider fullt ut i hela appen för att hantera uppdatering av innehåll som visas i appen. (1 p)
+
